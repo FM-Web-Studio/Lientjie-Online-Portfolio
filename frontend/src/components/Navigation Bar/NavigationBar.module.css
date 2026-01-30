@@ -1,0 +1,491 @@
+/* ==================== NAVBAR CONTAINER ==================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  
+  /* Enhanced glass effect with architectural feel */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .navbar {
+  background: linear-gradient(
+    135deg,
+    rgba(58, 59, 63, 0.65) 0%,
+    rgba(47, 48, 53, 0.5) 50%,
+    rgba(58, 59, 63, 0.6) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.navContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 3rem);
+  padding-right: 90px;
+}
+
+/* ==================== LINK LIST ==================== */
+.linkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.25rem, 1vw, 0.5rem);
+  height: 70px;
+}
+
+.linkItem {
+  position: relative;
+}
+
+/* ==================== LINKS WITH VARIED COLORS ==================== */
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: transparent;
+  border-radius: 14px;
+  color: var(--primary-text-color);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: visible;
+  user-select: none;
+}
+
+.link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  border-radius: 14px;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.link:hover::before {
+  opacity: 1;
+}
+
+.linkIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+}
+
+/* Different color for each link icon */
+.link[data-index="0"] .linkIcon {
+  background: var(--accent-1-background);
+  color: var(--accent-1);
+}
+
+.link[data-index="1"] .linkIcon {
+  background: var(--accent-2-background);
+  color: var(--accent-2);
+}
+
+.link[data-index="2"] .linkIcon {
+  background: var(--accent-3-background);
+  color: var(--accent-3);
+}
+
+.link[data-index="3"] .linkIcon {
+  background: var(--accent-4-background);
+  color: var(--accent-4);
+}
+
+.link[data-index="4"] .linkIcon {
+  background: var(--accent-1-background);
+  color: var(--accent-1);
+}
+
+.link[data-index="5"] .linkIcon {
+  background: var(--accent-2-background);
+  color: var(--accent-2);
+}
+
+.link[data-index="6"] .linkIcon {
+  background: var(--accent-3-background);
+  color: var(--accent-3);
+}
+
+.linkLabel {
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+
+/* ==================== ARCHITECTURAL LINE UNDERLINE ==================== */
+.architectLine {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: calc(100% - 16px);
+  height: 3px;
+  background: currentColor;
+  opacity: 0;
+  transform-origin: center;
+  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.link[data-index="0"] .architectLine {
+  color: var(--accent-1);
+}
+
+.link[data-index="1"] .architectLine {
+  color: var(--accent-2);
+}
+
+.link[data-index="2"] .architectLine {
+  color: var(--accent-3);
+}
+
+.link[data-index="3"] .architectLine {
+  color: var(--accent-4);
+}
+
+.link[data-index="4"] .architectLine {
+  color: var(--accent-1);
+}
+
+.link[data-index="5"] .architectLine {
+  color: var(--accent-2);
+}
+
+.link[data-index="6"] .architectLine {
+  color: var(--accent-3);
+}
+
+/* ==================== HOVER STATE ==================== */
+.link:hover .linkIcon,
+.linkHovered .linkIcon {
+  transform: translateY(-2px) scale(1.08);
+}
+
+.link[data-index="0"]:hover .linkIcon,
+.link[data-index="0"].linkHovered .linkIcon {
+  background: var(--accent-1);
+  color: var(--background-1);
+  box-shadow: 0 4px 12px var(--accent-1-background);
+}
+
+.link[data-index="1"]:hover .linkIcon,
+.link[data-index="1"].linkHovered .linkIcon {
+  background: var(--accent-2);
+  color: var(--background-1);
+  box-shadow: 0 4px 12px var(--accent-2-background);
+}
+
+.link[data-index="2"]:hover .linkIcon,
+.link[data-index="2"].linkHovered .linkIcon {
+  background: var(--accent-3);
+  color: var(--background-1);
+  box-shadow: 0 4px 12px var(--accent-3-background);
+}
+
+.link[data-index="3"]:hover .linkIcon,
+.link[data-index="3"].linkHovered .linkIcon {
+  background: var(--accent-4);
+  color: var(--background-1);
+  box-shadow: 0 4px 12px var(--accent-4-background);
+}
+
+.link[data-index="4"]:hover .linkIcon,
+.link[data-index="4"].linkHovered .linkIcon {
+  background: var(--accent-1);
+  color: var(--background-1);
+  box-shadow: 0 4px 12px var(--accent-1-background);
+}
+
+.link[data-index="5"]:hover .linkIcon,
+.link[data-index="5"].linkHovered .linkIcon {
+  background: var(--accent-2);
+  color: var(--background-1);
+  box-shadow: 0 4px 12px var(--accent-2-background);
+}
+
+.link[data-index="6"]:hover .linkIcon,
+.link[data-index="6"].linkHovered .linkIcon {
+  background: var(--accent-3);
+  color: var(--background-1);
+  box-shadow: 0 4px 12px var(--accent-3-background);
+}
+
+/* Label color change on hover */
+.link[data-index="0"]:hover .linkLabel,
+.link[data-index="0"].linkHovered .linkLabel {
+  color: var(--accent-1);
+}
+
+.link[data-index="1"]:hover .linkLabel,
+.link[data-index="1"].linkHovered .linkLabel {
+  color: var(--accent-2);
+}
+
+.link[data-index="2"]:hover .linkLabel,
+.link[data-index="2"].linkHovered .linkLabel {
+  color: var(--accent-3);
+}
+
+.link[data-index="3"]:hover .linkLabel,
+.link[data-index="3"].linkHovered .linkLabel {
+  color: var(--accent-4);
+}
+
+.link[data-index="4"]:hover .linkLabel,
+.link[data-index="4"].linkHovered .linkLabel {
+  color: var(--accent-1);
+}
+
+.link[data-index="5"]:hover .linkLabel,
+.link[data-index="5"].linkHovered .linkLabel {
+  color: var(--accent-2);
+}
+
+.link[data-index="6"]:hover .linkLabel,
+.link[data-index="6"].linkHovered .linkLabel {
+  color: var(--accent-3);
+}
+
+/* Architectural line animation on hover */
+.link:hover .architectLine,
+.linkHovered .architectLine {
+  opacity: 1;
+  transform: translateX(-50%) scaleX(1);
+}
+
+.link:active {
+  transform: scale(0.96);
+}
+
+/* ==================== ACTIVE STATE ==================== */
+.linkActive {
+  background: transparent;
+}
+
+.link[data-index="0"].linkActive .linkIcon {
+  background: var(--accent-1);
+  color: var(--background-1);
+  box-shadow: 0 2px 8px var(--accent-1-background);
+}
+
+.link[data-index="1"].linkActive .linkIcon {
+  background: var(--accent-2);
+  color: var(--background-1);
+  box-shadow: 0 2px 8px var(--accent-2-background);
+}
+
+.link[data-index="2"].linkActive .linkIcon {
+  background: var(--accent-3);
+  color: var(--background-1);
+  box-shadow: 0 2px 8px var(--accent-3-background);
+}
+
+.link[data-index="3"].linkActive .linkIcon {
+  background: var(--accent-4);
+  color: var(--background-1);
+  box-shadow: 0 2px 8px var(--accent-4-background);
+}
+
+.link[data-index="4"].linkActive .linkIcon {
+  background: var(--accent-1);
+  color: var(--background-1);
+  box-shadow: 0 2px 8px var(--accent-1-background);
+}
+
+.link[data-index="5"].linkActive .linkIcon {
+  background: var(--accent-2);
+  color: var(--background-1);
+  box-shadow: 0 2px 8px var(--accent-2-background);
+}
+
+.link[data-index="6"].linkActive .linkIcon {
+  background: var(--accent-3);
+  color: var(--background-1);
+  box-shadow: 0 2px 8px var(--accent-3-background);
+}
+
+.link[data-index="0"].linkActive .linkLabel {
+  color: var(--accent-1);
+  font-weight: 600;
+}
+
+.link[data-index="1"].linkActive .linkLabel {
+  color: var(--accent-2);
+  font-weight: 600;
+}
+
+.link[data-index="2"].linkActive .linkLabel {
+  color: var(--accent-3);
+  font-weight: 600;
+}
+
+.link[data-index="3"].linkActive .linkLabel {
+  color: var(--accent-4);
+  font-weight: 600;
+}
+
+.link[data-index="4"].linkActive .linkLabel {
+  color: var(--accent-1);
+  font-weight: 600;
+}
+
+.link[data-index="5"].linkActive .linkLabel {
+  color: var(--accent-2);
+  font-weight: 600;
+}
+
+.link[data-index="6"].linkActive .linkLabel {
+  color: var(--accent-3);
+  font-weight: 600;
+}
+
+/* Active architectural line - always visible */
+.linkActive .architectLine {
+  opacity: 0.8;
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .linkList {
+    gap: clamp(0.125rem, 0.5vw, 0.25rem);
+    height: 65px;
+  }
+
+  .link {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+
+  .linkIcon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .linkLabel {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+  }
+
+  .navContent {
+    padding: 0 1rem;
+    padding-right: 80px;
+  }
+
+  .linkList {
+    height: 60px;
+    gap: 0.125rem;
+  }
+
+  .link {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .linkIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .linkLabel {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .linkList {
+    justify-content: space-between;
+    height: 56px;
+  }
+
+  .link {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  .linkIcon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .linkLabel {
+    font-size: 0.85rem;
+  }
+
+  .architectLine {
+    height: 2px;
+    bottom: -1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navContent {
+    padding: 0 0.5rem;
+    padding-right: 70px;
+  }
+
+  .linkList {
+    height: 52px;
+    gap: 0;
+  }
+
+  .link {
+    padding: 5px 6px;
+    gap: 4px;
+  }
+
+  .linkIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .linkLabel {
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,160 @@
+:root {
+    /* ==================== GENERAL SETTINGS ==================== */
+    /* Font Sizes */
+    --font-size-base: 1rem;       /* 16px */
+    --font-size-md: 1.125rem;     /* 18px */
+    --font-size-lg: 1.5rem;       /* 24px */
+    --font-size-xl: 2rem;         /* 32px */
+    --font-size-xxl: 2.5rem;      /* 42px */
+
+    /* ==================== STANDARD COLORS ==================== */
+
+    /* Text Colors */
+    --primary-text-color-light: #2a1a3d;
+    --primary-text-color-dark: #fef6f9;
+
+    --disabled-color: #a89bb3;
+
+    /* Status Colors */
+    --error-color: #ff4757;
+    --warning-color: #ffa502;
+    --success-color: #26de81;
+    --info-color: #4bcffa;
+
+    --success-background-color: #26de8155;
+    --warning-background-color: #ffa50255;
+    --error-background-color: #ff475755;
+    --info-background-color: #4bcffa55;
+
+
+    /* Accent Colors */
+    /* LIGHT (vivid architectural indigo) */
+    --accent-1-light: #5b5cff; /* electric indigo */
+    --accent-2-light: #4a4fff; /* strong blue-indigo */
+    --accent-3-light: #6f74ff; /* lighter, airy indigo */
+    --accent-4-light: #3f44d9; /* deep accent indigo */
+
+    /* DARK (richer, dramatic indigo) */
+    --accent-1-dark: #4a4ed6;
+    --accent-2-dark: #3b3fb8;
+    --accent-3-dark: #5a5fd9;
+    --accent-4-dark: #2f338f;
+
+
+    /* Accent Background Colors (same color, transparent) */
+    /* LIGHT */
+    --accent-1-background-light: #5b5cff2a;
+    --accent-2-background-light: #4a4fff2a;
+    --accent-3-background-light: #6f74ff2a;
+    --accent-4-background-light: #3f44d92a;
+
+    /* DARK */
+    --accent-1-background-dark: #4a4ed62a;
+    --accent-2-background-dark: #3b3fb82a;
+    --accent-3-background-dark: #5a5fd92a;
+    --accent-4-background-dark: #2f338f2a;
+
+
+    /* ==================== BACKGROUND COLORS ==================== */
+    /* Light mode */
+    --background-1-light: #ffffff;
+    --background-2-light: #f0f2f5;
+    --background-3-light: #dfe2e7;
+    --background-4-light: #c9ced6;
+    --frosted-background-light: rgba(255, 255, 255, 0.6);
+
+    /* Dark mode */
+    --background-1-dark: #3a3b3f;
+    --background-2-dark: #2f3035;
+    --background-3-dark: #242529;
+    --background-4-dark: #18191c;
+    --frosted-background-dark: rgba(24, 25, 28, 0.6);
+
+
+    /* Applied Colors (Default Light Mode) */
+    --primary-text-color: var(--primary-text-color-light);
+
+    --background-1: var(--background-1-light);
+    --background-2: var(--background-2-light);
+    --background-3: var(--background-3-light);
+    --background-4: var(--background-4-light);
+
+    --accent-1: var(--accent-1-light);
+    --accent-2: var(--accent-2-light);
+    --accent-3: var(--accent-3-light);
+    --accent-4: var(--accent-4-light);
+    --accent-5: var(--accent-5-light);
+    --accent-6: var(--accent-6-light);
+    --accent-7: var(--accent-7-light);
+    --accent-8: var(--accent-8-light);
+    --accent-9: var(--accent-9-light);
+    --accent-10: var(--accent-10-light);
+
+    --accent-1-background: var(--accent-1-background-light);
+    --accent-2-background: var(--accent-2-background-light);
+    --accent-3-background: var(--accent-3-background-light);
+    --accent-4-background: var(--accent-4-background-light);
+    --accent-5-background: var(--accent-5-background-light);
+    --accent-6-background: var(--accent-6-background-light);
+    --accent-7-background: var(--accent-7-background-light);
+    --accent-8-background: var(--accent-8-background-light);
+    --accent-9-background: var(--accent-9-background-light);
+    --accent-10-background: var(--accent-10-background-light);
+}
+
+
+/* ==================== THEME OVERRIDES ==================== */
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --primary-text-color: var(--primary-text-color-dark);
+    --background-1: var(--background-1-dark);
+    --background-2: var(--background-2-dark);
+    --background-3: var(--background-3-dark);
+    --background-4: var(--background-4-dark);
+
+    --accent-1: var(--accent-1-dark);
+    --accent-2: var(--accent-2-dark);
+    --accent-3: var(--accent-3-dark);
+    --accent-4: var(--accent-4-dark);
+    --accent-5: var(--accent-5-dark);
+    --accent-6: var(--accent-6-dark);
+    --accent-7: var(--accent-7-dark);
+    --accent-8: var(--accent-8-dark);
+    --accent-9: var(--accent-9-dark);
+    --accent-10: var(--accent-10-dark);
+
+    --accent-1-background: var(--accent-1-background-dark);
+    --accent-2-background: var(--accent-2-background-dark);
+    --accent-3-background: var(--accent-3-background-dark);
+    --accent-4-background: var(--accent-4-background-dark);
+    --accent-5-background: var(--accent-5-background-dark);
+    --accent-6-background: var(--accent-6-background-dark);
+    --accent-7-background: var(--accent-7-background-dark);
+    --accent-8-background: var(--accent-8-background-dark);
+    --accent-9-background: var(--accent-9-background-dark);
+    --accent-10-background: var(--accent-10-background-dark);
+}
+
+
+/* ===================== Page & Page Content ==================== */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: linear-gradient(
+    -135deg,
+    var(--background-1) 0%,
+    var(--background-2) 50%,
+    var(--background-3) 50%,
+    var(--background-4) 100%
+  );
+  background-attachment: fixed;
+}
+
+
+/* ==================== ANIMATION OVERRIDE ==================== */
+[data-no-animations="true"] * {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+}

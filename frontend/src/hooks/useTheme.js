@@ -1,0 +1,79 @@
+import { useState, useEffect } from 'react';
+
+export const getInitialTheme = () => {
+  const sessionInfo = localStorage.getItem('userSessionInfo');
+  if (sessionInfo) {
+    try {
+      const parsed = JSON.parse(sessionInfo);
+      if (parsed.prefersColorScheme) return parsed.prefersColorScheme;
+    } catch {
+      // fallback to browser default
+    }
+  }
+
+  // Use browser default if no stored preference
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return prefersDark ? 'dark' : 'light';
+};
+
+export const useTheme = () => {
+  const [theme, setTheme] = useState(getInitialTheme());
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+
+    const sessionInfo = localStorage.getItem('userSessionInfo');
+    let updatedInfo = {};
+
+    if (sessionInfo) {
+      try {
+        updatedInfo = JSON.parse(sessionInfo);
+      } catch {
+        updatedInfo = {};
+      }
+    }
+
+    updatedInfo.prefersColorScheme = theme;
+    localStorage.setItem('userSessionInfo', JSON.stringify(updatedInfo));
+
+    // Broadcast theme change to other hook instances in this window
+    try {
+      const ev = new CustomEvent('themechange', { detail: theme });
+      window.dispatchEvent(ev);
+    } catch (e) {
+      // ignore
+    }
+  }, [theme]);
+
+  // Listen for theme changes dispatched from other hook instances
+  useEffect(() => {
+    const handler = (e) => {
+      if (e && e.detail && e.detail !== theme) setTheme(e.detail);
+    };
+
+    const storageHandler = (e) => {
+      if (e.key === 'userSessionInfo') {
+        try {
+          const parsed = JSON.parse(e.newValue || '{}');
+          if (parsed.prefersColorScheme && parsed.prefersColorScheme !== theme) {
+            setTheme(parsed.prefersColorScheme);
+          }
+        } catch {
+          // ignore
+        }
+      }
+    };
+
+    window.addEventListener('themechange', handler);
+    window.addEventListener('storage', storageHandler);
+
+    return () => {
+      window.removeEventListener('themechange', handler);
+      window.removeEventListener('storage', storageHandler);
+    };
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+
+  return { theme, toggleTheme, setTheme };
+};
