@@ -5,48 +5,86 @@
   left: 0;
   right: 0;
   z-index: 300;
-  
-  /* Enhanced glass effect with architectural feel */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0.35) 50%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  
-  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.25);
-  
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-[data-theme="dark"] .navbar {
-  background: linear-gradient(
-    135deg,
-    rgba(58, 59, 63, 0.65) 0%,
-    rgba(47, 48, 53, 0.5) 50%,
-    rgba(58, 59, 63, 0.6) 100%
-  );
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  padding: 1rem 0;
 }
 
 .navContent {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 clamp(1rem, 3vw, 3rem);
-  padding-right: 90px;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* ==================== GLASS CONTAINER ==================== */
+.glassContainer {
+  position: relative;
+  padding: 0.5rem 1rem;
+  border-radius: 24px;
+  
+  /* Liquid glass effect */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.15)
+  );
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  
+  /* Subtle borders */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+  
+  overflow: hidden;
+}
+
+[data-theme="dark"] .glassContainer {
+  background: linear-gradient(
+    135deg,
+    rgba(58, 59, 63, 0.35),
+    rgba(47, 48, 53, 0.25)
+  );
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* ==================== LIQUID EFFECT OVERLAY ==================== */
+.liquidEffect {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 24px;
+  
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(224, 140, 171, 0.1),
+    rgba(217, 115, 152, 0.05),
+    transparent 70%
+  );
+  
+  opacity: 0.6;
+  mix-blend-mode: overlay;
+}
+
+[data-theme="dark"] .liquidEffect {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(230, 169, 195, 0.15),
+    rgba(217, 143, 178, 0.08),
+    transparent 70%
+  );
+  opacity: 0.4;
 }
 
 /* ==================== LINK LIST ==================== */
@@ -56,436 +94,434 @@
   padding: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: clamp(0.25rem, 1vw, 0.5rem);
-  height: 70px;
+  gap: 0.25rem;
+  position: relative;
+  z-index: 1;
 }
 
 .linkItem {
   position: relative;
 }
 
-/* ==================== LINKS WITH VARIED COLORS ==================== */
+/* ==================== LINKS ==================== */
 .link {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
   background: transparent;
-  border-radius: 14px;
+  border: none;
+  border-radius: 16px;
   color: var(--primary-text-color);
   font-size: var(--font-size-base);
   font-weight: 500;
   cursor: pointer;
-  text-align: left;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  overflow: visible;
-  user-select: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  outline: none;
 }
 
+/* Hover glass effect */
 .link::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-radius: 16px;
   opacity: 0;
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.link:hover::before {
+[data-theme="dark"] .link::before {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.03)
+  );
+}
+
+.link:hover::before,
+.linkHovered::before {
   opacity: 1;
 }
 
-.linkIcon {
+/* ==================== ICON WRAPPER ==================== */
+.iconWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  flex-shrink: 0;
-}
-
-/* Different color for each link icon */
-.link[data-index="0"] .linkIcon {
-  background: var(--accent-1-background);
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(224, 140, 171, 0.1);
   color: var(--accent-1);
-}
-
-.link[data-index="1"] .linkIcon {
-  background: var(--accent-2-background);
-  color: var(--accent-2);
-}
-
-.link[data-index="2"] .linkIcon {
-  background: var(--accent-3-background);
-  color: var(--accent-3);
-}
-
-.link[data-index="3"] .linkIcon {
-  background: var(--accent-4-background);
-  color: var(--accent-4);
-}
-
-.link[data-index="4"] .linkIcon {
-  background: var(--accent-1-background);
-  color: var(--accent-1);
-}
-
-.link[data-index="5"] .linkIcon {
-  background: var(--accent-2-background);
-  color: var(--accent-2);
-}
-
-.link[data-index="6"] .linkIcon {
-  background: var(--accent-3-background);
-  color: var(--accent-3);
-}
-
-.linkLabel {
-  letter-spacing: 0.3px;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  white-space: nowrap;
 }
 
-/* ==================== ARCHITECTURAL LINE UNDERLINE ==================== */
-.architectLine {
+[data-theme="dark"] .iconWrapper {
+  background: rgba(230, 169, 195, 0.15);
+  color: var(--accent-1);
+}
+
+.linkItem:nth-child(1) .link .iconWrapper { 
+  background: var(--accent-1-background); 
+  color: var(--accent-1); 
+}
+.linkItem:nth-child(2) .link .iconWrapper { 
+  background: var(--accent-2-background); 
+  color: var(--accent-2); 
+}
+.linkItem:nth-child(3) .link .iconWrapper { 
+  background: var(--accent-3-background); 
+  color: var(--accent-3); 
+}
+.linkItem:nth-child(4) .link .iconWrapper { 
+  background: var(--accent-4-background); 
+  color: var(--accent-4); 
+}
+.linkItem:nth-child(5) .link .iconWrapper { 
+  background: var(--accent-1-background); 
+  color: var(--accent-1); 
+}
+.linkItem:nth-child(6) .link .iconWrapper { 
+  background: var(--accent-2-background); 
+  color: var(--accent-2); 
+}
+.linkItem:nth-child(7) .link .iconWrapper { 
+  background: var(--accent-3-background); 
+  color: var(--accent-3); 
+}
+
+/* ==================== LABEL ==================== */
+.linkLabel {
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.9375rem;
+}
+
+/* ==================== ACTIVE INDICATOR ==================== */
+.activeIndicator {
   position: absolute;
   bottom: -2px;
   left: 50%;
   transform: translateX(-50%) scaleX(0);
-  width: calc(100% - 16px);
+  width: calc(100% - 1rem);
   height: 3px;
-  background: currentColor;
+  border-radius: 3px;
+  background: var(--accent-1);
   opacity: 0;
-  transform-origin: center;
-  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
-  border-radius: 2px;
-}
-
-.link[data-index="0"] .architectLine {
-  color: var(--accent-1);
-}
-
-.link[data-index="1"] .architectLine {
-  color: var(--accent-2);
-}
-
-.link[data-index="2"] .architectLine {
-  color: var(--accent-3);
-}
-
-.link[data-index="3"] .architectLine {
-  color: var(--accent-4);
-}
-
-.link[data-index="4"] .architectLine {
-  color: var(--accent-1);
-}
-
-.link[data-index="5"] .architectLine {
-  color: var(--accent-2);
-}
-
-.link[data-index="6"] .architectLine {
-  color: var(--accent-3);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 8px currentColor;
 }
 
 /* ==================== HOVER STATE ==================== */
-.link:hover .linkIcon,
-.linkHovered .linkIcon {
-  transform: translateY(-2px) scale(1.08);
+.link:hover .iconWrapper,
+.linkHovered .iconWrapper {
+  transform: translateY(-1px) scale(1.05);
 }
 
-.link[data-index="0"]:hover .linkIcon,
-.link[data-index="0"].linkHovered .linkIcon {
+.linkItem:nth-child(1) .link:hover .iconWrapper,
+.linkItem:nth-child(1) .link.linkHovered .iconWrapper {
   background: var(--accent-1);
   color: var(--background-1);
-  box-shadow: 0 4px 12px var(--accent-1-background);
+  box-shadow: 0 4px 16px var(--accent-1-background);
 }
 
-.link[data-index="1"]:hover .linkIcon,
-.link[data-index="1"].linkHovered .linkIcon {
+.linkItem:nth-child(2) .link:hover .iconWrapper,
+.linkItem:nth-child(2) .link.linkHovered .iconWrapper {
   background: var(--accent-2);
   color: var(--background-1);
-  box-shadow: 0 4px 12px var(--accent-2-background);
+  box-shadow: 0 4px 16px var(--accent-2-background);
 }
 
-.link[data-index="2"]:hover .linkIcon,
-.link[data-index="2"].linkHovered .linkIcon {
+.linkItem:nth-child(3) .link:hover .iconWrapper,
+.linkItem:nth-child(3) .link.linkHovered .iconWrapper {
   background: var(--accent-3);
   color: var(--background-1);
-  box-shadow: 0 4px 12px var(--accent-3-background);
+  box-shadow: 0 4px 16px var(--accent-3-background);
 }
 
-.link[data-index="3"]:hover .linkIcon,
-.link[data-index="3"].linkHovered .linkIcon {
+.linkItem:nth-child(4) .link:hover .iconWrapper,
+.linkItem:nth-child(4) .link.linkHovered .iconWrapper {
   background: var(--accent-4);
   color: var(--background-1);
-  box-shadow: 0 4px 12px var(--accent-4-background);
+  box-shadow: 0 4px 16px var(--accent-4-background);
 }
 
-.link[data-index="4"]:hover .linkIcon,
-.link[data-index="4"].linkHovered .linkIcon {
+.linkItem:nth-child(5) .link:hover .iconWrapper,
+.linkItem:nth-child(5) .link.linkHovered .iconWrapper {
   background: var(--accent-1);
   color: var(--background-1);
-  box-shadow: 0 4px 12px var(--accent-1-background);
+  box-shadow: 0 4px 16px var(--accent-1-background);
 }
 
-.link[data-index="5"]:hover .linkIcon,
-.link[data-index="5"].linkHovered .linkIcon {
+.linkItem:nth-child(6) .link:hover .iconWrapper,
+.linkItem:nth-child(6) .link.linkHovered .iconWrapper {
   background: var(--accent-2);
   color: var(--background-1);
-  box-shadow: 0 4px 12px var(--accent-2-background);
+  box-shadow: 0 4px 16px var(--accent-2-background);
 }
 
-.link[data-index="6"]:hover .linkIcon,
-.link[data-index="6"].linkHovered .linkIcon {
+.linkItem:nth-child(7) .link:hover .iconWrapper,
+.linkItem:nth-child(7) .link.linkHovered .iconWrapper {
   background: var(--accent-3);
   color: var(--background-1);
-  box-shadow: 0 4px 12px var(--accent-3-background);
+  box-shadow: 0 4px 16px var(--accent-3-background);
 }
 
-/* Label color change on hover */
-.link[data-index="0"]:hover .linkLabel,
-.link[data-index="0"].linkHovered .linkLabel {
-  color: var(--accent-1);
-}
-
-.link[data-index="1"]:hover .linkLabel,
-.link[data-index="1"].linkHovered .linkLabel {
-  color: var(--accent-2);
-}
-
-.link[data-index="2"]:hover .linkLabel,
-.link[data-index="2"].linkHovered .linkLabel {
-  color: var(--accent-3);
-}
-
-.link[data-index="3"]:hover .linkLabel,
-.link[data-index="3"].linkHovered .linkLabel {
-  color: var(--accent-4);
-}
-
-.link[data-index="4"]:hover .linkLabel,
-.link[data-index="4"].linkHovered .linkLabel {
-  color: var(--accent-1);
-}
-
-.link[data-index="5"]:hover .linkLabel,
-.link[data-index="5"].linkHovered .linkLabel {
-  color: var(--accent-2);
-}
-
-.link[data-index="6"]:hover .linkLabel,
-.link[data-index="6"].linkHovered .linkLabel {
-  color: var(--accent-3);
-}
-
-/* Architectural line animation on hover */
-.link:hover .architectLine,
-.linkHovered .architectLine {
+.link:hover .linkLabel,
+.linkHovered .linkLabel {
   opacity: 1;
-  transform: translateX(-50%) scaleX(1);
+  transform: translateX(1px);
 }
 
 .link:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
 }
 
 /* ==================== ACTIVE STATE ==================== */
 .linkActive {
-  background: transparent;
+  background: var(--accent-1-background);
+  border: 1px solid var(--accent-1);
 }
 
-.link[data-index="0"].linkActive .linkIcon {
+[data-theme="dark"] .linkActive {
+  background: var(--accent-1-background);
+  border: 1px solid var(--accent-1);
+}
+
+.linkActive .iconWrapper {
+  transform: scale(1.05);
+}
+
+.linkItem:nth-child(1) .link.linkActive {
+  background: var(--accent-1-background);
+  border: 1px solid var(--accent-1);
+}
+
+.linkItem:nth-child(2) .link.linkActive {
+  background: var(--accent-2-background);
+  border: 1px solid var(--accent-2);
+}
+
+.linkItem:nth-child(3) .link.linkActive {
+  background: var(--accent-3-background);
+  border: 1px solid var(--accent-3);
+}
+
+.linkItem:nth-child(4) .link.linkActive {
+  background: var(--accent-4-background);
+  border: 1px solid var(--accent-4);
+}
+
+.linkItem:nth-child(5) .link.linkActive {
+  background: var(--accent-1-background);
+  border: 1px solid var(--accent-1);
+}
+
+.linkItem:nth-child(6) .link.linkActive {
+  background: var(--accent-2-background);
+  border: 1px solid var(--accent-2);
+}
+
+.linkItem:nth-child(7) .link.linkActive {
+  background: var(--accent-3-background);
+  border: 1px solid var(--accent-3);
+}
+
+.linkItem:nth-child(1) .link.linkActive .iconWrapper {
   background: var(--accent-1);
   color: var(--background-1);
-  box-shadow: 0 2px 8px var(--accent-1-background);
+  box-shadow: 0 2px 12px var(--accent-1-background);
 }
 
-.link[data-index="1"].linkActive .linkIcon {
+.linkItem:nth-child(2) .link.linkActive .iconWrapper {
   background: var(--accent-2);
   color: var(--background-1);
-  box-shadow: 0 2px 8px var(--accent-2-background);
+  box-shadow: 0 2px 12px var(--accent-2-background);
 }
 
-.link[data-index="2"].linkActive .linkIcon {
+.linkItem:nth-child(3) .link.linkActive .iconWrapper {
   background: var(--accent-3);
   color: var(--background-1);
-  box-shadow: 0 2px 8px var(--accent-3-background);
+  box-shadow: 0 2px 12px var(--accent-3-background);
 }
 
-.link[data-index="3"].linkActive .linkIcon {
+.linkItem:nth-child(4) .link.linkActive .iconWrapper {
   background: var(--accent-4);
   color: var(--background-1);
-  box-shadow: 0 2px 8px var(--accent-4-background);
+  box-shadow: 0 2px 12px var(--accent-4-background);
 }
 
-.link[data-index="4"].linkActive .linkIcon {
+.linkItem:nth-child(5) .link.linkActive .iconWrapper {
   background: var(--accent-1);
   color: var(--background-1);
-  box-shadow: 0 2px 8px var(--accent-1-background);
+  box-shadow: 0 2px 12px var(--accent-1-background);
 }
 
-.link[data-index="5"].linkActive .linkIcon {
+.linkItem:nth-child(6) .link.linkActive .iconWrapper {
   background: var(--accent-2);
   color: var(--background-1);
-  box-shadow: 0 2px 8px var(--accent-2-background);
+  box-shadow: 0 2px 12px var(--accent-2-background);
 }
 
-.link[data-index="6"].linkActive .linkIcon {
+.linkItem:nth-child(7) .link.linkActive .iconWrapper {
   background: var(--accent-3);
   color: var(--background-1);
-  box-shadow: 0 2px 8px var(--accent-3-background);
+  box-shadow: 0 2px 12px var(--accent-3-background);
 }
 
-.link[data-index="0"].linkActive .linkLabel {
-  color: var(--accent-1);
+.linkActive .linkLabel {
+  opacity: 1;
   font-weight: 600;
 }
 
-.link[data-index="1"].linkActive .linkLabel {
-  color: var(--accent-2);
-  font-weight: 600;
-}
+.linkItem:nth-child(1) .link.linkActive .linkLabel { color: var(--accent-1); }
+.linkItem:nth-child(2) .link.linkActive .linkLabel { color: var(--accent-2); }
+.linkItem:nth-child(3) .link.linkActive .linkLabel { color: var(--accent-3); }
+.linkItem:nth-child(4) .link.linkActive .linkLabel { color: var(--accent-4); }
+.linkItem:nth-child(5) .link.linkActive .linkLabel { color: var(--accent-1); }
+.linkItem:nth-child(6) .link.linkActive .linkLabel { color: var(--accent-2); }
+.linkItem:nth-child(7) .link.linkActive .linkLabel { color: var(--accent-3); }
 
-.link[data-index="2"].linkActive .linkLabel {
-  color: var(--accent-3);
-  font-weight: 600;
-}
+.linkItem:nth-child(1) .link.linkActive .activeIndicator { background: var(--accent-1); }
+.linkItem:nth-child(2) .link.linkActive .activeIndicator { background: var(--accent-2); }
+.linkItem:nth-child(3) .link.linkActive .activeIndicator { background: var(--accent-3); }
+.linkItem:nth-child(4) .link.linkActive .activeIndicator { background: var(--accent-4); }
+.linkItem:nth-child(5) .link.linkActive .activeIndicator { background: var(--accent-1); }
+.linkItem:nth-child(6) .link.linkActive .activeIndicator { background: var(--accent-2); }
+.linkItem:nth-child(7) .link.linkActive .activeIndicator { background: var(--accent-3); }
 
-.link[data-index="3"].linkActive .linkLabel {
-  color: var(--accent-4);
-  font-weight: 600;
-}
-
-.link[data-index="4"].linkActive .linkLabel {
-  color: var(--accent-1);
-  font-weight: 600;
-}
-
-.link[data-index="5"].linkActive .linkLabel {
-  color: var(--accent-2);
-  font-weight: 600;
-}
-
-.link[data-index="6"].linkActive .linkLabel {
-  color: var(--accent-3);
-  font-weight: 600;
-}
-
-/* Active architectural line - always visible */
-.linkActive .architectLine {
-  opacity: 0.8;
+.linkActive .activeIndicator {
+  opacity: 0.95;
   transform: translateX(-50%) scaleX(1);
+}
+
+/* ==================== FOCUS STYLES ==================== */
+.link:focus-visible {
+  outline: 2px solid var(--accent-1);
+  outline-offset: 2px;
 }
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 1024px) {
-  .linkList {
-    gap: clamp(0.125rem, 0.5vw, 0.25rem);
-    height: 65px;
-  }
-
-  .link {
-    padding: 8px 12px;
-    gap: 6px;
-  }
-
-  .linkIcon {
-    width: 34px;
-    height: 34px;
-  }
-
-  .linkLabel {
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-  }
-
   .navContent {
-    padding: 0 1rem;
-    padding-right: 80px;
+    padding: 0 1.5rem;
+  }
+
+  .glassContainer {
+    padding: 0.4rem 0.75rem;
   }
 
   .linkList {
-    height: 60px;
     gap: 0.125rem;
   }
 
   .link {
-    padding: 6px 10px;
-    gap: 6px;
+    padding: 0.5rem 0.875rem;
+    gap: 0.4rem;
   }
 
-  .linkIcon {
-    width: 32px;
-    height: 32px;
-  }
-
-  .linkLabel {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .linkList {
-    justify-content: space-between;
-    height: 56px;
-  }
-
-  .link {
-    padding: 6px 8px;
-    gap: 4px;
-  }
-
-  .linkIcon {
+  .iconWrapper {
     width: 30px;
     height: 30px;
   }
 
   .linkLabel {
-    font-size: 0.85rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navContent {
+    padding: 0 1rem;
   }
 
-  .architectLine {
-    height: 2px;
-    bottom: -1px;
+  .glassContainer {
+    padding: 0.35rem 0.5rem;
+    border-radius: 20px;
+  }
+
+  .linkList {
+    gap: 0;
+  }
+
+  .link {
+    padding: 0.5rem 0.75rem;
+    gap: 0.375rem;
+    border-radius: 14px;
+  }
+
+  .iconWrapper {
+    width: 28px;
+    height: 28px;
+  }
+
+  .linkLabel {
+    font-size: 0.8125rem;
+  }
+
+  .link::before {
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0.75rem 0;
+  }
+
+  .glassContainer {
+    padding: 0.3rem 0.4rem;
+    border-radius: 18px;
+  }
+
+  .link {
+    padding: 0.4rem 0.625rem;
+    gap: 0.3rem;
+    border-radius: 12px;
+  }
+
+  .iconWrapper {
+    width: 26px;
+    height: 26px;
+  }
+
+  .linkLabel {
+    font-size: 0.75rem;
+  }
+
+  .activeIndicator {
+    height: 1.5px;
   }
 }
 
 @media (max-width: 480px) {
   .navContent {
     padding: 0 0.5rem;
-    padding-right: 70px;
   }
 
-  .linkList {
-    height: 52px;
-    gap: 0;
+  .glassContainer {
+    padding: 0.25rem 0.3rem;
   }
 
   .link {
-    padding: 5px 6px;
-    gap: 4px;
+    padding: 0.375rem 0.5rem;
+    gap: 0.25rem;
   }
 
-  .linkIcon {
-    width: 28px;
-    height: 28px;
+  .iconWrapper {
+    width: 24px;
+    height: 24px;
   }
 
   .linkLabel {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
   }
 }

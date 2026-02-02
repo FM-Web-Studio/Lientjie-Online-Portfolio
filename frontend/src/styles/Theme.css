@@ -28,31 +28,30 @@
 
 
     /* Accent Colors */
-    /* LIGHT (vivid architectural indigo) */
-    --accent-1-light: #5b5cff; /* electric indigo */
-    --accent-2-light: #4a4fff; /* strong blue-indigo */
-    --accent-3-light: #6f74ff; /* lighter, airy indigo */
-    --accent-4-light: #3f44d9; /* deep accent indigo */
+    /* LIGHT (soft pink gradient tones) */
+    --accent-1-light: #e08cab; /* muted rose */
+    --accent-2-light: #d97398; /* medium rose */
+    --accent-3-light: #c95f86; /* deeper pink */
+    --accent-4-light: #b74c75; /* rich rose */
 
-    /* DARK (richer, dramatic indigo) */
-    --accent-1-dark: #4a4ed6;
-    --accent-2-dark: #3b3fb8;
-    --accent-3-dark: #5a5fd9;
-    --accent-4-dark: #2f338f;
+    /* DARK (richer pinks for dark mode) */
+    --accent-1-dark: #e6a9c3;
+    --accent-2-dark: #d98fb2;
+    --accent-3-dark: #c5749f;
+    --accent-4-dark: #a85686;
 
-
-    /* Accent Background Colors (same color, transparent) */
+    /* Accent Background Colors (transparent) */
     /* LIGHT */
-    --accent-1-background-light: #5b5cff2a;
-    --accent-2-background-light: #4a4fff2a;
-    --accent-3-background-light: #6f74ff2a;
-    --accent-4-background-light: #3f44d92a;
+    --accent-1-background-light: #e08cab2a;
+    --accent-2-background-light: #d973982a;
+    --accent-3-background-light: #c95f862a;
+    --accent-4-background-light: #b74c752a;
 
     /* DARK */
-    --accent-1-background-dark: #4a4ed62a;
-    --accent-2-background-dark: #3b3fb82a;
-    --accent-3-background-dark: #5a5fd92a;
-    --accent-4-background-dark: #2f338f2a;
+    --accent-1-background-dark: #e6a9c32a;
+    --accent-2-background-dark: #d98fb22a;
+    --accent-3-background-dark: #c5749f2a;
+    --accent-4-background-dark: #a856862a;
 
 
     /* ==================== BACKGROUND COLORS ==================== */

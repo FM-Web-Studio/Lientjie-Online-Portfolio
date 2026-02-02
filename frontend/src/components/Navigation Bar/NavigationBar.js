@@ -10,7 +10,7 @@ const NavigationBar = ({
 }) => {
   const [hoveredLink, setHoveredLink] = useState(null);
 
-  // Architecture-themed icons
+  // Icons mapping
   const ICONS = [Home, User, Briefcase, Mail, FileText, Info, Settings];
 
   const handleLinkClick = (link, index) => {
@@ -28,41 +28,34 @@ const NavigationBar = ({
   return (
     <nav className={`${styles.navbar} ${className}`}>
       <div className={styles.navContent}>
-        <ul className={styles.linkList}>
-          {links && links.slice(0, 7).map((link, index) => {
-            const Icon = ICONS[index] || Home;
-            const isHovered = hoveredLink === index;
-            const active = isActive(link, index);
-            
-            return (
-              <li key={`nav-${index}`} className={styles.linkItem}>
-                <div
-                  className={`${styles.link} ${isHovered ? styles.linkHovered : ''} ${active ? styles.linkActive : ''}`}
-                  onClick={() => handleLinkClick(link, index)}
-                  onMouseEnter={() => setHoveredLink(index)}
-                  onMouseLeave={() => setHoveredLink(null)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleLinkClick(link, index);
-                    }
-                  }}
-                  data-index={index}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  <div className={styles.linkIcon}>
-                    <Icon size={20} strokeWidth={2} />
-                  </div>
-                  <span className={styles.linkLabel}>{link.label}</span>
-                  {/* Architectural line underline */}
-                  <div className={styles.architectLine}></div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        <div className={styles.glassContainer}>
+          <ul className={styles.linkList}>
+            {links && links.slice(0, 7).map((link, index) => {
+              const Icon = ICONS[index] || Home;
+              const isHovered = hoveredLink === index;
+              const active = isActive(link, index);
+              
+              return (
+                <li key={`nav-${index}`} className={styles.linkItem}>
+                  <button
+                    className={`${styles.link} ${isHovered ? styles.linkHovered : ''} ${active ? styles.linkActive : ''}`}
+                    onClick={() => handleLinkClick(link, index)}
+                    onMouseEnter={() => setHoveredLink(index)}
+                    onMouseLeave={() => setHoveredLink(null)}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    <div className={styles.iconWrapper}>
+                      <Icon size={18} strokeWidth={2.5} />
+                    </div>
+                    <span className={styles.linkLabel}>{link.label}</span>
+                    <div className={styles.activeIndicator}></div>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          <div className={styles.liquidEffect}></div>
+        </div>
       </div>
     </nav>
   );
