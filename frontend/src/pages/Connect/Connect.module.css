@@ -1,0 +1,374 @@
+/* ==================== CONTAINER ==================== */
+.connectContainer {
+  position: relative;
+  min-height: 100vh;
+  height: 100vh;
+  padding: 0;
+  background: var(--background-1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ==================== HERO SECTION ==================== */
+.hero {
+  position: relative;
+  padding: 5rem 2rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--background-2), var(--background-1));
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.mainTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  color: var(--primary-text-color);
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  font-size: 1rem;
+  color: var(--secondary-text-color);
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* ==================== MAIN CONTENT ==================== */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  flex: 1;
+  overflow-y: auto;
+  align-items: start;
+}
+
+/* ==================== SECTIONS ==================== */
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1.25rem;
+  color: var(--primary-text-color);
+}
+
+/* ==================== CONTACT SECTION ==================== */
+.contactSection {
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.contactCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--background-2);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.contactCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.contactCard:hover::before {
+  transform: scaleX(1);
+}
+
+.contactCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent-1);
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.contactCard:hover .iconWrapper {
+  transform: scale(1.1);
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.contactLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--secondary-text-color);
+}
+
+.contactValue {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--primary-text-color);
+  word-break: break-word;
+}
+
+/* ==================== SOCIAL SECTION ==================== */
+.socialSection {
+  width: 100%;
+}
+
+.socialGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.socialCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  background: var(--background-2);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.socialCard::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.socialCard:hover::after {
+  transform: scaleX(1);
+}
+
+.socialCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent-1);
+}
+
+.socialHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.socialPlatform {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-text-color);
+}
+
+.externalIcon {
+  color: var(--secondary-text-color);
+  transition: all 0.3s ease;
+}
+
+.socialCard:hover .externalIcon {
+  color: var(--accent-1);
+  transform: translate(2px, -2px);
+}
+
+.socialUsername {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-1);
+  margin: 0 0 0.25rem;
+}
+
+.socialDescription {
+  font-size: 0.85rem;
+  color: var(--secondary-text-color);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ==================== AVAILABILITY SECTION ==================== */
+.availabilitySection {
+  width: 100%;
+}
+
+.availabilityCard {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--accent-1-background), var(--accent-2-background));
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.availabilityTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: var(--primary-text-color);
+}
+
+.availabilityText {
+  font-size: 0.95rem;
+  color: var(--secondary-text-color);
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
+}
+
+.availabilityNote {
+  font-size: 0.85rem;
+  color: var(--secondary-text-color);
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+  
+  .contactGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .socialGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .connectContainer {
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .hero {
+    padding: 5rem 1.5rem 2rem;
+  }
+
+  .mainTitle {
+    font-size: 2rem;
+  }
+
+  .tagline {
+    font-size: 0.95rem;
+  }
+
+  .content {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .contactGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .contactCard {
+    padding: 1.25rem;
+  }
+
+  .iconWrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  .socialGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .availabilityCard {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 5rem 1rem 2rem;
+  }
+
+  .mainTitle {
+    font-size: 2rem;
+  }
+
+  .tagline {
+    font-size: 1rem;
+  }
+
+  .content {
+    padding: 2.5rem 1rem;
+    gap: 3rem;
+  }
+
+  .contactCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .contactValue {
+    font-size: 0.95rem;
+  }
+
+  .socialCard {
+    padding: 1.5rem;
+  }
+
+  .availabilityCard {
+    padding: 1.75rem;
+  }
+
+  .availabilityTitle {
+    font-size: 1.25rem;
+  }
+}

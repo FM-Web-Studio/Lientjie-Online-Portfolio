@@ -1,14 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Ruler, PencilRuler } from 'lucide-react';
+import { Paintbrush, PaintbrushVertical } from 'lucide-react';
+
+// ============================================
+// IMPORTS - STYLING
+// ============================================
 
 import styles from './ReduceAnimationsSwitch.module.css';
 import '../../styles/Theme.css';
 import '../../styles/Components.css';
 import '../../styles/Wrappers.css';
 
+// ============================================
+// CONSTANTS
+// ============================================
+
 const STORAGE_KEY = 'reduceAnimations';
 
+// ============================================
+// REDUCE ANIMATIONS SWITCH COMPONENT
+// ============================================
+// Toggle switch for enabling/disabling animations
+// Persists preference to localStorage and applies to DOM
+
 const ReduceAnimationsSwitch = ({ size = 22 }) => {
+  // ----------------------------------------
+  // State Management
+  // ----------------------------------------
+  
   const [enabled, setEnabled] = useState(() => {
     try {
       return localStorage.getItem(STORAGE_KEY) === 'true';
@@ -17,6 +35,11 @@ const ReduceAnimationsSwitch = ({ size = 22 }) => {
     }
   });
 
+  // ----------------------------------------
+  // Effects
+  // ----------------------------------------
+  // Apply animation preference to DOM and persist to storage
+  
   useEffect(() => {
     const root = document.documentElement;
     if (enabled) {
@@ -29,11 +52,19 @@ const ReduceAnimationsSwitch = ({ size = 22 }) => {
     } catch (e) {}
   }, [enabled]);
 
+  // ----------------------------------------
+  // Event Handlers
+  // ----------------------------------------
+  
   const toggle = () => setEnabled((v) => !v);
 
+  // ----------------------------------------
+  // Render
+  // ----------------------------------------
+  
   return (
     <button
-      className={`${styles.architectSwitch} ${enabled ? styles.active : ''}`}
+      className={`${styles.artistSwitch} ${enabled ? styles.active : ''}`}
       onClick={toggle}
       role="switch"
       aria-checked={enabled}
@@ -41,15 +72,15 @@ const ReduceAnimationsSwitch = ({ size = 22 }) => {
       type="button"
     >
       <div className={styles.canvas}>
-        <div className={styles.gridLines}></div>
-        <div className={styles.rulerThumb}>
+        <div className={styles.paintTrail}></div>
+        <div className={styles.brushThumb}>
           {enabled ? (
-            <PencilRuler size={16} strokeWidth={2.5} />
+            <PaintbrushVertical size={16} strokeWidth={2.5} />
           ) : (
-            <Ruler size={16} strokeWidth={2.5} />
+            <Paintbrush size={16} strokeWidth={2.5} />
           )}
         </div>
-        <div className={styles.blueprintDots}>
+        <div className={styles.splatterEffect}>
           <span className={styles.dot}></span>
           <span className={styles.dot}></span>
           <span className={styles.dot}></span>
@@ -58,5 +89,9 @@ const ReduceAnimationsSwitch = ({ size = 22 }) => {
     </button>
   );
 };
+
+// ============================================
+// EXPORTS
+// ============================================
 
 export default ReduceAnimationsSwitch;
