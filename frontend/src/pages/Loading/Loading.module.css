@@ -8,6 +8,7 @@
   background: var(--background-1);
   overflow: hidden;
   z-index: 9999;
+  overscroll-behavior: none;
 }
 
 /* ==================== ORBS BACKGROUND ==================== */
@@ -23,6 +24,7 @@
   border-radius: 50%;
   filter: blur(100px);
   opacity: 0.12;
+  will-change: transform;
 }
 
 .orb[data-position="top-left"] {
@@ -80,18 +82,18 @@
 .loadingCard {
   position: relative;
   z-index: 10;
-  width: min(500px, calc(100vw - 40px));
+  width: min(550px, calc(100vw - 2rem));
   background: var(--background-1);
-  border: 1px solid var(--background-3);
-  border-radius: 24px;
-  padding: 56px 40px;
+  border: 1px solid var(--border-color);
+  border-radius: clamp(20px, 3vw, 24px);
+  padding: clamp(2.5rem, 6vw, 3.5rem) clamp(1.5rem, 5vw, 2.5rem);
   box-shadow: 
     0 24px 64px rgba(0, 0, 0, 0.12),
-    0 0 0 1px var(--background-3);
+    0 0 0 1px var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 36px;
+  gap: clamp(1.75rem, 4vw, 2.25rem);
   animation: cardEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
 }
@@ -107,14 +109,13 @@
   }
 }
 
-/* Top gradient line */
 .loadingCard::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 3px;
   background: linear-gradient(
     90deg,
     var(--accent-1) 0%,
@@ -123,11 +124,11 @@
   );
 }
 
-/* ==================== GEOMETRIC LOADER ==================== */
+/* ==================== ARCHITECTURAL LOADER ==================== */
 .loaderWrapper {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: clamp(120px, 20vw, 150px);
+  height: clamp(120px, 20vw, 150px);
   animation: fadeIn 0.8s ease-out 0.2s backwards;
 }
 
@@ -136,7 +137,7 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-.geometricLoader {
+.architecturalLoader {
   position: relative;
   width: 100%;
   height: 100%;
@@ -145,61 +146,133 @@
   justify-content: center;
 }
 
-.ring {
+.blueprintGrid {
   position: absolute;
-  border-radius: 50%;
-  border: 3px solid transparent;
+  inset: 0;
+  background-image: 
+    linear-gradient(var(--accent-1) 1px, transparent 1px),
+    linear-gradient(90deg, var(--accent-1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.1;
+  border-radius: 8px;
+  animation: gridPulse 3s ease-in-out infinite;
 }
 
-.ring[data-ring="1"] {
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.15; }
+}
+
+.toolsContainer {
+  position: relative;
   width: 100%;
   height: 100%;
-  border-top-color: var(--accent-1);
-  border-right-color: var(--accent-1);
-  animation: ringRotate 2.5s linear infinite;
+  animation: toolsRotate 12s linear infinite;
 }
 
-.ring[data-ring="2"] {
-  width: 75%;
-  height: 75%;
-  border-bottom-color: var(--accent-2);
-  border-left-color: var(--accent-2);
-  animation: ringRotate 2s linear infinite reverse;
-}
-
-.ring[data-ring="3"] {
-  width: 50%;
-  height: 50%;
-  border-top-color: var(--accent-3);
-  border-right-color: var(--accent-3);
-  animation: ringRotate 1.5s linear infinite;
-}
-
-@keyframes ringRotate {
+@keyframes toolsRotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-.centerDot {
+.tool {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
-  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-text-color);
+  opacity: 0.7;
+  will-change: transform;
+}
+
+.tool[data-tool="1"] {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: toolFloat 3s ease-in-out infinite;
+  color: var(--accent-1);
+}
+
+.tool[data-tool="2"] {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: toolFloat 3s ease-in-out infinite;
+  animation-delay: 1s;
+  color: var(--accent-2);
+}
+
+.tool[data-tool="3"] {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  animation: toolFloat 3s ease-in-out infinite;
+  animation-delay: 2s;
+  color: var(--accent-3);
+}
+
+@keyframes toolFloat {
+  0%, 100% { 
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  50% { 
+    transform: translateX(-50%) translateY(-8px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+.tool[data-tool="2"] {
+  animation-name: toolFloatAlt;
+}
+
+@keyframes toolFloatAlt {
+  0%, 100% { 
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  50% { 
+    transform: translateX(-50%) translateY(8px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+.tool[data-tool="3"] {
+  animation-name: toolFloatSide;
+}
+
+@keyframes toolFloatSide {
+  0%, 100% { 
+    transform: translateY(-50%) translateX(0) scale(1);
+    opacity: 0.7;
+  }
+  50% { 
+    transform: translateY(-50%) translateX(-8px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+.centerPulse {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  border-radius: 4px;
+  transform: rotate(45deg);
   box-shadow: 
     0 0 20px var(--accent-1-background),
     0 0 40px var(--accent-2-background);
-  animation: dotPulse 2s ease-in-out infinite;
+  animation: centerRotate 4s ease-in-out infinite;
 }
 
-@keyframes dotPulse {
+@keyframes centerRotate {
   0%, 100% {
-    transform: scale(1);
+    transform: rotate(45deg) scale(1);
     opacity: 1;
   }
   50% {
-    transform: scale(1.3);
-    opacity: 0.7;
+    transform: rotate(225deg) scale(1.2);
+    opacity: 0.8;
   }
 }
 
@@ -208,24 +281,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   text-align: center;
   animation: fadeIn 0.8s ease-out 0.4s backwards;
 }
 
 .message {
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
   font-weight: 700;
-  color: var(--primary-text-color);
+  color: var(--accent-1);
   margin: 0;
   letter-spacing: -0.02em;
-  min-height: 2.5rem;
+  min-height: clamp(2rem, 4vw, 2.5rem);
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .subMessage {
-  font-size: clamp(0.95rem, 2vw, 1.05rem);
-  color: var(--primary-text-color);
-  opacity: 0.6;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  color: var(--disabled-color);
   margin: 0;
   font-weight: 400;
 }
@@ -235,14 +308,14 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: clamp(0.75rem, 2vw, 1rem);
   animation: fadeIn 0.8s ease-out 0.6s backwards;
 }
 
 .progressBar {
   position: relative;
   width: 100%;
-  height: 8px;
+  height: clamp(6px, 1.5vw, 8px);
   background: var(--background-3);
   border-radius: 999px;
   overflow: hidden;
@@ -287,56 +360,93 @@
 }
 
 .progressPercent {
-  font-size: 0.95rem;
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
   font-weight: 600;
   color: var(--accent-2);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
 
-/* ==================== PARTICLES ==================== */
-.particles {
+/* ==================== QUOTE SECTION - GUARANTEED VISIBLE ==================== */
+.quoteSection {
+  width: 100%;
+  padding: 2rem 1rem 0.5rem;
+  border-top: 2px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.quoteText {
+  font-size: clamp(1rem, 2.2vw, 1.125rem);
+  font-style: italic;
+  line-height: 1.8;
+  margin: 0;
+  padding: 0;
+  max-width: 500px;
+  font-weight: 500;
+  color: #000000;
+}
+
+[data-theme="dark"] .quoteText {
+  color: #FFFFFF;
+}
+
+.quoteAuthor {
+  font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin: 0;
+  padding: 0;
+  color: #333333;
+}
+
+[data-theme="dark"] .quoteAuthor {
+  color: #DDDDDD;
+}
+
+/* ==================== BLUEPRINT LINES ==================== */
+.blueprintLines {
   position: absolute;
-  bottom: 20px;
+  bottom: 0;
   left: 0;
   right: 0;
-  height: 40px;
+  height: 60px;
   pointer-events: none;
+  overflow: hidden;
 }
 
-.particle {
+.blueprintLine {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background: var(--accent-1);
-  border-radius: 50%;
-  opacity: 0;
-  animation: particleFloat 3s ease-in-out infinite;
+  bottom: 0;
+  width: 2px;
+  height: 0;
+  background: linear-gradient(to top, var(--accent-1), transparent);
+  opacity: 0.4;
+  animation: blueprintRise 2.5s ease-out infinite;
 }
 
-.particle:nth-child(2n) {
-  background: var(--accent-2);
+.blueprintLine:nth-child(2n) {
+  background: linear-gradient(to top, var(--accent-2), transparent);
 }
 
-.particle:nth-child(3n) {
-  background: var(--accent-3);
+.blueprintLine:nth-child(3n) {
+  background: linear-gradient(to top, var(--accent-3), transparent);
 }
 
-@keyframes particleFloat {
+@keyframes blueprintRise {
   0% {
-    transform: translateY(0) scale(0);
+    height: 0;
     opacity: 0;
   }
   20% {
-    opacity: 0.8;
-    transform: translateY(-10px) scale(1);
-  }
-  80% {
-    opacity: 0.8;
-    transform: translateY(-30px) scale(1);
+    opacity: 0.4;
   }
   100% {
-    transform: translateY(-40px) scale(0);
+    height: 60px;
     opacity: 0;
   }
 }
@@ -351,12 +461,12 @@
 
 .accent {
   position: absolute;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  width: clamp(60px, 12vw, 80px);
+  height: clamp(60px, 12vw, 80px);
   opacity: 0.15;
   filter: blur(40px);
   animation: accentFloat 8s ease-in-out infinite;
+  will-change: transform;
 }
 
 .accent[data-accent="1"] {
@@ -381,7 +491,7 @@
 }
 
 .accent[data-accent="4"] {
-  background: radial-gradient(circle, var(--accent-4), transparent);
+  background: radial-gradient(circle, var(--accent-1), transparent);
   bottom: 18%;
   right: 12%;
   animation-delay: 6s;
@@ -398,36 +508,15 @@
   }
 }
 
-/* ==================== RESPONSIVE ==================== */
-@media (max-width: 768px) {
-  .loadingCard {
-    padding: 48px 32px;
-    gap: 32px;
-  }
+/* ==================== RESPONSIVE - MOBILE FIRST ==================== */
 
-  .loaderWrapper {
-    width: 120px;
-    height: 120px;
-  }
-
-  .centerDot {
-    width: 16px;
-    height: 16px;
-  }
-
-  .message {
-    font-size: 1.5rem;
-  }
-
-  .subMessage {
-    font-size: 0.95rem;
-  }
-}
-
+/* Small Mobile (320px - 480px) */
 @media (max-width: 480px) {
   .loadingCard {
-    padding: 40px 24px;
-    gap: 28px;
+    width: calc(100vw - 1.5rem);
+    padding: 2rem 1.25rem;
+    gap: 1.5rem;
+    border-radius: 20px;
   }
 
   .loaderWrapper {
@@ -435,30 +524,72 @@
     height: 100px;
   }
 
-  .ring {
-    border-width: 2px;
+  .tool svg {
+    width: 20px;
+    height: 20px;
   }
 
-  .centerDot {
-    width: 14px;
-    height: 14px;
+  .centerPulse {
+    width: 18px;
+    height: 18px;
   }
 
   .message {
-    font-size: 1.25rem;
-    min-height: 2rem;
+    font-size: 1.125rem;
+    min-height: 1.75rem;
   }
 
   .subMessage {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
 
   .progressBar {
     height: 6px;
   }
 
-  .progressPercent {
+  .quoteSection {
+    padding: 1.5rem 1rem 0.5rem;
+  }
+
+  .quoteText {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .quoteAuthor {
     font-size: 0.875rem;
+  }
+}
+
+/* Tablet Portrait (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .loadingCard {
+    padding: 2.75rem 2rem;
+    gap: 2rem;
+  }
+
+  .loaderWrapper {
+    width: 130px;
+    height: 130px;
+  }
+}
+
+/* Tablet Landscape & Desktop (769px+) */
+@media (min-width: 769px) {
+  .loaderWrapper {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/* ==================== TOUCH DEVICE OPTIMIZATIONS ==================== */
+@media (hover: none) and (pointer: coarse) {
+  .toolsContainer {
+    animation-duration: 15s;
+  }
+  
+  .accent {
+    filter: blur(30px);
   }
 }
 
@@ -468,11 +599,65 @@
   transition: none !important;
 }
 
-[data-no-animations="true"] .ring {
+[data-no-animations="true"] .toolsContainer {
   animation: none !important;
-  opacity: 0.5;
+}
+
+[data-no-animations="true"] .tool {
+  opacity: 0.5 !important;
+}
+
+[data-no-animations="true"] .centerPulse {
+  transform: rotate(45deg) !important;
+  animation: none !important;
 }
 
 [data-no-animations="true"] .progressGlow {
   display: none;
+}
+
+/* ==================== DARK MODE REFINEMENTS ==================== */
+[data-theme="dark"] .loadingCard {
+  background: var(--background-1);
+  border-color: var(--border-color);
+  box-shadow: 
+    0 24px 64px rgba(0, 0, 0, 0.3),
+    0 0 0 1px var(--border-color);
+}
+
+[data-theme="dark"] .blueprintGrid {
+  opacity: 0.12;
+}
+
+[data-theme="dark"] .progressBar {
+  background: var(--background-4);
+}
+
+[data-theme="dark"] .quoteSection {
+  border-top-color: var(--border-color);
+}
+
+/* ==================== SAFE AREA INSETS FOR MOBILE ==================== */
+@supports (padding: max(0px)) {
+  .loadingCard {
+    margin-left: max(1rem, env(safe-area-inset-left));
+    margin-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* ==================== REDUCED MOTION SUPPORT ==================== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .toolsContainer {
+    animation: none !important;
+  }
+  
+  .progressGlow {
+    animation: none !important;
+  }
 }

@@ -1,18 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
-import { FaHome, FaCompass, FaPalette } from 'react-icons/fa';
+import { Home, ArrowLeft } from 'lucide-react';
+import quotesData from '../../information/quotes.json';
+
+// ============================================
+// IMPORTS - STYLING
+// ============================================
+
 import styles from './NotFound.module.css';
 
+// ============================================
+// NOT FOUND COMPONENT
+// ============================================
+// 404 error page with navigation options
+// and rotating architectural quotes
+
 const NotFound = () => {
+  // ----------------------------------------
+  // Hooks & State
+  // ----------------------------------------
+  
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
+  const [currentQuote, setCurrentQuote] = useState(0);
+  const [quoteVisible, setQuoteVisible] = useState(true);
 
+  // ----------------------------------------
+  // Effects
+  // ----------------------------------------
+  // Trigger entrance animation
+  
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
+  // Rotate quotes every 8 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteVisible(false);
+      
+      setTimeout(() => {
+        setCurrentQuote((prev) => (prev + 1) % quotesData.length);
+        setQuoteVisible(true);
+      }, 500);
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // ----------------------------------------
+  // Render
+  // ----------------------------------------
+  
   return (
     <div className={styles.container} data-theme={theme}>
       {/* Background Gradient Orbs */}
@@ -36,8 +77,8 @@ const NotFound = () => {
           {/* Title & Message */}
           <h1 className={styles.title}>Page Not Found</h1>
           <p className={styles.message}>
-            Oops! The page you're looking for seems to have wandered off the canvas.
-            Let's get you back on track.
+            The structure you're looking for seems to have been demolished.
+            Let's navigate you back to solid ground.
           </p>
 
           {/* Action Buttons */}
@@ -46,39 +87,51 @@ const NotFound = () => {
               onClick={() => navigate('/')} 
               className={styles.btnPrimary}
             >
-              <FaHome />
+              <Home size={20} />
               <span>Go Home</span>
             </button>
             <button 
               onClick={() => navigate(-1)} 
               className={styles.btnSecondary}
             >
-              <FaCompass />
+              <ArrowLeft size={20} />
               <span>Go Back</span>
             </button>
           </div>
 
-          {/* Quick Links */}
-          <div className={styles.quickLinks}>
-            <p className={styles.quickLinksTitle}>Or explore:</p>
-            <div className={styles.links}>
-              <a href="/bio" className={styles.link}>
-                <span>About Me</span>
-              </a>
-              <a href="/gallery" className={styles.link}>
-                <FaPalette />
-                <span>Gallery</span>
-              </a>
-              <a href="/connect" className={styles.link}>
-                <span>Connect</span>
-              </a>
+          {/* Quote Block */}
+          <div className={styles.quoteSection}>
+            <div className={`${styles.quoteContainer} ${quoteVisible ? styles.quoteVisible : ''}`}>
+              <div className={styles.quoteIcon}>"</div>
+              <blockquote className={styles.quote}>
+                {quotesData[currentQuote].quote}
+              </blockquote>
+              <cite className={styles.author}>— {quotesData[currentQuote].artist}</cite>
+            </div>
+            
+            {/* Quote navigation dots */}
+            <div className={styles.quoteDots}>
+              {quotesData.map((_, index) => (
+                <button
+                  key={index}
+                  className={`${styles.dot} ${index === currentQuote ? styles.dotActive : ''}`}
+                  onClick={() => {
+                    setQuoteVisible(false);
+                    setTimeout(() => {
+                      setCurrentQuote(index);
+                      setQuoteVisible(true);
+                    }, 300);
+                  }}
+                  aria-label={`Go to quote ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
 
         </div>
       </div>
 
-      {/* Floating Elements */}
+      {/* Floating Geometric Shapes */}
       <div className={styles.floatingShapes} aria-hidden="true">
         <div className={styles.shape} data-shape="1"></div>
         <div className={styles.shape} data-shape="2"></div>
@@ -87,5 +140,9 @@ const NotFound = () => {
     </div>
   );
 };
+
+// ============================================
+// EXPORTS
+// ============================================
 
 export default NotFound;

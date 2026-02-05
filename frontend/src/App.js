@@ -1,55 +1,101 @@
+/* ============================================================================
+ * APP - MAIN APPLICATION COMPONENT
+ * ============================================================================
+ * Root component managing routing, layout, and theme
+ * ============================================================================
+ */
+
 import React, { Suspense, useCallback, useMemo } from 'react';
 import { Routes, Route, useNavigate, Outlet } from 'react-router-dom';
+
+/* ========================================
+ * IMPORTS - Pages
+ * ======================================== */
 import { NotFound, Loading } from './pages';
+
+/* ========================================
+ * IMPORTS - Components
+ * ======================================== */
 import { NavigationBar, Settings } from './components';
+
+/* ========================================
+ * IMPORTS - Hooks
+ * ======================================== */
 import { useTheme } from './hooks';
 
-/* Styling */
+/* ========================================
+ * IMPORTS - Styling
+ * ======================================== */
 import styles from './App.module.css';
 
-// ============================================================================
-// EAGER LOADED COMPONENTS
-// ============================================================================
+/* ============================================================================
+ * LAZY LOADED COMPONENTS
+ * ============================================================================
+ * Pages are lazy loaded to improve initial bundle size and performance
+ * ============================================================================
+ */
 const Home = React.lazy(() => import('./pages/Home'));
 const Bio = React.lazy(() => import('./pages/Bio'));
-const Connect = React.lazy(() => import('./pages/Connect'));
+const Projects = React.lazy(() => import('./pages/Projects'));
+const Contact = React.lazy(() => import('./pages/Contact'));
 
-// ============================================================================
-// NAVIGATION STRUCTURE
-// ============================================================================
+/* ============================================================================
+ * NAVIGATION STRUCTURE
+ * ============================================================================
+ * Define all navigation routes and labels in one place
+ * ============================================================================
+ */
 const NAVIGATION_PAGES = [
-  {
-    label: 'Home',
-    to: '/'
-  },
-  {
-    label: 'Bio',
-    to: '/bio'
-  },
-  {
-    label: 'Connect',
-    to: '/connect'
-  },
+  // {
+  //   label: 'Home',
+  //   to: '/'
+  // },
+  // {
+  //   label: 'Bio',
+  //   to: '/bio'
+  // },
+  // {
+  //   label: 'Projects',
+  //   to: '/projects'
+  // },
+  // {
+  //   label: 'Connect',
+  //   to: '/connect'
+  // },
 ];
 
-// ============================================================================
-// LOADING FALLBACK COMPONENT
-// ============================================================================
+/* ============================================================================
+ * LOADING FALLBACK COMPONENT
+ * ============================================================================
+ * Displayed while lazy-loaded components are being fetched
+ * ============================================================================
+ */
 const LoadingFallback = () => <Loading />;
 
-// ============================================================================
-// APP LAYOUT COMPONENT
-// ============================================================================
+/* ============================================================================
+ * APP LAYOUT COMPONENT
+ * ============================================================================
+ * Main layout wrapper containing navigation, settings, and page content
+ * Uses memoization for optimal performance
+ * ============================================================================
+ */
 const AppLayout = () => {
+  // ========================================
+  // HOOKS
+  // ========================================
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
 
-  // Navigation handlers - memoize to prevent recreation
+  // ========================================
+  // HANDLERS - Memoized for performance
+  // ========================================
   const handleNavigate = useCallback((to) => {
     if (to) navigate(to);
   }, [navigate]);
 
-  // Memoize navigation links to prevent recreation
+  // ========================================
+  // MEMOIZED VALUES
+  // ========================================
   const navigationLinks = useMemo(() => 
     NAVIGATION_PAGES.map(page => ({
       ...page,
@@ -58,22 +104,27 @@ const AppLayout = () => {
     [navigate]
   );
 
+  // ========================================
+  // RENDER
+  // ========================================
   return (
     <div className={styles.app}>
+      {/* Fixed Navigation Bar - Hovers over content */}
       <NavigationBar
         links={navigationLinks}
-        burgerSize={25}
         onNavigate={handleNavigate}
+        className={styles.navigationBar}
       />
-
-      <div>
+      
+      {/* Fixed Settings Button - Top right corner */}
+      <div className={styles.settings}>
         <Settings
           theme={theme}
           toggleTheme={toggleTheme}
-          cogSize={44}
         />
       </div>
-
+      
+      {/* Main Page Content - Full viewport */}
       <div className={styles.pageContent}>
         <Suspense fallback={<LoadingFallback />}>
           <Outlet />
@@ -83,34 +134,52 @@ const AppLayout = () => {
   );
 };
 
-// Memoize AppLayout to prevent unnecessary re-renders
+/* ========================================
+ * MEMOIZED APP LAYOUT
+ * ======================================== */
 const MemoizedAppLayout = React.memo(AppLayout);
 
-// ============================================================================
-// APP CONTENT COMPONENT
-// ============================================================================
+/* ============================================================================
+ * APP CONTENT COMPONENT
+ * ============================================================================
+ * Defines all application routes with lazy-loaded pages
+ * ============================================================================
+ */
 const AppContent = () => {
   return (
     <Routes>
+      {/* Main Layout Route */}
       <Route path="/" element={<MemoizedAppLayout />}>
-        <Route index element={<Home />} />
-        <Route path="/bio" element={<Bio />} />
-        <Route path="/connect" element={<Connect />} />
-
-        {/* 404 Not Found - handle unknown routes inside app layout */}
+        {/* Page Routes */}
+        {/* <Route index element={<Home />} />
+        <Route path="bio" element={<Bio />} />
+        <Route path="projects" element={<Projects />} />
+        <Route path="connect" element={<Contact />} /> */}
+        
+        {/* 404 Not Found - Catch all unknown routes */}
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
 };
 
-// ============================================================================
-// ROOT APP COMPONENT
-// ============================================================================
+/* ============================================================================
+ * ROOT APP COMPONENT
+ * ============================================================================
+ * Root component that wraps the entire application
+ * Initializes theme and provides toast notifications context
+ * ============================================================================
+ */
 const App = () => {
-  // Initialize theme at the root level so it applies to all routes
+  // ========================================
+  // INITIALIZATION
+  // ========================================
+  // Initialize theme at root level for global application
   useTheme();
 
+  // ========================================
+  // RENDER
+  // ========================================
   return (
     <AppContent />
   );

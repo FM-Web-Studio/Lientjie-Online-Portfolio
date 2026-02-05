@@ -1,32 +1,49 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Settings as SettingsIcon, Palette, Maximize2 } from 'lucide-react';
+import { createPortal } from "react-dom";
+import { Settings as SettingsIcon, Palette, Clock } from 'lucide-react';
 import ThemeSwitch from '../Theme Switch';
 import ReduceAnimationsSwitch from '../Reduce Animations Switch';
 
-/* Styling */
+// ============================================
+// IMPORTS - STYLING
+// ============================================
+
 import styles from "./Settings.module.css";
 import '../../styles/Theme.css';
 import '../../styles/Components.css';
 import '../../styles/Wrappers.css';
 
-/**
- * Settings component with floating cog icon
- * Features morphing panel with liquid glass effect
- */
+// ============================================
+// SETTINGS COMPONENT
+// ============================================
+// Floating settings panel with liquid glass effect
+
 const Settings = function Settings({ 
   theme,
   toggleTheme,
   cogSize = 50,
   className = ""
 }) {
+  // ----------------------------------------
+  // State & Refs
+  // ----------------------------------------
+  
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredSetting, setHoveredSetting] = useState(null);
   const containerRef = useRef();
 
+  // ----------------------------------------
+  // Event Handlers
+  // ----------------------------------------
+  
   const handleCogClick = () => {
     setMenuOpen(prev => !prev);
   };
 
+  // ----------------------------------------
+  // Effects
+  // ----------------------------------------
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -56,6 +73,11 @@ const Settings = function Settings({
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
 
+  // ----------------------------------------
+  // Render
+  // ----------------------------------------
+  const cogIconSize = Math.max(16, Math.round(cogSize * 0.6));
+  
   return (
     <div className={`${styles.settingsContainer} ${className}`} ref={containerRef}>
       {/* Floating Cog Button */}
@@ -75,26 +97,19 @@ const Settings = function Settings({
         style={{
           width: cogSize,
           height: cogSize,
+          minWidth: cogSize,
+          minHeight: cogSize,
         }}
       >
-        <SettingsIcon className={styles.cogIcon} />
+        <SettingsIcon size={cogIconSize} className={styles.cogIcon} />
       </div>
 
       {/* Settings Panel */}
       {menuOpen && (
-        <div className={styles.settingsPanel}>
-          {/* Animated gradient background */}
-          <div className={styles.gradientBackground}>
-            <div className={styles.gradientOrb} data-orb="1"></div>
-            <div className={styles.gradientOrb} data-orb="2"></div>
-            <div className={styles.gradientOrb} data-orb="3"></div>
-            <div className={styles.gradientOrb} data-orb="4"></div>
-          </div>
-
+        <div className={`${styles.settingsPanel} ${styles.settingsPanelOpen}`}>
           {/* Settings Header */}
           <div className={styles.panelHeader}>
             <h3 className={styles.panelTitle}>Preferences</h3>
-            <div className={styles.headerAccent}></div>
           </div>
 
           {/* Settings Content */}
@@ -104,13 +119,11 @@ const Settings = function Settings({
               className={`${styles.settingCard} ${hoveredSetting === 0 ? styles.settingCardHovered : ''}`}
               onMouseEnter={() => setHoveredSetting(0)}
               onMouseLeave={() => setHoveredSetting(null)}
-              data-accent="1"
+              data-index={0}
             >
-              <div className={styles.cardGlow}></div>
               <div className={styles.settingMain}>
                 <div className={styles.settingIconBox}>
                   <Palette className={styles.settingIcon} />
-                  <div className={styles.iconPulse}></div>
                 </div>
                 <div className={styles.settingDetails}>
                   <h4 className={styles.settingTitle}>Appearance</h4>
@@ -124,15 +137,6 @@ const Settings = function Settings({
                   size={32}
                 />
               </div>
-              <svg className={styles.cardBrush} viewBox="0 0 200 4" preserveAspectRatio="none">
-                <path 
-                  d="M0,2 Q50,0 100,2 T200,2" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  fill="none"
-                  strokeLinecap="round"
-                />
-              </svg>
             </div>
 
             {/* Animations Setting */}
@@ -140,13 +144,11 @@ const Settings = function Settings({
               className={`${styles.settingCard} ${hoveredSetting === 1 ? styles.settingCardHovered : ''}`}
               onMouseEnter={() => setHoveredSetting(1)}
               onMouseLeave={() => setHoveredSetting(null)}
-              data-accent="2"
+              data-index={1}
             >
-              <div className={styles.cardGlow}></div>
               <div className={styles.settingMain}>
                 <div className={styles.settingIconBox}>
-                  <Maximize2 className={styles.settingIcon} />
-                  <div className={styles.iconPulse}></div>
+                  <Clock className={styles.settingIcon} />
                 </div>
                 <div className={styles.settingDetails}>
                   <h4 className={styles.settingTitle}>Motion</h4>
@@ -156,32 +158,28 @@ const Settings = function Settings({
               <div className={styles.settingAction}>
                 <ReduceAnimationsSwitch size={20} />
               </div>
-              <svg className={styles.cardBrush} viewBox="0 0 200 4" preserveAspectRatio="none">
-                <path 
-                  d="M0,2 Q50,0 100,2 T200,2" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  fill="none"
-                  strokeLinecap="round"
-                />
-              </svg>
             </div>
           </div>
         </div>
       )}
 
       {/* Backdrop overlay */}
-      {menuOpen && (
+      {menuOpen && createPortal(
         <div 
           className={styles.backdrop} 
           onClick={() => {
             setMenuOpen(false);
             setHoveredSetting(null);
           }}
-        />
+        />,
+        document.body
       )}
     </div>
   );
 };
+
+// ============================================
+// EXPORTS
+// ============================================
 
 export default Settings;

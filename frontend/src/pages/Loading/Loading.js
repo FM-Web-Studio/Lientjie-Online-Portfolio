@@ -1,13 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
+import { Building2, Ruler, Compass } from 'lucide-react';
+import quotesData from '../../information/quotes.json';
+
+// ============================================
+// IMPORTS - STYLING
+// ============================================
+
 import styles from './Loading.module.css';
 
-const Loading = ({ message = 'Loading your creative space' }) => {
+// ============================================
+// LOADING COMPONENT
+// ============================================
+// Animated loading screen with progress bar,
+// architectural elements, and rotating quotes
+
+const Loading = ({ message = 'Drafting your architectural experience' }) => {
+  // ----------------------------------------
+  // Hooks & State
+  // ----------------------------------------
+  
   const { theme } = useTheme();
   const [progress, setProgress] = useState(0);
   const [dots, setDots] = useState('');
+  const [currentQuote, setCurrentQuote] = useState(0);
 
-  // Animated dots
+  // ----------------------------------------
+  // Effects
+  // ----------------------------------------
+  // Animated dots for loading message
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setDots(prev => prev.length >= 3 ? '' : prev + '.');
@@ -15,7 +37,7 @@ const Loading = ({ message = 'Loading your creative space' }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Simulate progress
+  // Simulate loading progress
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
@@ -26,6 +48,19 @@ const Loading = ({ message = 'Loading your creative space' }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Rotate quotes every 6 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentQuote((prev) => (prev + 1) % quotesData.length);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // ----------------------------------------
+  // Render
+  // ----------------------------------------
+  
   return (
     <div className={styles.container} data-theme={theme}>
       {/* Gradient orbs background */}
@@ -37,20 +72,34 @@ const Loading = ({ message = 'Loading your creative space' }) => {
 
       {/* Main loading card */}
       <div className={styles.loadingCard}>
-        {/* Geometric loader */}
+        {/* Architectural loader */}
         <div className={styles.loaderWrapper}>
-          <div className={styles.geometricLoader}>
-            <div className={styles.ring} data-ring="1"></div>
-            <div className={styles.ring} data-ring="2"></div>
-            <div className={styles.ring} data-ring="3"></div>
-            <div className={styles.centerDot}></div>
+          <div className={styles.architecturalLoader}>
+            {/* Blueprint grid background */}
+            <div className={styles.blueprintGrid}></div>
+            
+            {/* Rotating architectural tools */}
+            <div className={styles.toolsContainer}>
+              <div className={styles.tool} data-tool="1">
+                <Building2 size={28} strokeWidth={1.5} />
+              </div>
+              <div className={styles.tool} data-tool="2">
+                <Ruler size={24} strokeWidth={1.5} />
+              </div>
+              <div className={styles.tool} data-tool="3">
+                <Compass size={24} strokeWidth={1.5} />
+              </div>
+            </div>
+            
+            {/* Center pulse */}
+            <div className={styles.centerPulse}></div>
           </div>
         </div>
 
         {/* Message text */}
         <div className={styles.messageSection}>
           <h2 className={styles.message}>{message}{dots}</h2>
-          <p className={styles.subMessage}>Please wait while we prepare everything</p>
+          <p className={styles.subMessage}>Preparing your workspace</p>
         </div>
 
         {/* Progress bar */}
@@ -68,22 +117,32 @@ const Loading = ({ message = 'Loading your creative space' }) => {
           </div>
         </div>
 
-        {/* Decorative elements */}
-        <div className={styles.particles}>
-          {[...Array(6)].map((_, i) => (
+        {/* Quote Section - ALWAYS VISIBLE */}
+        <div className={styles.quoteSection}>
+          <p className={styles.quoteText}>
+            "{quotesData[currentQuote].quote}"
+          </p>
+          <p className={styles.quoteAuthor}>
+            — {quotesData[currentQuote].artist}
+          </p>
+        </div>
+
+        {/* Decorative blueprint lines */}
+        <div className={styles.blueprintLines}>
+          {[...Array(4)].map((_, i) => (
             <div 
               key={i} 
-              className={styles.particle}
+              className={styles.blueprintLine}
               style={{
-                left: `${15 + i * 15}%`,
-                animationDelay: `${i * 0.3}s`
+                left: `${20 + i * 20}%`,
+                animationDelay: `${i * 0.4}s`
               }}
             ></div>
           ))}
         </div>
       </div>
 
-      {/* Floating accents */}
+      {/* Floating geometric accents */}
       <div className={styles.floatingAccents}>
         <div className={styles.accent} data-accent="1"></div>
         <div className={styles.accent} data-accent="2"></div>
@@ -93,5 +152,9 @@ const Loading = ({ message = 'Loading your creative space' }) => {
     </div>
   );
 };
+
+// ============================================
+// EXPORTS
+// ============================================
 
 export default Loading;

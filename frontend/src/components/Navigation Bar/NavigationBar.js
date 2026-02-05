@@ -1,64 +1,201 @@
-import React, { useState } from "react";
-import { Home, User, Briefcase, Mail, FileText, Info, Settings } from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react";
+import { Home, UserCircle, Images, Briefcase, Mail, Menu, X } from "lucide-react";
+
+// ============================================
+// IMPORTS - STYLING
+// ============================================
+
 import styles from "./NavigationBar.module.css";
 
-const NavigationBar = ({ 
-  links, 
+// ============================================
+// CONSTANTS
+// ============================================
+
+// Icon set for navigation links
+const ICONS = [Home, UserCircle, Images, Briefcase, Mail];
+
+// ============================================
+// NAVIGATION BAR COMPONENT
+// ============================================
+// Liquid-glass burger menu navigation
+
+const NavigationBar = ({
+  links,
   onNavigate,
   activeTab = null,
+  burgerSize = 50,
   className = ""
 }) => {
+  // ----------------------------------------
+  // State & Refs
+  // ----------------------------------------
+
+  const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState(null);
 
-  // Icons mapping
-  const ICONS = [Home, User, Briefcase, Mail, FileText, Info, Settings];
+  const containerRef = useRef(null);
+
+  // ----------------------------------------
+  // Derived Helpers
+  // ----------------------------------------
+
+  const burgerIconSize = Math.max(18, Math.round(burgerSize * 0.6));
+
+  const isActive = (link, index) => {
+    if (activeTab === null) return false;
+    return activeTab === index || activeTab === link.to;
+  };
+
+  // ----------------------------------------
+  // Event Handlers
+  // ----------------------------------------
+
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setHoveredLink(null);
+  };
 
   const handleLinkClick = (link, index) => {
     if (link.onClick) link.onClick();
     if (link.to) onNavigate(link.to, index);
+    closeMenu();
   };
 
-  const isActive = (link, index) => {
-    if (activeTab !== null) {
-      return activeTab === index || activeTab === link.to;
+  // ----------------------------------------
+  // Effects
+  // ----------------------------------------
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        closeMenu();
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
     }
-    return false;
-  };
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, []);
+
+  // ----------------------------------------
+  // Render
+  // ----------------------------------------
 
   return (
-    <nav className={`${styles.navbar} ${className}`}>
-      <div className={styles.navContent}>
-        <div className={styles.glassContainer}>
-          <ul className={styles.linkList}>
-            {links && links.slice(0, 7).map((link, index) => {
-              const Icon = ICONS[index] || Home;
-              const isHovered = hoveredLink === index;
-              const active = isActive(link, index);
-              
-              return (
-                <li key={`nav-${index}`} className={styles.linkItem}>
-                  <button
-                    className={`${styles.link} ${isHovered ? styles.linkHovered : ''} ${active ? styles.linkActive : ''}`}
-                    onClick={() => handleLinkClick(link, index)}
+    <div className={`${styles.navbarContainer} ${className}`} ref={containerRef}>
+      <nav className={styles.navbar} aria-label="Main navigation">
+        
+        {/* Burger Button */}
+        <button
+          className={`${styles.burger} ${menuOpen ? styles.burgerOpen : ""}`}
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={menuOpen}
+          onClick={toggleMenu}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleMenu();
+            }
+          }}
+          style={{
+            width: burgerSize,
+            height: burgerSize,
+            minWidth: burgerSize,
+            minHeight: burgerSize,
+          }}
+        >
+          {menuOpen ? (
+            <X size={burgerIconSize} className={styles.burgerIcon} />
+          ) : (
+            <Menu size={burgerIconSize} className={styles.burgerIcon} />
+          )}
+        </button>
+
+        {/* Dropdown Menu */}
+        {menuOpen && (
+          <div
+            className={`${styles.menuDropdown} ${styles.menuDropdownOpen}`}
+            role="menu"
+          >
+            <ul className={styles.linkList} role="menubar">
+              {links && links.slice(0, 7).map((link, index) => {
+                const Icon = ICONS[index] || Home;
+                const active = isActive(link, index);
+                const hovered = hoveredLink === index;
+
+                return (
+                  <li
+                    key={`nav-${index}`}
+                    className={styles.linkItem}
+                    role="none"
                     onMouseEnter={() => setHoveredLink(index)}
                     onMouseLeave={() => setHoveredLink(null)}
-                    aria-current={active ? 'page' : undefined}
                   >
-                    <div className={styles.iconWrapper}>
-                      <Icon size={18} strokeWidth={2.5} />
+                    <div
+                      className={[
+                        styles.link,
+                        hovered ? styles.linkHovered : "",
+                        active ? styles.linkActive : "",
+                      ].join(" ")}
+                      onClick={() => handleLinkClick(link, index)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleLinkClick(link, index);
+                        }
+                      }}
+                      role="menuitem"
+                      tabIndex={0}
+                      aria-current={active ? "page" : undefined}
+                      data-index={index}
+                    >
+                      {/* Icon pill */}
+                      <div className={styles.linkIcon}>
+                        <Icon size={20} />
+                      </div>
+
+                      {/* Label */}
+                      <span className={styles.linkLabel}>{link.label}</span>
                     </div>
-                    <span className={styles.linkLabel}>{link.label}</span>
-                    <div className={styles.activeIndicator}></div>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-          <div className={styles.liquidEffect}></div>
-        </div>
-      </div>
-    </nav>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </nav>
+
+      {/* Backdrop Overlay - outside nav, below burger */}
+      {menuOpen && (
+        <div
+          className={styles.backdrop}
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
+      )}
+    </div>
   );
 };
+
+// ============================================
+// EXPORTS
+// ============================================
 
 export default NavigationBar;
