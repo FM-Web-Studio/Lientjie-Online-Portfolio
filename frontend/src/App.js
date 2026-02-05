@@ -34,7 +34,7 @@ import styles from './App.module.css';
  * Pages are lazy loaded to improve initial bundle size and performance
  * ============================================================================
  */
-// const Home = React.lazy(() => import('./pages/Home'));
+const Home = React.lazy(() => import('./pages/Home'));
 // const Bio = React.lazy(() => import('./pages/Bio'));
 // const Projects = React.lazy(() => import('./pages/Projects'));
 // const Contact = React.lazy(() => import('./pages/Contact'));
@@ -151,8 +151,8 @@ const AppContent = () => {
       {/* Main Layout Route */}
       <Route path="/" element={<MemoizedAppLayout />}>
         {/* Page Routes */}
-        {/* <Route index element={<Home />} />
-        <Route path="bio" element={<Bio />} />
+        <Route index element={<Home />} />
+        {/* <Route path="bio" element={<Bio />} />
         <Route path="projects" element={<Projects />} />
         <Route path="connect" element={<Contact />} /> */}
         
