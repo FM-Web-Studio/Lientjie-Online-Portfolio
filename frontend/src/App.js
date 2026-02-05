@@ -34,10 +34,10 @@ import styles from './App.module.css';
  * Pages are lazy loaded to improve initial bundle size and performance
  * ============================================================================
  */
-const Home = React.lazy(() => import('./pages/Home'));
-const Bio = React.lazy(() => import('./pages/Bio'));
-const Projects = React.lazy(() => import('./pages/Projects'));
-const Contact = React.lazy(() => import('./pages/Contact'));
+// const Home = React.lazy(() => import('./pages/Home'));
+// const Bio = React.lazy(() => import('./pages/Bio'));
+// const Projects = React.lazy(() => import('./pages/Projects'));
+// const Contact = React.lazy(() => import('./pages/Contact'));
 
 /* ============================================================================
  * NAVIGATION STRUCTURE
@@ -46,22 +46,22 @@ const Contact = React.lazy(() => import('./pages/Contact'));
  * ============================================================================
  */
 const NAVIGATION_PAGES = [
-  // {
-  //   label: 'Home',
-  //   to: '/'
-  // },
-  // {
-  //   label: 'Bio',
-  //   to: '/bio'
-  // },
-  // {
-  //   label: 'Projects',
-  //   to: '/projects'
-  // },
-  // {
-  //   label: 'Connect',
-  //   to: '/connect'
-  // },
+  {
+    label: 'Home',
+    to: '/'
+  },
+  {
+    label: 'Bio',
+    to: '/bio'
+  },
+  {
+    label: 'Projects',
+    to: '/projects'
+  },
+  {
+    label: 'Connect',
+    to: '/connect'
+  },
 ];
 
 /* ============================================================================
