@@ -80,30 +80,30 @@
     --info-background-color-dark: #1e3a8a;       /* Blue 900 */
 
     /* Accent Colors */
-    /* LIGHT (more vibrant for light backgrounds) */
-    --accent-1-light: #ff5fa2; /* soft bright pink */
-    --accent-2-light: #ff4fcf; /* vivid magenta */
-    --accent-3-light: #c96bff; /* bright lavender purple */
-    --accent-4-light: #8b7dff; /* soft periwinkle */
+    /* LIGHT (darker pinks) */
+    --accent-1-light: #e25593;
+    --accent-2-light: #d94fa0;
+    --accent-3-light: #c85aa8;
+    --accent-4-light: #b765b0;
 
-    /* DARK (deeper and calmer) */
-    --accent-1-dark: #d94b8a;
-    --accent-2-dark: #c445a8;
-    --accent-3-dark: #9a57cc;
-    --accent-4-dark: #6f68c9;
+    /* DARK (softer pinks) */
+    --accent-1-dark: #f29cbc;
+    --accent-2-dark: #eaa3c7;
+    --accent-3-dark: #e3add0;
+    --accent-4-dark: #dbb6d8;
 
     /* Accent Background Colors */
     /* LIGHT */
-    --accent-1-background-light: #ff5fa22a;
-    --accent-2-background-light: #ff4fcf2a;
-    --accent-3-background-light: #c96bff2a;
-    --accent-4-background-light: #8b7dff2a;
+    --accent-1-background-light: #e255932a;
+    --accent-2-background-light: #d94fa02a;
+    --accent-3-background-light: #c85aa82a;
+    --accent-4-background-light: #b765b02a;
 
     /* DARK */
-    --accent-1-background-dark: #d94b8a2a;
-    --accent-2-background-dark: #c445a82a;
-    --accent-3-background-dark: #9a57cc2a;
-    --accent-4-background-dark: #6f68c92a;
+    --accent-1-background-dark: #f29cbc2a;
+    --accent-2-background-dark: #eaa3c72a;
+    --accent-3-background-dark: #e3add02a;
+    --accent-4-background-dark: #dbb6d82a;
 
     /* Main Background Colors */
     /* Light mode */

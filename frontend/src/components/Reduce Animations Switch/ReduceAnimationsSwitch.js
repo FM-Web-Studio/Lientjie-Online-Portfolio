@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Paintbrush, PaintbrushVertical } from 'lucide-react';
+import { Compass, Ruler } from 'lucide-react';
 
 // ============================================
 // IMPORTS - STYLING
@@ -75,9 +75,9 @@ const ReduceAnimationsSwitch = ({ size = 22 }) => {
         <div className={styles.paintTrail}></div>
         <div className={styles.brushThumb}>
           {enabled ? (
-            <PaintbrushVertical size={16} strokeWidth={2.5} />
+            <Compass size={16} strokeWidth={2.5} />
           ) : (
-            <Paintbrush size={16} strokeWidth={2.5} />
+            <Ruler size={16} strokeWidth={2.5} />
           )}
         </div>
         <div className={styles.splatterEffect}>

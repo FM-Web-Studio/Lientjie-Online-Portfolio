@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Palette, Paintbrush, Droplets, Sparkles, ImageIcon, Mail, User, Menu, X } from "lucide-react";
+import { Home, UserCircle, Images, Briefcase, Mail, Menu, X } from "lucide-react";
 
 // ============================================
 // IMPORTS - STYLING
@@ -12,7 +12,7 @@ import styles from "./NavigationBar.module.css";
 // ============================================
 
 // Icon set for navigation links
-const ICONS = [Palette, Paintbrush, Droplets, Sparkles, ImageIcon, Mail, User];
+const ICONS = [Home, UserCircle, Images, Briefcase, Mail];
 
 // ============================================
 // NAVIGATION BAR COMPONENT
@@ -136,7 +136,7 @@ const NavigationBar = ({
           >
             <ul className={styles.linkList} role="menubar">
               {links && links.slice(0, 7).map((link, index) => {
-                const Icon = ICONS[index] || Palette;
+                const Icon = ICONS[index] || Home;
                 const active = isActive(link, index);
                 const hovered = hoveredLink === index;
 
