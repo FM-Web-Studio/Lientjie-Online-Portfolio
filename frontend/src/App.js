@@ -37,7 +37,7 @@ import styles from './App.module.css';
 const Home = React.lazy(() => import('./pages/Home'));
 const Bio = React.lazy(() => import('./pages/Bio'));
 // const Projects = React.lazy(() => import('./pages/Projects'));
-// const Contact = React.lazy(() => import('./pages/Contact'));
+const Contact = React.lazy(() => import('./pages/Contact'));
 
 /* ============================================================================
  * NAVIGATION STRUCTURE
@@ -153,8 +153,8 @@ const AppContent = () => {
         {/* Page Routes */}
         <Route index element={<Home />} />
         <Route path="bio" element={<Bio />} />
-        {/* <Route path="projects" element={<Projects />} />
-        <Route path="connect" element={<Contact />} /> */}
+        {/* <Route path="projects" element={<Projects />} /> */}
+        <Route path="connect" element={<Contact />} />
         
         {/* 404 Not Found - Catch all unknown routes */}
         <Route path="*" element={<NotFound />} />

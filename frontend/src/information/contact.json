@@ -1,59 +1,50 @@
 {
-	"fullName": "Sunika Lombard",
-	"tagline": "Let's Create Something Beautiful Together",
-	"offerings": [
-		"Custom paintings in acrylic, watercolor, and oil",
-		"Artisan baked goods including handcrafted meringues",
-		"Professional design services for branding and illustration",
-		"Visual communication and concept development"
-	],
-	"location": {
-		"city": "Irene",
-		"suburb": "Centurion",
-		"province": "Gauteng",
-		"country": "South Africa",
-		"displayText": "Irene, Centurion, Gauteng, South Africa"
-	},
-	"email": "lombardsunika@gmail.com",
-	"phone": "+27 66 253 2952",
-	"availability": "Available for freelance projects and collaborations",
-	"social": [
-		{
-			"platform": "Instagram",
-			"username": "@sunika83",
-			"url": "https://www.instagram.com/sunika83/",
-			"icon": "instagram",
-			"color": "#E4405F",
-			"description": "Follow my creative journey and latest artwork"
-		},
-		{
-			"platform": "LinkedIn",
-			"username": "Sunika Lombard",
-			"url": "",
-			"icon": "linkedin",
-			"color": "#0A66C2",
-			"description": "Connect professionally and view my career profile"
-		},
-		{
-			"platform": "TikTok",
-			"username": "@sunika_art",
-			"url": "",
-			"icon": "tiktok",
-			"color": "#000000",
-			"description": "Watch my creative process and art tutorials"
-		},
-		{
-			"platform": "Pinterest",
-			"username": "Sunika Lombard",
-			"url": "",
-			"icon": "pinterest",
-			"color": "#E60023",
-			"description": "Get inspired by my art boards and references"
-		}
-	],
-	"businessHours": {
-		"timezone": "SAST (GMT+2)",
-		"availability": "Monday - Friday: 9:00 AM - 5:00 PM"
-	},
-	"responseTime": "I typically respond within 24-48 hours"
+  "fullName": "Lientjie Meiring",
+  "tagline": "Your Trusted Pet Care Partner",
+  "description": "Professional pet sitting services in Helderkruin with love, care, and attention to detail.",
+  "location": {
+    "suburb": "Helderkruin",
+    "city": "Roodepoort",
+    "province": "Gauteng",
+    "country": "South Africa",
+    "displayText": "Helderkruin, Roodepoort, Gauteng"
+  },
+  "email": "meiringlientjie0214@gmail.com",
+  "phone": "+27 74 695 4980",
+  "services": {
+    "title": "Pet Sitting Services",
+    "items": [
+      {
+        "name": "Meet & Greet",
+        "price": "R75",
+        "description": "Required for first-time clients - get to know each other and discuss your pet's needs",
+        "required": true
+      },
+      {
+        "name": "Daily Pet Sitting",
+        "price": "R200 per day",
+        "description": "Professional care for your furry family members while you're away",
+        "required": false
+      }
+    ],
+    "note": "Special arrangements and custom care plans available - let's discuss your pet's unique needs!"
+  },
+  "social": [
+    {
+      "platform": "Instagram - Lientjie's Pawradise",
+      "username": "@lientjies_pawradise",
+      "url": "https://www.instagram.com/lientjies_pawradise/",
+      "description": "Follow my pet sitting adventures and happy clients",
+      "isPrimary": true
+    },
+    {
+      "platform": "Instagram - Personal",
+      "username": "@live_love_lien",
+      "url": "https://www.instagram.com/live_love_lien/",
+      "description": "My personal journey and daily life",
+      "isPrimary": false
+    }
+  ],
+  "availability": "Available for pet sitting services - bookings by appointment",
+  "responseTime": "I typically respond within 24 hours"
 }
