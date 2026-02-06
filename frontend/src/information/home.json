@@ -1,24 +1,103 @@
 {
-  "backstory": {
-    "title": "Blueprints of Adventure",
-    "description": "Driven by a love for architecture and discovery, I've always seen the world as a place to design, build, and explore. From studying great structures to sketching bold new concepts, I dedicate myself fully to my craft. My adventures take me to cities, cultures, and landscapes that inspire new ideas, and every project is a mission I pursue with determination. I believe great architecture tells stories, connects people, and leaves a lasting mark on the world."
+  "hero": {
+    "name": "Lientjie Meiring",
+    "subtitle": "Architecture Student • Creative Soul • Adventure Seeker",
+    "welcomeMessage": "Welcome to my journey",
+    "stats": [
+      {
+        "label": "Studying",
+        "value": "Architecture"
+      },
+      {
+        "label": "Based in",
+        "value": "Johannesburg, SA"
+      },
+      {
+        "label": "Passionate about",
+        "value": "Design & Nature"
+      }
+    ]
   },
-  "memories": [
-    {
-      "id": 1,
-      "title": "Wild Companions",
-      "image": "Adventure.jpg",
-      "description": "Sharing a moment with one of nature's most majestic creatures, this memory captures my love for animals and the thrill of adventure. Every encounter with wildlife inspires awe, curiosity, and a deeper connection to the natural world.",
-      "date": "Exploring the Wild",
-      "accent": "accent-1"
-    },
-    {
-      "id": 2,
-      "title": "Memories of Celebration",
-      "image": "MatricFarewell.jpg",
-      "description": "This snapshot from my matric farewell reminds me that while I may know few people, the bonds I have are deep and meaningful. Celebrating milestones with those who truly matter has always been at the heart of my social life, making every moment unforgettable.",
-      "date": "Cherished Connections",
-      "accent": "accent-2"
-    }
-  ]
+  "backstory": {
+    "sectionLabel": "My Journey",
+    "title": "Blueprints of Adventure",
+    "description": "Driven by a love for architecture and discovery, I've always seen the world as a place to design, build, and explore. From studying great structures to sketching bold new concepts, I dedicate myself fully to my craft. My adventures take me to cities, cultures, and landscapes that inspire new ideas, and every project is a mission I pursue with determination. I believe great architecture tells stories, connects people, and leaves a lasting mark on the world.",
+    "features": [
+      "Designing with purpose",
+      "Creating connections",
+      "Building lasting impact"
+    ],
+    "quote": "Design is not just what it looks like and feels like. Design is how it works."
+  },
+  "passions": {
+    "sectionLabel": "What Drives Me",
+    "title": "My Passions",
+    "items": [
+      {
+        "title": "Architecture",
+        "description": "Crafting spaces that inspire and connect, blending form with function to create meaningful experiences."
+      },
+      {
+        "title": "Dance",
+        "description": "Expressing movement and emotion through Spanish dance, celebrating rhythm, grace, and artistic performance."
+      },
+      {
+        "title": "Nature",
+        "description": "Finding inspiration in wildlife and natural landscapes, embracing adventure and the beauty of the earth."
+      },
+      {
+        "title": "Design",
+        "description": "Exploring creative solutions through digital tools, sketching ideas, and bringing visions to life."
+      }
+    ]
+  },
+  "memories": {
+    "sectionLabel": "Life Captured",
+    "title": "Moments That Matter",
+    "subtitle": "A glimpse into the experiences that have shaped my journey and inspired my path forward",
+    "items": [
+      {
+        "id": 1,
+        "title": "Wild Companions",
+        "image": "Adventure.jpg",
+        "description": "Sharing a moment with one of nature's most majestic creatures, this memory captures my love for animals and the thrill of adventure. Every encounter with wildlife inspires awe, curiosity, and a deeper connection to the natural world.",
+        "date": "Exploring the Wild",
+        "accent": "accent-1"
+      },
+      {
+        "id": 2,
+        "title": "Memories of Celebration",
+        "image": "MatricFarewell.jpg",
+        "description": "This snapshot from my matric farewell reminds me that while I may know few people, the bonds I have are deep and meaningful. Celebrating milestones with those who truly matter has always been at the heart of my social life, making every moment unforgettable.",
+        "date": "Cherished Connections",
+        "accent": "accent-2"
+      }
+    ]
+  },
+  "values": {
+    "sectionLabel": "Core Beliefs",
+    "title": "What I Stand For",
+    "items": [
+      {
+        "number": "01",
+        "title": "Purpose-Driven Design",
+        "description": "Every structure should tell a story and serve a meaningful purpose beyond aesthetics."
+      },
+      {
+        "number": "02",
+        "title": "Continuous Growth",
+        "description": "Learning is a lifelong journey, and every experience offers valuable lessons."
+      },
+      {
+        "number": "03",
+        "title": "Authentic Connections",
+        "description": "Quality over quantity in relationships, cherishing deep bonds with those who matter."
+      }
+    ]
+  },
+  "footer": {
+    "title": "The Journey Continues",
+    "message": "Every day brings new opportunities to learn, create, and grow. I'm excited to see where this path leads and the impact I'll make along the way.",
+    "meta": "Designed & Built with Passion"
+  }
 }
