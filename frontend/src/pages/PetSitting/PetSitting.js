@@ -122,36 +122,12 @@ const PetSitting = () => {
           </div>
         </section>
 
-        {/* Pricing Section */}
-        <section className={styles.pricingSection}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionLabel}>
-              <span className={styles.labelNumber}>02</span>
-              <span className={styles.labelText}>{petcareData.pricing.sectionLabel}</span>
-            </div>
-            <h2 className={styles.sectionTitle}>{petcareData.pricing.title}</h2>
-          </div>
-          
-          <div className={styles.pricingGrid}>
-            {petcareData.pricing.items.map((item, index) => (
-              <div key={index} className={styles.pricingCard}>
-                <div className={styles.pricingHeader}>
-                  <Clock className={styles.pricingIcon} size={20} />
-                  <h3 className={styles.pricingDuration}>{item.duration}</h3>
-                </div>
-                <div className={styles.pricingPrice}>{item.price}</div>
-                <p className={styles.pricingDescription}>{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Gallery Section */}
         {images.length > 0 && (
           <section className={styles.gallerySection}>
             <div className={styles.sectionHeader}>
               <div className={styles.sectionLabel}>
-                <span className={styles.labelNumber}>03</span>
+                <span className={styles.labelNumber}>02</span>
                 <span className={styles.labelText}>{petcareData.gallery.sectionLabel}</span>
               </div>
               <h2 className={styles.sectionTitle}>{petcareData.gallery.title}</h2>
@@ -183,6 +159,30 @@ const PetSitting = () => {
             </div>
           </section>
         )}
+
+        {/* Pricing Section */}
+        <section className={styles.pricingSection}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionLabel}>
+              <span className={styles.labelNumber}>03</span>
+              <span className={styles.labelText}>{petcareData.pricing.sectionLabel}</span>
+            </div>
+            <h2 className={styles.sectionTitle}>{petcareData.pricing.title}</h2>
+          </div>
+          
+          <div className={styles.pricingGrid}>
+            {petcareData.pricing.items.map((item, index) => (
+              <div key={index} className={styles.pricingCard}>
+                <div className={styles.pricingHeader}>
+                  <Clock className={styles.pricingIcon} size={20} />
+                  <h3 className={styles.pricingDuration}>{item.duration}</h3>
+                </div>
+                <div className={styles.pricingPrice}>{item.price}</div>
+                <p className={styles.pricingDescription}>{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Call to Action */}
         <footer className={styles.footer}>
