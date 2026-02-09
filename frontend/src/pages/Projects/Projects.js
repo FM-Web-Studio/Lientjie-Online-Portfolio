@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
-import { Palette, Search, X, Play, Image as ImageIcon, FolderOpen } from 'lucide-react';
+import { Building2, Search, X, Play, Image as ImageIcon, FolderOpen } from 'lucide-react';
 import styles from './Projects.module.css';
 import projectsData from '../../information/projects.json';
 import { LazyImage } from '../../components';
 
 // ============================================
-// GRAPHIC DESIGN COMPONENT
+// ARCHITECTURE PROJECTS COMPONENT
 // ============================================
 
 const Projects = () => {
@@ -139,10 +139,10 @@ const Projects = () => {
     <div className={`${styles.container} ${isVisible ? styles.visible : ''}`}>
       {/* Hero Section */}
       <section className={styles.hero}>
-        <Palette className={styles.heroIcon} size={64} />
-        <h1 className={styles.heroTitle}>Graphic Design</h1>
+        <Building2 className={styles.heroIcon} size={64} />
+        <h1 className={styles.heroTitle}>Architecture Portfolio</h1>
         <p className={styles.heroSubtitle}>
-          Professional design projects showcasing creativity and innovation
+          Exploring the intersection of space, form, and function through thoughtful design
         </p>
       </section>
 
@@ -210,8 +210,9 @@ const Projects = () => {
                           <LazyImage 
                             src={media.src} 
                             alt={media.name}
-                            threshold={0.1}
-                            rootMargin="150px"
+                            threshold={0.01}
+                            rootMargin="200px"
+                            enableUnload={false}
                           />
                           <div className={styles.mediaOverlay}>
                             <ImageIcon size={32} />
@@ -256,6 +257,7 @@ const Projects = () => {
                 className={styles.lightboxImage}
                 threshold={0}
                 rootMargin="0px"
+                enableUnload={false}
               />
             ) : (
               <video 

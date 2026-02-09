@@ -36,7 +36,8 @@ import styles from './App.module.css';
  */
 const Home = React.lazy(() => import('./pages/Home'));
 const Bio = React.lazy(() => import('./pages/Bio'));
-// const Projects = React.lazy(() => import('./pages/Projects'));
+const Projects = React.lazy(() => import('./pages/Projects'));
+const PetSitting = React.lazy(() => import('./pages/PetSitting'));
 const Contact = React.lazy(() => import('./pages/Contact'));
 
 /* ============================================================================
@@ -57,6 +58,10 @@ const NAVIGATION_PAGES = [
   {
     label: 'Projects',
     to: '/projects'
+  },
+  {
+    label: 'Pet Sitting',
+    to: '/pet-sitting'
   },
   {
     label: 'Connect',
@@ -153,7 +158,8 @@ const AppContent = () => {
         {/* Page Routes */}
         <Route index element={<Home />} />
         <Route path="bio" element={<Bio />} />
-        {/* <Route path="projects" element={<Projects />} /> */}
+        <Route path="projects" element={<Projects />} />
+        <Route path="pet-sitting" element={<PetSitting />} />
         <Route path="connect" element={<Contact />} />
         
         {/* 404 Not Found - Catch all unknown routes */}

@@ -2,10 +2,10 @@
   "projects": [
     {
       "id": 1,
-      "name": "Logos",
-      "folder": "Logos",
-      "description": "A collection of brand identities and logo designs created for various clients and personal projects. Each logo represents a unique visual identity crafted to capture the essence of the brand.",
-      "category": "Branding",
+      "name": "Timecraft",
+      "folder": "Timecraft",
+      "description": "Timecraft was a craft and community hub in Kwaggafontein designed around the idea of past, present and future craft making. My concept used time by preserving traditional craft, supporting current makers and students, and creating a sustainable space that can grow and adapt for future production.",
+      "category": "Design",
       "year": "2023-2024"
     }
   ]

@@ -1,0 +1,73 @@
+{
+  "hero": {
+    "badge": "Professional Pet & House Sitting Services",
+    "title": "Caring for Your Loved Ones",
+    "subtitle": "Trusted pet sitting and house care services in Helderkruin, Roodepoort"
+  },
+  "services": {
+    "sectionLabel": "Services",
+    "title": "What I Offer",
+    "items": [
+      {
+        "icon": "heart",
+        "title": "Pet Sitting",
+        "description": "Includes play time and feeding time and the necessary care to ensure that the pets feel loved."
+      },
+      {
+        "icon": "home",
+        "title": "House Sitting",
+        "description": "Overnight stays/daily visits/specified hours to keep your home secure and well-maintained."
+      },
+      {
+        "icon": "sprout",
+        "title": "Plant Care",
+        "description": "The necessary care for the plants like watering them to keep your greenery thriving."
+      }
+    ]
+  },
+  "pricing": {
+    "sectionLabel": "Pricing",
+    "title": "Transparent Pricing",
+    "items": [
+      {
+        "duration": "30-minute check-in",
+        "price": "R95",
+        "description": "Including necessary care for house, pets, plants, etc."
+      },
+      {
+        "duration": "2 daily check-ins",
+        "price": "R150",
+        "description": "Morning and evening visits"
+      },
+      {
+        "duration": "2-6 hours day visit",
+        "price": "R180",
+        "description": "Including necessary care for house, pets, plants, etc."
+      },
+      {
+        "duration": "6-8 hours day visit",
+        "price": "R220",
+        "description": "Extended daytime care"
+      },
+      {
+        "duration": "Overnight stay (food provided)",
+        "price": "R250",
+        "description": "Including necessary care for house, pets, plants, etc."
+      },
+      {
+        "duration": "Overnight stay (food not provided)",
+        "price": "R300",
+        "description": "Including necessary care for house, pets, plants, etc."
+      }
+    ]
+  },
+  "gallery": {
+    "sectionLabel": "Gallery",
+    "title": "Happy Moments",
+    "subtitle": "Capturing the joy and care we provide to every furry friend"
+  },
+  "footer": {
+    "title": "Ready to Book?",
+    "message": "Get in touch today to discuss your pet sitting and house care needs. I'm here to provide the best care for your furry family members and home."
+  }
+}

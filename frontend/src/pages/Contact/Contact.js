@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Mail, Phone, MapPin, ExternalLink, Heart, CheckCircle, AlertCircle
+  Mail, Phone, MapPin, ExternalLink
 } from 'lucide-react';
 
 // ============================================
@@ -13,7 +13,7 @@ import contactData from '../../information/contact.json';
 // ============================================
 // CONTACT COMPONENT
 // ============================================
-// Modern, responsive contact page for pet sitting services
+// Modern, responsive contact page
 
 function Contact() {
   // ----------------------------------------
@@ -39,48 +39,10 @@ function Contact() {
       {/* Main Content */}
       <div className={styles.contentWrapper}>
         <div className={styles.content}>
-          
-          {/* Services Section */}
-          {contactData.services && (
-            <section className={styles.servicesSection}>
-              <h2 className={styles.sectionTitle}>
-                <Heart className={styles.titleIcon} />
-                {contactData.services.title}
-              </h2>
-              
-              <div className={styles.servicesGrid}>
-                {contactData.services.items.map((service, index) => (
-                  <div 
-                    key={index} 
-                    className={`${styles.serviceCard} ${service.required ? styles.serviceRequired : ''}`}
-                  >
-                    <div className={styles.serviceHeader}>
-                      <h3 className={styles.serviceName}>{service.name}</h3>
-                      {service.required && (
-                        <span className={styles.requiredBadge}>
-                          <AlertCircle size={14} />
-                          Required
-                        </span>
-                      )}
-                    </div>
-                    <p className={styles.servicePrice}>{service.price}</p>
-                    <p className={styles.serviceDescription}>{service.description}</p>
-                  </div>
-                ))}
-              </div>
-              
-              {contactData.services.note && (
-                <div className={styles.serviceNote}>
-                  <CheckCircle size={18} />
-                  <p>{contactData.services.note}</p>
-                </div>
-              )}
-            </section>
-          )}
 
           {/* Contact Information */}
           <section className={styles.contactSection}>
-            <h2 className={styles.sectionTitle}>Get in Touch</h2>
+            <h2 className={styles.sectionTitle}>Contact Details</h2>
             
             <div className={styles.contactGrid}>
               <a href={`mailto:${contactData.email}`} className={styles.contactCard}>

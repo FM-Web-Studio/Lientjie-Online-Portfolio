@@ -7,6 +7,8 @@
 .bioContainer {
   position: relative;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
   background: var(--background-1);
   font-family: 'Montserrat', sans-serif;
   overflow-x: hidden;

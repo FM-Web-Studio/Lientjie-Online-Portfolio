@@ -71,6 +71,14 @@
         "description": "This snapshot from my matric farewell reminds me that while I may know few people, the bonds I have are deep and meaningful. Celebrating milestones with those who truly matter has always been at the heart of my social life, making every moment unforgettable.",
         "date": "Cherished Connections",
         "accent": "accent-2"
+      },
+      {
+        "id": 3,
+        "title": "Roots & Relationships",
+        "image": "Family.jpg",
+        "description": "This moment reflects how deeply connected I am to my family and how much I value those relationships. Through every stage of life, their support, love, and shared laughter have grounded me, reminding me where I come from and what truly matters.",
+        "date": "Family First",
+        "accent": "accent-3"
       }
     ]
   },

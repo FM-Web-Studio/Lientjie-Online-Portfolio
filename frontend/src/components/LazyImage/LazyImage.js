@@ -3,9 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 // ============================================
 // LAZY IMAGE COMPONENT
 // ============================================
-// Progressive image loading and unloading with Intersection Observer
-// Automatically loads images when entering viewport and unloads when exiting
-// Significantly reduces memory usage and improves performance for image-heavy pages
+// Progressive image loading with Intersection Observer
+// Loads images when entering viewport for better initial page load performance
+// Images remain loaded by default for smooth scrolling experience
 
 // ============================================
 // COMPONENT DEFINITION
@@ -16,10 +16,10 @@ const LazyImage = ({
   alt, 
   className, 
   style,
-  threshold = 0.1,
-  rootMargin = '50px',
-  unloadMargin = '400px',
-  enableUnload = true,
+  threshold = 0.01,
+  rootMargin = '200px',
+  unloadMargin = '800px',
+  enableUnload = false,
   placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23f0f0f0" width="400" height="300"/%3E%3C/svg%3E',
   onLoad,
   onUnload,

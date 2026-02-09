@@ -281,6 +281,9 @@ const Home = () => {
                     src={imageMap[memory.image]}
                     alt={memory.title}
                     className={styles.cardImage}
+                    threshold={0.01}
+                    rootMargin="200px"
+                    enableUnload={false}
                   />
                   <div className={styles.cardImageGradient}></div>
                   <span className={styles.cardBadge}>{memory.date}</span>
