@@ -116,11 +116,11 @@
 /* ==================== HERO SECTION ==================== */
 .heroSection {
   position: relative;
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: var(--spacing-xl) var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-md);
   z-index: 1;
 }
 
@@ -130,7 +130,7 @@
   width: 100%;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: var(--spacing-3xl);
+  gap: var(--spacing-xl);
   align-items: center;
   opacity: 0;
   animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -151,7 +151,7 @@
 .heroText {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 .eyebrow {
@@ -415,7 +415,7 @@
 .journeyFlow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-3xl);
+  gap: var(--spacing-xl);
 }
 
 .journeyBlock {
@@ -437,7 +437,7 @@
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-md);
   position: relative;
   padding-left: var(--spacing-lg);
 }
@@ -644,15 +644,15 @@
 /* ==================== SKILLS SECTION ==================== */
 .skillsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--spacing-xl);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-md);
 }
 
 .skillCategory {
   background: var(--background-2);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
+  padding: var(--spacing-md);
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
@@ -744,18 +744,18 @@
 /* ==================== PASSIONS SECTION ==================== */
 .passionsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--spacing-xl);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
 }
 
 .passionCard {
   background: var(--background-2);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
+  padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
@@ -777,7 +777,7 @@
 }
 
 .passionCard:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-xl);
 }
 
@@ -901,7 +901,7 @@
 @media (max-width: 1024px) {
   .heroGrid {
     grid-template-columns: 1fr;
-    gap: var(--spacing-2xl);
+    gap: var(--spacing-lg);
   }
 
   .heroImageContainer {
@@ -911,56 +911,20 @@
 
   .journeyFlow {
     grid-template-columns: 1fr;
-    gap: var(--spacing-2xl);
+    gap: var(--spacing-lg);
   }
 
   .skillsGrid,
   .passionsGrid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   }
 }
 
 /* Tablets */
 @media (max-width: 768px) {
   .heroSection {
-    padding: var(--spacing-lg) var(--spacing-md);
-  }
-
-  .journeySection,
-  .skillsSection,
-  .passionsSection {
-    padding: var(--spacing-2xl) var(--spacing-md);
-  }
-
-  .heroTitle {
-    font-size: clamp(2.5rem, 10vw, 4rem);
-  }
-
-  .sectionNumber {
-    font-size: var(--font-size-xl);
-  }
-
-  .sectionTitle {
-    font-size: var(--font-size-xl);
-  }
-
-  .heroMeta {
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
-  .skillsGrid,
-  .passionsGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .heroSection {
     padding: var(--spacing-md) var(--spacing-sm);
-    min-height: auto;
-    padding-top: var(--spacing-2xl);
+    min-height: 70vh;
   }
 
   .journeySection,
@@ -969,40 +933,62 @@
     padding: var(--spacing-xl) var(--spacing-sm);
   }
 
+  .heroTitle {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
+
+  .skillsGrid,
+  .passionsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .heroSection {
+    padding: var(--spacing-sm) var(--spacing-xs);
+    min-height: auto;
+    padding-top: var(--spacing-lg);
+  }
+
+  .journeySection,
+  .skillsSection,
+  .passionsSection {
+    padding: var(--spacing-lg) var(--spacing-xs);
+  }
+
   .heroGrid {
-    gap: var(--spacing-xl);
+    gap: var(--spacing-md);
   }
 
   .heroTitle {
-    font-size: clamp(2rem, 12vw, 3rem);
+    font-size: clamp(1.75rem, 12vw, 2.5rem);
   }
 
   .heroSubtitle {
     font-size: var(--font-size-sm);
   }
 
-  .sectionHeader {
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    align-items: flex-start;
-  }
-
   .timeline {
-    padding-left: var(--spacing-md);
+    padding-left: var(--spacing-sm);
   }
 
   .timelineMarker {
-    left: calc(-1 * var(--spacing-md) - 5px);
+    left: calc(-1 * var(--spacing-sm) - 5px);
+  }
+
+  .skillsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .passionsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 
   .expCard,
   .skillCategory,
   .passionCard {
-    padding: var(--spacing-md);
-  }
-
-  .scrollIndicator {
-    display: none;
+    padding: var(--spacing-sm);
   }
 
   .backgroundShapes {
