@@ -259,8 +259,10 @@
 /* ==================== MEDIA GRID ==================== */
 .mediaGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: 280px;
   gap: 1rem;
+  grid-auto-flow: dense;
   box-sizing: border-box;
   width: 100%;
 }
@@ -280,6 +282,32 @@
   justify-content: center;
 }
 
+/* Size Classes for Masonry Layout */
+.mediaItem.square {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.mediaItem.landscape {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.mediaItem.portrait {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.mediaItem.wideLandscape {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.mediaItem.tallPortrait {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
 .mediaItem:hover {
   transform: translateY(-4px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
@@ -289,7 +317,7 @@
 .mediaVideoWrapper {
   position: relative;
   width: 100%;
-  height: auto;
+  height: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -299,8 +327,8 @@
 .mediaImageWrapper img,
 .mediaVideoWrapper video {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.5s ease;
   display: block;
 }
@@ -481,8 +509,9 @@
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 1024px) {
   .mediaGrid {
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-auto-rows: 250px;
+    gap: 1rem;
   }
 
   .projectHeader {
@@ -541,8 +570,22 @@
   }
 
   .mediaGrid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-auto-rows: 150px;
     gap: 0.75rem;
+  }
+
+  /* Simplify spans on mobile */
+  .mediaItem.landscape,
+  .mediaItem.wideLandscape {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+
+  .mediaItem.portrait,
+  .mediaItem.tallPortrait {
+    grid-column: span 1;
+    grid-row: span 2;
   }
 }
 
@@ -593,7 +636,22 @@
 
   .mediaGrid {
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 120px;
     gap: 0.5rem;
+  }
+
+  /* All items single column on small screens, but allow vertical spans */
+  .mediaItem.landscape,
+  .mediaItem.wideLandscape,
+  .mediaItem.square {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .mediaItem.portrait,
+  .mediaItem.tallPortrait {
+    grid-column: span 1;
+    grid-row: span 2;
   }
 }
 

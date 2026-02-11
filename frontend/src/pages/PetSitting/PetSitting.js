@@ -18,10 +18,29 @@ const importAllImages = () => {
   try {
     const context = require.context('../../images/Pet & House Care', false, /\.(png|jpe?g|svg|webp)$/);
     context.keys().forEach((key) => {
-      images.push({
-        src: context(key),
-        name: key.replace('./', '')
-      });
+      const src = context(key);
+      
+      // Load image to get dimensions
+      const img = new Image();
+      img.src = src;
+      
+      const imageItem = {
+        src: src,
+        name: key.replace('./', ''),
+        dimensions: { width: 1, height: 1 },
+        aspectRatio: 1
+      };
+      
+      // Update dimensions when image loads
+      img.onload = () => {
+        imageItem.dimensions = {
+          width: img.naturalWidth,
+          height: img.naturalHeight
+        };
+        imageItem.aspectRatio = img.naturalWidth / img.naturalHeight;
+      };
+      
+      images.push(imageItem);
     });
   } catch (error) {
     console.error('Error loading images from Pet & House Care folder:', error);
@@ -122,49 +141,11 @@ const PetSitting = () => {
           </div>
         </section>
 
-        {/* Gallery Section */}
-        {images.length > 0 && (
-          <section className={styles.gallerySection}>
-            <div className={styles.sectionHeader}>
-              <div className={styles.sectionLabel}>
-                <span className={styles.labelNumber}>02</span>
-                <span className={styles.labelText}>{petcareData.gallery.sectionLabel}</span>
-              </div>
-              <h2 className={styles.sectionTitle}>{petcareData.gallery.title}</h2>
-              <p className={styles.sectionSubtitle}>
-                {petcareData.gallery.subtitle}
-              </p>
-            </div>
-
-            <div className={styles.galleryGrid}>
-              {images.map((image, index) => (
-                <article
-                  key={index}
-                  className={`${styles.galleryCard} ${isVisible ? styles.visible : ''}`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className={styles.cardImageWrapper}>
-                    <LazyImage
-                      src={image.src}
-                      alt={`Pet sitting memory ${index + 1}`}
-                      className={styles.cardImage}
-                      threshold={0.01}
-                      rootMargin="200px"
-                      enableUnload={false}
-                    />
-                    <div className={styles.cardImageGradient}></div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* Pricing Section */}
         <section className={styles.pricingSection}>
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>
-              <span className={styles.labelNumber}>03</span>
+              <span className={styles.labelNumber}>02</span>
               <span className={styles.labelText}>{petcareData.pricing.sectionLabel}</span>
             </div>
             <h2 className={styles.sectionTitle}>{petcareData.pricing.title}</h2>
@@ -183,6 +164,55 @@ const PetSitting = () => {
             ))}
           </div>
         </section>
+
+        {/* Gallery Section */}
+        {images.length > 0 && (
+          <section className={styles.gallerySection}>
+            <div className={styles.sectionHeader}>
+              <div className={styles.sectionLabel}>
+                <span className={styles.labelNumber}>03</span>
+                <span className={styles.labelText}>{petcareData.gallery.sectionLabel}</span>
+              </div>
+              <h2 className={styles.sectionTitle}>{petcareData.gallery.title}</h2>
+              <p className={styles.sectionSubtitle}>
+                {petcareData.gallery.subtitle}
+              </p>
+            </div>
+
+            <div className={styles.galleryGrid}>
+              {images.map((image, index) => {
+                // Determine aspect ratio class
+                const aspectRatio = image.aspectRatio || 1;
+                
+                let sizeClass = styles.square;
+                if (aspectRatio > 1.3) sizeClass = styles.landscape;
+                else if (aspectRatio < 0.7) sizeClass = styles.portrait;
+                else if (aspectRatio > 1.6) sizeClass = styles.wideLandscape;
+                else if (aspectRatio < 0.5) sizeClass = styles.tallPortrait;
+                
+                return (
+                <article
+                  key={index}
+                  className={`${styles.galleryCard} ${sizeClass} ${isVisible ? styles.visible : ''}`}
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className={styles.cardImageWrapper}>
+                    <LazyImage
+                      src={image.src}
+                      alt={`Pet sitting memory ${index + 1}`}
+                      className={styles.cardImage}
+                      threshold={0.01}
+                      rootMargin="200px"
+                      enableUnload={false}
+                    />
+                    <div className={styles.cardImageGradient}></div>
+                  </div>
+                </article>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Call to Action */}
         <footer className={styles.footer}>

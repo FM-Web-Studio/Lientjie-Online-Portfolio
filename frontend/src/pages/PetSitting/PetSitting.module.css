@@ -381,8 +381,10 @@
 
 .galleryGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: 280px;
   gap: var(--spacing-md);
+  grid-auto-flow: dense;
   margin-top: var(--spacing-lg);
 }
 
@@ -395,6 +397,32 @@
   transition: all var(--transition-base);
   opacity: 0;
   animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Size Classes for Masonry Layout */
+.galleryCard.square {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.galleryCard.landscape {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.galleryCard.portrait {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.galleryCard.wideLandscape {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.galleryCard.tallPortrait {
+  grid-column: span 1;
+  grid-row: span 2;
 }
 
 .galleryCard:nth-child(1) {
@@ -432,6 +460,7 @@
 .cardImageWrapper {
   position: relative;
   width: 100%;
+  height: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -441,8 +470,8 @@
 
 .cardImage {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.5s var(--transition-base);
   display: block;
 }
@@ -518,7 +547,8 @@
   }
 
   .galleryGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-auto-rows: 250px;
     gap: var(--spacing-md);
   }
 }
@@ -587,7 +617,21 @@
 
   .galleryGrid {
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 180px;
     gap: var(--spacing-sm);
+  }
+
+  /* Simplify spans on tablet */
+  .galleryCard.landscape,
+  .galleryCard.wideLandscape {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+
+  .galleryCard.portrait,
+  .galleryCard.tallPortrait {
+    grid-column: span 1;
+    grid-row: span 2;
   }
   
   .pricingGrid {
@@ -670,7 +714,22 @@
   
   .galleryGrid {
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 120px;
     gap: var(--spacing-xs);
+  }
+  
+  /* Simplify all items on mobile */
+  .galleryCard.landscape,
+  .galleryCard.wideLandscape,
+  .galleryCard.square {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+  
+  .galleryCard.portrait,
+  .galleryCard.tallPortrait {
+    grid-column: span 1;
+    grid-row: span 2;
   }
   
   .pricingGrid {

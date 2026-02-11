@@ -37,17 +37,29 @@
       "degree": "Bachelor of Architecture",
       "institution": "University of Johannesburg",
       "status": "In Progress (3rd Year)",
-      "startYear": 2023,
+      "startYear": 2024,
       "expectedGraduation": 2027
+    },
+    {
+      "level": "Professional Course",
+      "degree": "Revit 2025 - Architecture Advanced Course",
+      "institution": "Modena Design Centers (Pty) LTD",
+      "description": "Autodesk Authorized Training Center",
+      "completed": true,
+      "completionDate": "30 January 2025",
+      "duration": "25-32 hours"
     },
     {
       "level": "National Senior Certificate",
       "completed": true,
-      "yearCompleted": 2023,
+      "yearCompleted": 2022,
       "subjects": [
         "Mathematics",
         "Computer Applications Technology",
-        "Engineering Graphics and Design"
+        "Engineering Graphics and Design",
+        "Accounting",
+        "Afrikaans Home Language",
+        "English First Additional Language"
       ]
     }
   ],
@@ -67,13 +79,9 @@
     {
       "title": "Professional Dancer",
       "company": "Compañía De Milagros",
-      "years": "2011-2022",
-      "startDate": "2011",
-      "endDate": "2022",
-      "achievements": [
-        "Dance World Cup – 1st Place Group",
-        "1st Place Spanish Solo"
-      ]
+      "years": "2023-2025",
+      "startDate": "2023",
+      "endDate": "2025"
     },
     {
       "title": "Waitress",
@@ -93,9 +101,9 @@
     {
       "title": "Children's Ministry Assistant",
       "organization": "NG Roodekrans Church",
-      "years": "2022-2024",
+      "years": "2022-2023",
       "startDate": "2022",
-      "endDate": "2024",
+      "endDate": "2023",
       "responsibilities": [
         "Helped run children's activities",
         "Supported program planning"
@@ -105,22 +113,21 @@
 
   "skills": {
     "architectural": [
-      { "name": "Architectural Design", "level": 75 },
-      { "name": "Technical Drawing", "level": 80 },
+      { "name": "Architectural Design", "level": 80 },
+      { "name": "Technical Drawing", "level": 70 },
       { "name": "3D Modeling", "level": 70 },
       { "name": "Spatial Composition", "level": 75 }
     ],
     "technical": [
-      { "name": "AutoCAD", "level": 80 },
-      { "name": "SketchUp", "level": 75 },
-      { "name": "Revit", "level": 65 },
-      { "name": "Adobe Creative Suite", "level": 70 },
+      { "name": "AutoCAD", "level": 70 },
+      { "name": "Revit", "level": 80 },
+      { "name": "TwinMotion", "level": 70 },
       { "name": "Microsoft Office", "level": 85 }
     ],
     "soft": [
-      { "name": "Communication", "level": 85 },
+      { "name": "Communication", "level": 60 },
       { "name": "Attention to detail", "level": 90 },
-      { "name": "Creativity", "level": 85 },
+      { "name": "Creativity", "level": 80 },
       { "name": "Dependability", "level": 90 }
     ]
   },

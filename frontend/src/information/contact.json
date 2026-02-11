@@ -43,6 +43,20 @@
       "url": "https://www.instagram.com/live_love_lien/",
       "description": "My personal journey and daily life",
       "isPrimary": false
+    },
+    {
+      "platform": "LinkedIn",
+      "username": "Lientjie Meiring",
+      "url": "",
+      "description": "Business profile and professional connections",
+      "isPrimary": false
+    },
+    {
+      "platform": "Facebook",
+      "username": "Lientjies Pawradise",
+      "url": "https://www.facebook.com/share/1AbA7w5Xir/",
+      "description": "Connect with me on Facebook for updates and reviews",
+      "isPrimary": false
     }
   ],
   "availability": "Available for pet sitting services - bookings by appointment",

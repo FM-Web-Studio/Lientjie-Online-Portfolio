@@ -246,6 +246,15 @@ const Home = () => {
                         <line x1="12" y1="17" x2="12" y2="21" />
                       </>
                     )}
+                    {index === 4 && (
+                      <>
+                        <circle cx="9" cy="7" r="1.2" />
+                        <circle cx="15" cy="7" r="1.2" />
+                        <circle cx="7" cy="11" r="1.0" />
+                        <circle cx="17" cy="11" r="1.0" />
+                        <path d="M12 13c-2 0-3.5 1-4.5 2.5C8.5 17.5 10 18 12 18s3.5-.5 4.5-2.5C15.5 14 14 13 12 13z" />
+                      </>
+                    )}
                   </svg>
                 </div>
                 <h3 className={styles.passionTitle}>{passion.title}</h3>

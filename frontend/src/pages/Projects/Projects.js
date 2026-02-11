@@ -57,12 +57,31 @@ const Projects = () => {
       imageContext.keys().forEach((key) => {
         const folderMatch = key.match(/^\.\/([^/]+)\//);
         if (folderMatch && folderMatch[1] === folderName) {
-          media.push({
+          const src = imageContext(key);
+          
+          // Load image to get dimensions
+          const img = new Image();
+          img.src = src;
+          
+          const mediaItem = {
             type: 'image',
-            src: imageContext(key),
+            src: src,
             path: key,
-            name: key.split('/').pop()
-          });
+            name: key.split('/').pop(),
+            dimensions: { width: 1, height: 1 },
+            aspectRatio: 1
+          };
+          
+          // Update dimensions when image loads
+          img.onload = () => {
+            mediaItem.dimensions = {
+              width: img.naturalWidth,
+              height: img.naturalHeight
+            };
+            mediaItem.aspectRatio = img.naturalWidth / img.naturalHeight;
+          };
+          
+          media.push(mediaItem);
         }
       });
 
@@ -199,10 +218,20 @@ const Projects = () => {
               {/* Project Media Grid */}
               {project.media.length > 0 ? (
                 <div className={styles.mediaGrid}>
-                  {project.media.map((media, mediaIndex) => (
+                  {project.media.map((media, mediaIndex) => {
+                    // Determine aspect ratio class
+                    const aspectRatio = media.aspectRatio || 1;
+                    
+                    let sizeClass = styles.square;
+                    if (aspectRatio > 1.3) sizeClass = styles.landscape;
+                    else if (aspectRatio < 0.7) sizeClass = styles.portrait;
+                    else if (aspectRatio > 1.6) sizeClass = styles.wideLandscape;
+                    else if (aspectRatio < 0.5) sizeClass = styles.tallPortrait;
+                    
+                    return (
                     <div
                       key={`${project.id}-${mediaIndex}`}
-                      className={styles.mediaItem}
+                      className={`${styles.mediaItem} ${sizeClass}`}
                       onClick={() => handleMediaClick(media, project)}
                     >
                       {media.type === 'image' ? (
@@ -229,7 +258,8 @@ const Projects = () => {
                         </div>
                       )}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div className={styles.noMedia}>
