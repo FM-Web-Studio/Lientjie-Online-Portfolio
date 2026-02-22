@@ -1,125 +1,40 @@
-/* ==================== IMPORTS - FONTS ==================== */
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+/* ============================================
+ * PET SITTING PAGE - MODERN RESPONSIVE DESIGN
+ * ============================================
+ * Professional pet care services showcase
+ * Uses only CSS variables from Theme.css
+ * ============================================ */
 
-/* ==================== PET SITTING WRAPPER ==================== */
+/* ==================== MAIN WRAPPER ==================== */
 .petSittingWrapper {
-  position: relative;
   min-height: 100vh;
   width: 100%;
   max-width: 100vw;
-  background: var(--background-1);
   overflow-x: hidden;
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-/* ==================== DECORATIVE BACKGROUND ==================== */
-.backgroundDecor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.decorCircle {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: var(--radius-full);
-  background: radial-gradient(
-    circle,
-    var(--accent-1-background) 0%,
-    transparent 70%
-  );
-  opacity: 0.3;
-  filter: blur(80px);
-  animation: float 25s ease-in-out infinite;
-}
-
-.decorCircle:nth-child(2) {
-  background: radial-gradient(
-    circle,
-    var(--accent-2-background) 0%,
-    transparent 70%
-  );
-  animation-delay: -8s;
-  animation-duration: 30s;
-}
-
-.decorCircle:nth-child(3) {
-  background: radial-gradient(
-    circle,
-    var(--accent-3-background) 0%,
-    transparent 70%
-  );
-  animation-delay: -16s;
-  animation-duration: 35s;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(30px, -30px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.95);
-  }
-}
-
-/* ==================== MAIN CONTAINER ==================== */
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-xl);
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* ==================== SECTION LABELS ==================== */
-.sectionLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-  font-family: 'DM Sans', sans-serif;
-}
-
-.labelNumber {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-  color: white;
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 4px 12px var(--accent-1-background);
-}
-
-.labelText {
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent-1);
+  background: var(--background-1);
+  transition: background var(--transition-base);
 }
 
 /* ==================== HERO SECTION ==================== */
 .hero {
-  padding: var(--spacing-xl) 0 var(--spacing-lg);
+  min-height: clamp(400px, 60vh, 600px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  background: linear-gradient(
+    135deg,
+    var(--background-1) 0%,
+    var(--background-2) 50%,
+    var(--background-1) 100%
+  );
+  position: relative;
+  overflow: hidden;
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s var(--transition-base), 
-              transform 0.8s var(--transition-base);
+  transform: translateY(20px);
+  transition: 
+    opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero.visible {
@@ -127,672 +42,408 @@
   transform: translateY(0);
 }
 
-.heroContent {
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    circle,
+    var(--accent-1-background) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
 }
 
-.welcomeBadge {
+.heroContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.heroBadge {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-lg);
-  background: var(--background-2);
-  border: 1px solid var(--border-color);
+  background: var(--accent-1-background);
+  color: var(--accent-1);
   border-radius: var(--radius-full);
   font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--secondary-text-color);
+  font-weight: 600;
   margin-bottom: var(--spacing-xl);
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-base);
-  max-width: 100%;
-  word-wrap: break-word;
-  text-align: center;
+  border: 1px solid var(--accent-1);
 }
 
 .badgeIcon {
-  color: var(--accent-1);
+  width: 18px;
+  height: 18px;
 }
 
 .heroTitle {
-  font-family: 'Crimson Pro', Georgia, serif;
-  font-size: clamp(3rem, 8vw, 5rem);
+  font-size: clamp(2.5rem, 7vw, var(--font-size-4xl));
   font-weight: 700;
   color: var(--primary-text-color);
-  margin: 0 0 var(--spacing-md) 0;
+  margin: 0 0 var(--spacing-lg) 0;
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
 .heroSubtitle {
-  font-size: clamp(1rem, 2.5vw, 1.375rem);
-  font-weight: 400;
+  font-size: var(--font-size-lg);
   color: var(--secondary-text-color);
   margin: 0;
   line-height: 1.6;
-}
-
-/* ==================== SECTION HEADER ==================== */
-.sectionHeader {
-  margin-bottom: var(--spacing-2xl);
-  text-align: center;
-}
-
-.sectionTitle {
-  font-family: 'Crimson Pro', Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
-  color: var(--primary-text-color);
-  margin: 0 0 var(--spacing-md) 0;
-  line-height: 1.2;
-}
-
-.sectionSubtitle {
-  font-size: clamp(0.95rem, 2vw, 1.125rem);
-  color: var(--secondary-text-color);
-  margin: 0 auto;
   max-width: 600px;
-  line-height: 1.6;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* ==================== SERVICES SECTION ==================== */
-.servicesSection {
-  padding: var(--spacing-xl) 0;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s var(--transition-base) 0.2s, 
-              transform 0.8s var(--transition-base) 0.2s;
+/* ==================== CONTAINER ==================== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-3xl);
 }
 
-.servicesSection.visible {
-  opacity: 1;
-  transform: translateY(0);
+/* ==================== SECTIONS ==================== */
+.section {
+  padding: var(--spacing-3xl) 0;
 }
 
-.servicesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+.sectionLabel {
+  display: inline-flex;
+  align-items: center;
   gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
-  width: 100%;
+  margin-bottom: var(--spacing-xl);
+  color: var(--accent-1);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
 }
 
-.serviceCard {
-  background: var(--background-2);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
-  text-align: center;
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-sm);
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.serviceCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--accent-1);
-}
-
-.serviceIcon {
+.labelNumber {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--accent-1-background);
+  color: var(--accent-1);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  border: 2px solid var(--accent-1);
+}
+
+.labelText {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sectionTitle {
+  font-size: clamp(2rem, 5vw, var(--font-size-3xl));
+  font-weight: 700;
+  color: var(--primary-text-color);
+  margin: 0 0 var(--spacing-2xl) 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.sectionSubtitle {
+  font-size: var(--font-size-md);
+  color: var(--secondary-text-color);
+  margin: 0 0 var(--spacing-3xl) 0;
+  line-height: 1.6;
+  max-width: 700px;
+}
+
+/* ==================== SERVICES SECTION ==================== */
+.servicesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+}
+
+.serviceCard {
+  padding: var(--spacing-2xl);
+  background: var(--background-2);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-base);
+  text-align: center;
+}
+
+.serviceCard:hover {
+  border-color: var(--accent-1);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.serviceIcon {
   width: 64px;
   height: 64px;
   margin: 0 auto var(--spacing-lg);
-  background: linear-gradient(135deg, var(--accent-1-background), var(--accent-2-background));
-  border-radius: var(--radius-lg);
-  color: var(--accent-1);
-}
-
-.serviceTitle {
-  font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--primary-text-color);
-  margin: 0 0 var(--spacing-md) 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-.serviceDescription {
-  font-size: 1rem;
-  color: var(--secondary-text-color);
-  line-height: 1.6;
-  margin: 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-/* ==================== PRICING SECTION - INDUSTRY STANDARD ==================== */
-.pricingSection {
-  padding: var(--spacing-xl) 0;
-}
-
-.pricingGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
-  width: 100%;
-}
-
-.pricingCard {
-  background: var(--background-2);
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-sm);
-  box-sizing: border-box;
-  width: 100%;
-  text-align: center;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.pricingCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-  transform: scaleX(0);
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--accent-1) 0%,
+    var(--accent-2) 100%
+  );
+  border-radius: var(--radius-xl);
+  color: white;
   transition: transform var(--transition-base);
 }
 
-.pricingCard:hover::before {
-  transform: scaleX(1);
+.serviceCard:hover .serviceIcon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.serviceIcon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.serviceTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--primary-text-color);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.serviceDescription {
+  font-size: var(--font-size-base);
+  color: var(--secondary-text-color);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ==================== PRICING SECTION ==================== */
+.pricingGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+.pricingCard {
+  padding: var(--spacing-xl);
+  background: var(--background-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-base);
 }
 
 .pricingCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
   border-color: var(--accent-1);
+  box-shadow: var(--shadow-md);
+  transform: translateX(4px);
 }
 
 .pricingHeader {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-sm);
-  width: 100%;
-}
-
-.pricingIcon {
-  color: var(--accent-1);
-  margin-bottom: var(--spacing-xs);
-}
-
-.pricingDuration {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--primary-text-color);
-  margin: 0;
-  line-height: 1.3;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.pricingPrice {
-  font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: var(--accent-1);
-  margin: var(--spacing-sm) 0;
-  line-height: 1;
-  position: relative;
-  padding-bottom: var(--spacing-sm);
-}
-
-.pricingPrice::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
-}
-
-.pricingDescription {
-  font-size: 0.875rem;
-  color: var(--secondary-text-color);
-  line-height: 1.5;
-  margin: 0;
-  text-align: center;
-}
-
-/* ==================== GALLERY SECTION ==================== */
-.gallerySection {
-  padding: var(--spacing-xl) 0;
-}
-
-.galleryGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  grid-auto-rows: 280px;
   gap: var(--spacing-md);
-  grid-auto-flow: dense;
-  margin-top: var(--spacing-lg);
-}
-
-.galleryCard {
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--background-2);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-base);
-  opacity: 0;
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* Size Classes for Masonry Layout */
-.galleryCard.square {
-  grid-column: span 1;
-  grid-row: span 1;
-}
-
-.galleryCard.landscape {
-  grid-column: span 2;
-  grid-row: span 1;
-}
-
-.galleryCard.portrait {
-  grid-column: span 1;
-  grid-row: span 2;
-}
-
-.galleryCard.wideLandscape {
-  grid-column: span 2;
-  grid-row: span 1;
-}
-
-.galleryCard.tallPortrait {
-  grid-column: span 1;
-  grid-row: span 2;
-}
-
-.galleryCard:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.galleryCard:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.galleryCard:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-.galleryCard.visible {
-  opacity: 1;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.galleryCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
-.cardImageWrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--background-2);
-}
-
-.cardImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s var(--transition-base);
-  display: block;
-}
-
-.galleryCard:hover .cardImage {
-  transform: scale(1.02);
-}
-
-.cardImageGradient {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
-  pointer-events: none;
-}
-
-/* ==================== FOOTER CTA ==================== */
-.footer {
-  padding: var(--spacing-xl) 0;
-  text-align: center;
-}
-
-.footerCard {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-xl);
-  background: linear-gradient(135deg, var(--accent-1-background), var(--accent-2-background));
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-}
-
-.footerIcon {
-  color: var(--accent-1);
   margin-bottom: var(--spacing-lg);
 }
 
+.pricingIcon {
+  width: 24px;
+  height: 24px;
+  stroke: var(--accent-1);
+  flex-shrink: 0;
+}
+
+.pricingDuration {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--primary-text-color);
+  margin: 0;
+  flex: 1;
+}
+
+.pricingPrice {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--accent-1);
+  margin-bottom: var(--spacing-sm);
+}
+
+.pricingDescription {
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text-color);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ==================== GALLERY SECTION ==================== */
+.galleryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+.galleryItem {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--background-3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.galleryItem:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.galleryItem:hover .galleryImage {
+  transform: scale(1.05);
+}
+
+/* ==================== FOOTER SECTION ==================== */
+.footerSection {
+  padding: var(--spacing-3xl) 0 var(--spacing-2xl);
+}
+
+.footerCard {
+  padding: var(--spacing-3xl);
+  background: linear-gradient(
+    135deg,
+    var(--accent-1-background) 0%,
+    var(--accent-2-background) 100%
+  );
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--accent-1);
+  text-align: center;
+}
+
 .footerTitle {
-  font-family: 'Crimson Pro', Georgia, serif;
-  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-size: clamp(1.75rem, 4vw, var(--font-size-2xl));
   font-weight: 700;
   color: var(--primary-text-color);
   margin: 0 0 var(--spacing-lg) 0;
 }
 
-.footerText {
-  font-size: 1.125rem;
+.footerMessage {
+  font-size: var(--font-size-base);
   color: var(--secondary-text-color);
-  line-height: 1.8;
-  margin: 0;
+  line-height: 1.7;
+  margin: 0 0 var(--spacing-2xl) 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* ==================== RESPONSIVE DESIGN ==================== */
-@media (max-width: 1024px) {
+.footerDivider {
+  width: min(80px, 20vw);
+  height: 3px;
+  background: var(--accent-1);
+  margin: 0 auto var(--spacing-xl) auto;
+  border-radius: var(--radius-full);
+}
+
+.footerMeta {
+  font-size: var(--font-size-sm);
+  color: var(--tertiary-text-color);
+  font-weight: 500;
+}
+
+/* ==================== RESPONSIVE BREAKPOINTS ==================== */
+
+/* Mobile (< 576px) */
+@media (max-width: 575px) {
+  .hero,
   .container {
-    padding: var(--spacing-md) var(--spacing-sm);
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
   }
-
-  .heroTitle {
-    font-size: 3rem;
+  
+  .heroContainer,
+  .container {
+    overflow-x: hidden;
   }
+}
 
+/* Tablets (768px+) */
+@media (min-width: 576px) {
+  .galleryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
   .servicesGrid {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .pricingGrid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .galleryGrid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-auto-rows: 250px;
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (max-width: 768px) {
-  .hero {
-    padding: var(--spacing-md) 0 var(--spacing-sm);
-  }
-
-  .heroTitle {
-    font-size: 2.5rem;
-  }
-
-  .heroSubtitle {
-    font-size: 1rem;
-  }
-
-  .servicesSection,
-  .pricingSection,
-  .gallerySection {
-    padding: var(--spacing-lg) 0;
-  }
-
-  .sectionTitle {
-    font-size: 2rem;
-  }
-
-  .servicesGrid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: var(--spacing-sm);
-  }
-
-  .serviceCard {
-    padding: var(--spacing-sm);
-  }
-
-  .serviceIcon {
-    width: 48px;
-    height: 48px;
-  }
-
-  .serviceTitle {
-    font-size: 1.25rem;
-  }
-
-  .serviceDescription {
-    font-size: 0.9375rem;
-  }
-
+/* Desktops (992px+) */
+@media (min-width: 992px) {
   .pricingGrid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: var(--spacing-sm);
-  }
-
-  .pricingCard {
-    padding: var(--spacing-sm);
-  }
-
-  .pricingDuration {
-    font-size: 1rem;
-  }
-
-  .pricingPrice {
-    font-size: 2rem;
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .galleryGrid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 180px;
-    gap: var(--spacing-sm);
-  }
-
-  /* Simplify spans on tablet */
-  .galleryCard.landscape,
-  .galleryCard.wideLandscape {
-    grid-column: span 2;
-    grid-row: span 1;
-  }
-
-  .galleryCard.portrait,
-  .galleryCard.tallPortrait {
-    grid-column: span 1;
-    grid-row: span 2;
-  }
-  
-  .pricingGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-sm);
-  }
-  
-  .pricingPrice {
-    font-size: 1.75rem;
-  }
-  
-  .pricingDuration {
-    font-size: 0.875rem;
-  }
-
-  .footerCard {
-    padding: var(--spacing-md);
-  }
-
-  .footerTitle {
-    font-size: 2rem;
-  }
-
-  .footerText {
-    font-size: 1rem;
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@media (max-width: 480px) {
+/* Large Desktops (1200px+) */
+@media (min-width: 1200px) {
   .container {
-    padding: var(--spacing-sm) var(--spacing-xs);
+    padding: var(--spacing-3xl);
   }
+}
 
-  .hero {
-    padding: var(--spacing-md) 0;
-  }
-
-  .heroTitle {
-    font-size: 2rem;
-    line-height: 1.1;
-  }
-
-  .heroSubtitle {
-    font-size: 0.9375rem;
-  }
-
-  .sectionTitle {
-    font-size: 1.5rem;
-  }
-
-  .sectionSubtitle {
-    font-size: 0.875rem;
-  }
-
-  .servicesSection,
-  .pricingSection,
-  .gallerySection {
-    padding: var(--spacing-md) 0;
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .heroBadge,
+  .hero::before {
+    display: none;
   }
 
   .serviceCard,
   .pricingCard {
-    padding: var(--spacing-xs);
-  }
-
-  .serviceTitle {
-    font-size: 1rem;
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .serviceDescription {
-    font-size: 0.875rem;
-    line-height: 1.5;
-  }
-
-  .servicesGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-xs);
-  }
-  
-  .galleryGrid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 120px;
-    gap: var(--spacing-xs);
-  }
-  
-  /* Simplify all items on mobile */
-  .galleryCard.landscape,
-  .galleryCard.wideLandscape,
-  .galleryCard.square {
-    grid-column: span 1;
-    grid-row: span 1;
-  }
-  
-  .galleryCard.portrait,
-  .galleryCard.tallPortrait {
-    grid-column: span 1;
-    grid-row: span 2;
-  }
-  
-  .pricingGrid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-sm);
-  }
-  
-  .pricingCard {
-    padding: var(--spacing-md) var(--spacing-sm);
-  }
-  
-  .pricingPrice {
-    font-size: 2rem;
-    margin: var(--spacing-xs) 0;
-  }
-  
-  .pricingDuration {
-    font-size: 0.875rem;
-  }
-
-  .pricingDescription {
-    font-size: 0.8125rem;
-  }
-
-  .footerCard {
-    padding: var(--spacing-sm);
-  }
-
-  .footerTitle {
-    font-size: 1.25rem;
-  }
-
-  .footerText {
-    font-size: 0.875rem;
-    line-height: 1.6;
-  }
-  
-  .footerIcon {
-    width: 32px;
-    height: 32px;
+    page-break-inside: avoid;
   }
 }
 
-/* ==================== ANIMATIONS ==================== */
+/* ==================== REDUCED MOTION ==================== */
 @media (prefers-reduced-motion: reduce) {
-  .hero,
-  .servicesSection,
-  .galleryCard {
-    animation: none;
-    transition: none;
-  }
-
-  .serviceCard:hover,
-  .pricingCard:hover,
-  .galleryCard:hover {
+  .hero {
+    opacity: 1;
     transform: none;
   }
 
-  .galleryCard:hover .cardImage {
+  .galleryItem:hover .galleryImage {
     transform: none;
   }
 
-  .decorCircle {
-    animation: none;
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

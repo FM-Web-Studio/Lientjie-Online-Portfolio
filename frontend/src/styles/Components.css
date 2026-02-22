@@ -1,6 +1,6 @@
 /* ==================== Global Overflow Protection ==================== */
-* {
-    max-width: 100%;
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 html {

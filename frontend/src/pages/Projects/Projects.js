@@ -1,53 +1,39 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
-import { Building2, Search, X, Play, Image as ImageIcon, FolderOpen } from 'lucide-react';
 import styles from './Projects.module.css';
 import projectsData from '../../information/projects.json';
 import { LazyImage } from '../../components';
 
-// ============================================
-// ARCHITECTURE PROJECTS COMPONENT
-// ============================================
-
 const Projects = () => {
-  // ----------------------------------------
-  // State Management
-  // ----------------------------------------
   const [isVisible, setIsVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMedia, setSelectedMedia] = useState(null);
 
-  // ----------------------------------------
-  // Effects
-  // ----------------------------------------
-  
-  // Trigger entrance animation
   useEffect(() => {
-    setIsVisible(true);
+    const timer = setTimeout(() => setIsVisible(true), 150);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Lock body scroll when lightbox is open
   useEffect(() => {
     if (selectedMedia) {
-      document.body.style.overflow = 'hidden';
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
     } else {
-      document.body.style.overflow = 'unset';
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [selectedMedia]);
 
-  // ----------------------------------------
-  // Media Loading Functions
-  // ----------------------------------------
-  
   // Dynamically import images and videos from project folders
   const importProjectMedia = (folderName) => {
     const media = [];
     
     try {
-      // Import images
       const imageContext = require.context(
         '../../images/Projects',
         true,
@@ -58,8 +44,6 @@ const Projects = () => {
         const folderMatch = key.match(/^\.\/([^/]+)\//);
         if (folderMatch && folderMatch[1] === folderName) {
           const src = imageContext(key);
-          
-          // Load image to get dimensions
           const img = new Image();
           img.src = src;
           
@@ -72,7 +56,6 @@ const Projects = () => {
             aspectRatio: 1
           };
           
-          // Update dimensions when image loads
           img.onload = () => {
             mediaItem.dimensions = {
               width: img.naturalWidth,
@@ -85,7 +68,6 @@ const Projects = () => {
         }
       });
 
-      // Import videos
       try {
         const videoContext = require.context(
           '../../images/Projects',
@@ -105,7 +87,6 @@ const Projects = () => {
           }
         });
       } catch (error) {
-        // No videos in this project
         console.log(`No videos found in ${folderName}`);
       }
     } catch (error) {
@@ -115,11 +96,6 @@ const Projects = () => {
     return media;
   };
 
-  // ----------------------------------------
-  // Data Processing
-  // ----------------------------------------
-  
-  // Build projects collection with media
   const projects = useMemo(() => {
     return projectsData.projects.map(project => ({
       ...project,
@@ -127,7 +103,6 @@ const Projects = () => {
     }));
   }, []);
 
-  // Filter projects based on search
   const filteredProjects = useMemo(() => {
     if (!searchTerm) return projects;
     
@@ -138,133 +113,138 @@ const Projects = () => {
     );
   }, [projects, searchTerm]);
 
-  // ----------------------------------------
-  // Event Handlers
-  // ----------------------------------------
-  
   const handleMediaClick = (media, project) => {
     setSelectedMedia({ ...media, project });
   };
 
-  const closeLightbox = () => {
+  const closeLightbox = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setSelectedMedia(null);
   };
 
-  // ----------------------------------------
-  // Render
-  // ----------------------------------------
-  
   return (
-    <div className={`${styles.container} ${isVisible ? styles.visible : ''}`}>
+    <div className={styles.projectsWrapper}>
+      
       {/* Hero Section */}
-      <section className={styles.hero}>
-        <Building2 className={styles.heroIcon} size={64} />
-        <h1 className={styles.heroTitle}>Architecture Portfolio</h1>
-        <p className={styles.heroSubtitle}>
-          Exploring the intersection of space, form, and function through thoughtful design
-        </p>
+      <section className={`${styles.hero} ${isVisible ? styles.visible : ''}`}>
+        <div className={styles.heroContainer}>
+          <div className={styles.heroBadge}>
+            <svg className={styles.badgeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <span>Portfolio</span>
+          </div>
+          <h1 className={styles.heroTitle}>Architecture Projects</h1>
+          <p className={styles.heroSubtitle}>
+            Exploring spatial design, form, and function through creative architectural solutions
+          </p>
+
+          {/* Search Bar */}
+          <div className={styles.searchBox}>
+            <svg className={styles.searchIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={styles.searchInput}
+            />
+            {searchTerm && (
+              <button onClick={() => setSearchTerm('')} className={styles.clearBtn}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
       </section>
 
-      {/* Search Bar */}
-      <div className={styles.searchSection}>
-        <div className={styles.searchBox}>
-          <Search size={20} className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Search projects by name, category, or description..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
-          />
-          {searchTerm && (
-            <button onClick={() => setSearchTerm('')} className={styles.clearBtn}>
-              <X size={18} />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Projects Section */}
-      <div className={styles.projectsContainer}>
+      {/* Projects Container */}
+      <div className={styles.container}>
         {filteredProjects.length === 0 ? (
           <div className={styles.emptyState}>
-            <FolderOpen size={64} />
-            <h3>No projects found</h3>
-            <p>Try adjusting your search terms</p>
+            <svg className={styles.emptyIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+            <h3 className={styles.emptyTitle}>No projects found</h3>
+            <p className={styles.emptyText}>Try adjusting your search terms</p>
           </div>
         ) : (
-          filteredProjects.map((project, index) => (
-            <section
-              key={project.id}
-              id={`project-${project.id}`}
-              className={styles.projectSection}
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
+          filteredProjects.map((project) => (
+            <section key={project.id} className={styles.projectSection}>
+              
               {/* Project Header */}
               <div className={styles.projectHeader}>
-                <div className={styles.projectNumber}>
-                  {String(project.id).padStart(2, '0')}
-                </div>
+                <div className={styles.projectNumber}>{String(project.id).padStart(2, '0')}</div>
                 <div className={styles.projectInfo}>
                   <h2 className={styles.projectTitle}>{project.name}</h2>
                   <div className={styles.projectMeta}>
                     <span className={styles.projectCategory}>{project.category}</span>
                     <span className={styles.projectYear}>{project.year}</span>
                   </div>
-                  <p className={styles.projectDescription}>{project.description}</p>
                 </div>
               </div>
 
-              {/* Project Media Grid */}
+              {/* Project Description */}
+              <p className={styles.projectDescription}>{project.description}</p>
+
+              {/* Project Media */}
               {project.media.length > 0 ? (
                 <div className={styles.mediaGrid}>
-                  {project.media.map((media, mediaIndex) => {
-                    // Determine aspect ratio class
-                    const aspectRatio = media.aspectRatio || 1;
-                    
-                    let sizeClass = styles.square;
-                    if (aspectRatio > 1.3) sizeClass = styles.landscape;
-                    else if (aspectRatio < 0.7) sizeClass = styles.portrait;
-                    else if (aspectRatio > 1.6) sizeClass = styles.wideLandscape;
-                    else if (aspectRatio < 0.5) sizeClass = styles.tallPortrait;
-                    
-                    return (
+                  {project.media.map((media, mediaIndex) => (
                     <div
-                      key={`${project.id}-${mediaIndex}`}
-                      className={`${styles.mediaItem} ${sizeClass}`}
+                      key={mediaIndex}
+                      className={styles.mediaItem}
                       onClick={() => handleMediaClick(media, project)}
                     >
                       {media.type === 'image' ? (
-                        <div className={styles.mediaImageWrapper}>
+                        <>
                           <LazyImage 
                             src={media.src} 
                             alt={media.name}
+                            className={styles.mediaImage}
                             threshold={0.01}
                             rootMargin="200px"
                             enableUnload={false}
                           />
                           <div className={styles.mediaOverlay}>
-                            <ImageIcon size={32} />
-                            <span>View Image</span>
+                            <svg className={styles.overlayIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                              <circle cx="8.5" cy="8.5" r="1.5" />
+                              <polyline points="21 15 16 10 5 21" />
+                            </svg>
+                            <span className={styles.overlayText}>View Image</span>
                           </div>
-                        </div>
+                        </>
                       ) : (
-                        <div className={styles.mediaVideoWrapper}>
-                          <video src={media.src} />
+                        <>
+                          <video src={media.src} className={styles.mediaVideo} />
                           <div className={styles.mediaOverlay}>
-                            <Play size={48} />
-                            <span>Play Video</span>
+                            <svg className={styles.overlayIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                            <span className={styles.overlayText}>Play Video</span>
                           </div>
-                        </div>
+                        </>
                       )}
                     </div>
-                    );
-                  })}
+                  ))}
                 </div>
               ) : (
                 <div className={styles.noMedia}>
-                  <FolderOpen size={48} />
-                  <p>No media files in this project yet</p>
+                  <svg className={styles.noMediaIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <p className={styles.noMediaText}>No media files in this project</p>
                 </div>
               )}
             </section>
@@ -274,20 +254,20 @@ const Projects = () => {
 
       {/* Lightbox Modal */}
       {selectedMedia && ReactDOM.createPortal(
-        <div className={styles.lightbox} onClick={closeLightbox}>
-          <button className={styles.closeBtn} onClick={closeLightbox}>
-            <X size={32} />
+        <div className={styles.lightbox} onClick={(e) => closeLightbox(e)}>
+          <button className={styles.lightboxClose} onClick={(e) => closeLightbox(e)} aria-label="Close" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
           
           <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
             {selectedMedia.type === 'image' ? (
-              <LazyImage 
+              <img 
                 src={selectedMedia.src} 
                 alt={selectedMedia.name}
                 className={styles.lightboxImage}
-                threshold={0}
-                rootMargin="0px"
-                enableUnload={false}
               />
             ) : (
               <video 
@@ -299,8 +279,8 @@ const Projects = () => {
             )}
             
             <div className={styles.lightboxInfo}>
-              <h3>{selectedMedia.project.name}</h3>
-              <p>{selectedMedia.name}</p>
+              <h3 className={styles.lightboxTitle}>{selectedMedia.project.name}</h3>
+              <p className={styles.lightboxCaption}>{selectedMedia.name}</p>
             </div>
           </div>
         </div>,
@@ -309,9 +289,5 @@ const Projects = () => {
     </div>
   );
 };
-
-// ============================================
-// EXPORTS
-// ============================================
 
 export default Projects;

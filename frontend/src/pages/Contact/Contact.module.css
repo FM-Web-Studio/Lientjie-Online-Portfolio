@@ -1,524 +1,617 @@
-/* ==================== CONTAINER ==================== */
-.contactContainer {
-  position: relative;
+/* ==========================================
+   CONTACT PAGE - MODERN RESPONSIVE DESIGN
+   ========================================== */
+
+/* Wrapper */
+.contactWrapper {
   min-height: 100vh;
   width: 100%;
   max-width: 100vw;
-  background: var(--background-1);
-  display: flex;
-  flex-direction: column;
   overflow-x: hidden;
+  padding-top: 80px;
+  background: var(--background-1);
+  transition: background var(--transition-base);
 }
 
-/* ==================== HERO SECTION ==================== */
+/* ==========================================
+   HERO SECTION
+   ========================================== */
+
 .hero {
-  position: relative;
-  width: 100%;
-  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+  color: var(--background-1);
   text-align: center;
-  background: linear-gradient(135deg, var(--background-2) 0%, var(--background-1) 100%);
-  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all var(--transition-medium) ease-out;
 }
 
-.heroContent {
+.hero.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  animation: heroGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(10%, 10%);
+  }
+}
+
+.heroContainer {
+  max-width: var(--max-width-md, 800px);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-lg);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.badgeIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.heroTitle {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  margin: 0 0 var(--spacing-md);
+  line-height: 1.1;
+  color: var(--background-1);
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: currentColor;
+  background-clip: unset;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+}
+
+.heroSubtitle {
+  font-size: clamp(var(--font-size-md), 2vw, var(--font-size-lg));
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.95;
   max-width: 600px;
   margin: 0 auto;
 }
 
-.mainTitle {
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  margin: 0 0 var(--spacing-xs);
-  color: var(--primary-text-color);
-  letter-spacing: -0.01em;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
+/* ==========================================
+   CONTAINER & SECTIONS
+   ========================================== */
 
-.tagline {
-  font-size: var(--font-size-base);
-  color: var(--secondary-text-color);
-  margin: 0;
-  font-weight: 400;
-  line-height: 1.4;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-/* ==================== CONTENT WRAPPER ==================== */
-.contentWrapper {
-  flex: 1;
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.content {
-  max-width: 1200px;
-  width: 100%;
+.container {
+  max-width: var(--max-width-lg, 1200px);
   margin: 0 auto;
-  padding: var(--spacing-lg) var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
-  box-sizing: border-box;
+  padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
-/* ==================== SECTION TITLES ==================== */
-.sectionTitle {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  margin: 0 0 var(--spacing-md);
-  color: var(--primary-text-color);
-  display: flex;
+.section {
+  margin-bottom: var(--spacing-3xl);
+}
+
+.sectionLabel {
+  display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.titleIcon {
-  color: var(--accent-1);
-  flex-shrink: 0;
-}
-
-/* ==================== SERVICES SECTION ==================== */
-.servicesSection {
-  width: 100%;
-}
-
-.servicesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-}
-
-.serviceCard {
-  position: relative;
-  padding: var(--spacing-md);
-  background: var(--background-2);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  transition: all var(--transition-base);
-  overflow: hidden;
-}
-
-.serviceCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition-base);
-}
-
-.serviceCard:hover::before {
-  transform: scaleX(1);
-}
-
-.serviceCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--accent-1);
-}
-
-.serviceRequired {
-  border: 2px solid var(--accent-1);
-}
-
-.serviceHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-1);
 }
 
-.serviceName {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--primary-text-color);
-  margin: 0;
-  line-height: 1.3;
-}
-
-.requiredBadge {
+.labelNumber {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--accent-1);
-  color: white;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: var(--background-1);
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
-  font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.servicePrice {
-  font-size: var(--font-size-xl);
+.labelText {
+  color: var(--text-secondary);
+}
+
+.sectionTitle {
+  font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-3xl));
   font-weight: 700;
-  color: var(--accent-1);
-  margin: 0 0 var(--spacing-md);
+  margin: 0 0 var(--spacing-xl);
+  color: var(--text-primary);
 }
 
-.serviceDescription {
-  font-size: var(--font-size-sm);
-  color: var(--secondary-text-color);
-  margin: 0;
-  line-height: 1.6;
-}
-
-.serviceNote {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background: var(--accent-1-background);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--accent-1);
-}
-
-.serviceNote svg {
-  color: var(--accent-1);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.serviceNote p {
-  font-size: var(--font-size-sm);
-  color: var(--primary-text-color);
-  margin: 0;
-  line-height: 1.6;
-}
-
-/* ==================== CONTACT SECTION ==================== */
-.contactSection {
-  width: 100%;
-}
+/* ==========================================
+   CONTACT CARDS
+   ========================================== */
 
 .contactGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--spacing-lg);
 }
 
 .contactCard {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
   background: var(--background-2);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast) ease;
   text-decoration: none;
-  transition: all var(--transition-base);
+  color: inherit;
   position: relative;
   overflow: hidden;
 }
 
-.contactCard::after {
+.contactCard::before {
   content: '';
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition-base);
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent-1), var(--accent-2));
+  transform: scaleY(0);
+  transition: transform var(--transition-fast) ease;
 }
 
-.contactCard:hover::after {
-  transform: scaleX(1);
+.contactCard:hover,
+.contactCard:focus {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-1-light, var(--accent-1));
 }
 
-.contactCard:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--accent-1);
+.contactCard:hover::before,
+.contactCard:focus::before {
+  transform: scaleY(1);
 }
 
-.iconWrapper {
+.contactIcon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--accent-1-light, var(--accent-1)), var(--accent-2-light, var(--accent-2)));
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-  color: white;
-  flex-shrink: 0;
-  transition: transform var(--transition-base);
+  color: var(--background-1);
+  transition: transform var(--transition-fast) ease;
 }
 
-.contactCard:hover .iconWrapper {
-  transform: scale(1.1) rotate(5deg);
+.contactCard:hover .contactIcon,
+.contactCard:focus .contactIcon {
+  transform: rotate(10deg) scale(1.1);
+}
+
+.contactIcon svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2;
 }
 
 .contactInfo {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-  flex: 1;
-  min-width: 0;
 }
 
 .contactLabel {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--secondary-text-color);
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
 }
 
 .contactValue {
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  color: var(--primary-text-color);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
   word-break: break-word;
-  overflow-wrap: break-word;
 }
 
-/* ==================== SOCIAL SECTION ==================== */
-.socialSection {
-  width: 100%;
-}
+/* ==========================================
+   SOCIAL MEDIA GRID
+   ========================================== */
 
 .socialGrid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--spacing-md);
-  align-items: center;
 }
 
-.socialButton {
+.socialCard {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-sm) var(--spacing-sm);
+  padding: var(--spacing-lg);
   background: var(--background-2);
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+  border-radius: var(--radius-md);
   text-decoration: none;
-  transition: all var(--transition-base);
+  color: inherit;
+  transition: all var(--transition-fast) ease;
   position: relative;
   overflow: hidden;
 }
 
-.socialButton::before {
+.socialCard::after {
   content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, var(--accent-1-light, var(--accent-1)) 100%);
   opacity: 0;
-  transition: opacity var(--transition-base);
-  border-radius: var(--radius-full);
+  transition: opacity var(--transition-fast) ease;
+  pointer-events: none;
 }
 
-.socialButton:hover::before {
-  opacity: 0.1;
-}
-
-.primarySocial {
-  border: 2px solid var(--accent-1);
-  background: var(--accent-1-background);
-}
-
-.socialButton:hover {
-  transform: translateY(-2px);
+.socialCard:hover,
+.socialCard:focus {
+  transform: translateX(8px);
   box-shadow: var(--shadow-md);
   border-color: var(--accent-1);
 }
 
+.socialCard:hover::after,
+.socialCard:focus::after {
+  opacity: 0.05;
+}
+
+.primarySocial {
+  background: linear-gradient(135deg, var(--accent-1-light, var(--accent-1)), var(--accent-2-light, var(--accent-2)));
+  color: var(--background-1);
+  border-color: transparent;
+}
+
+.primarySocial .socialPlatform,
+.primarySocial .socialUsername,
+.primarySocial .socialDescription {
+  color: var(--background-1);
+}
+
+.primarySocial .socialIcon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.primarySocial:hover,
+.primarySocial:focus {
+  transform: translateX(8px) scale(1.02);
+}
+
 .socialIcon {
-  position: relative;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: var(--background-3);
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-  color: white;
-  flex-shrink: 0;
-  transition: transform var(--transition-base);
+  transition: transform var(--transition-fast) ease;
 }
 
-.socialButton:hover .socialIcon {
-  transform: rotate(15deg) scale(1.1);
+.socialCard:hover .socialIcon,
+.socialCard:focus .socialIcon {
+  transform: scale(1.1);
+}
+
+.socialIcon svg {
+  width: 22px;
+  height: 22px;
 }
 
 .socialInfo {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--spacing-2xs);
   position: relative;
+  z-index: 1;
 }
 
 .socialPlatform {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--primary-text-color);
-  line-height: 1.2;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-1);
 }
 
 .socialUsername {
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  color: var(--accent-1);
-  line-height: 1.2;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-/* ==================== AVAILABILITY SECTION ==================== */
-.availabilitySection {
-  width: 100%;
+.socialDescription {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
+
+/* ==========================================
+   AVAILABILITY CARD
+   ========================================== */
 
 .availabilityCard {
-  padding: var(--spacing-xl);
-  background: linear-gradient(135deg, var(--accent-1-background), var(--accent-2-background));
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--accent-1);
+  padding: var(--spacing-2xl);
+  background: linear-gradient(135deg, var(--accent-3-light, var(--accent-3)), var(--accent-4-light, var(--accent-4)));
+  border-radius: var(--radius-lg);
   text-align: center;
+  color: var(--background-1);
+  position: relative;
+  overflow: hidden;
+}
+
+.availabilityCard::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  animation: pulse 6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.availabilityIcon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--spacing-md);
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
 }
 
 .availabilityTitle {
   font-size: var(--font-size-xl);
   font-weight: 700;
   margin: 0 0 var(--spacing-md);
-  color: var(--primary-text-color);
+  position: relative;
+  z-index: 1;
 }
 
 .availabilityText {
-  font-size: var(--font-size-base);
-  color: var(--secondary-text-color);
-  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-md);
   line-height: 1.6;
+  margin: 0 0 var(--spacing-sm);
+  opacity: 0.95;
+  position: relative;
+  z-index: 1;
 }
 
 .availabilityNote {
   font-size: var(--font-size-sm);
-  color: var(--tertiary-text-color);
   margin: 0;
+  opacity: 0.85;
+  position: relative;
+  z-index: 1;
 }
 
-/* ==================== RESPONSIVE DESIGN ==================== */
+/* ==========================================
+   FOOTER SECTION
+   ========================================== */
 
-/* Tablets and below (768px) */
-@media (max-width: 768px) {
-  .hero {
-    padding: var(--spacing-md) var(--spacing-sm);
+.footerSection {
+  margin-bottom: 0;
+}
+
+.footerCard {
+  padding: var(--spacing-2xl);
+  background: var(--background-2);
+  border: 2px solid var(--accent-1-light, var(--accent-1));
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.footerTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  margin: 0 0 var(--spacing-md);
+  color: var(--text-primary);
+}
+
+.footerMessage {
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  margin: 0 0 var(--spacing-lg);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footerDivider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
+  margin: var(--spacing-lg) 0;
+}
+
+.footerMeta {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS
+   ========================================== */
+
+/* Mobile (< 576px) */
+@media (max-width: 575px) {
+  .hero,
+  .container {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
   }
-
-  .mainTitle {
-    font-size: var(--font-size-xl);
+  
+  .heroContainer,
+  .container {
+    overflow-x: hidden;
   }
+}
 
-  .tagline {
-    font-size: var(--font-size-sm);
-  }
-
-  .content {
-    padding: var(--spacing-md) var(--spacing-sm);
-    gap: var(--spacing-lg);
-  }
-
-  .sectionTitle {
-    font-size: var(--font-size-md);
-  }
-
-  .servicesGrid {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  }
-
+/* Small devices (576px and up) */
+@media (min-width: 576px) {
   .contactGrid {
     grid-template-columns: 1fr;
   }
-
+  
   .socialGrid {
-    justify-content: center;
+    grid-template-columns: 1fr;
   }
 }
 
-/* Mobile devices (480px and below) */
-@media (max-width: 480px) {
+/* Medium devices (768px and up) */
+@media (min-width: 768px) {
   .hero {
-    padding: var(--spacing-sm) var(--spacing-xs);
+    padding: calc(var(--spacing-3xl) * 1.5) var(--spacing-xl);
   }
-
-  .heroContent {
-    padding: 0;
+  
+  .container {
+    padding: calc(var(--spacing-2xl) * 1.5) var(--spacing-xl);
   }
-
-  .mainTitle {
-    font-size: var(--font-size-lg);
-  }
-
-  .tagline {
-    font-size: var(--font-size-sm);
-  }
-
-  .content {
-    padding: var(--spacing-sm) var(--spacing-xs);
-    gap: var(--spacing-md);
-  }
-
-  .sectionTitle {
-    font-size: var(--font-size-base);
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .servicesGrid {
+  
+  .contactGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-sm);
   }
-
-  .serviceCard {
-    padding: var(--spacing-sm);
+  
+  .contactCard:nth-child(3) {
+    grid-column: 1 / -1;
+    max-width: 50%;
+    margin: 0 auto;
+    width: 100%;
   }
-
-  .serviceName {
-    font-size: var(--font-size-sm);
+  
+  .socialGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .servicePrice {
-    font-size: var(--font-size-md);
+/* Large devices (992px and up) */
+@media (min-width: 992px) {
+  .contactGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
-
+  
+  .contactCard:nth-child(3) {
+    grid-column: auto;
+    max-width: none;
+  }
+  
   .contactCard {
-    padding: var(--spacing-sm);
-    gap: var(--spacing-xs);
+    flex-direction: column;
+    text-align: center;
+    padding: var(--spacing-2xl);
   }
-
-  .iconWrapper {
-    width: 40px;
-    height: 40px;
+  
+  .contactIcon {
+    width: 64px;
+    height: 64px;
   }
-
-  .contactValue {
-    font-size: var(--font-size-sm);
+  
+  .contactIcon svg {
+    width: 32px;
+    height: 32px;
   }
+}
 
-  .socialButton {
-    padding: var(--spacing-xs) var(--spacing-md) var(--spacing-xs) var(--spacing-xs);
+/* Extra large devices (1200px and up) */
+@media (min-width: 1200px) {
+  .hero {
+    padding: calc(var(--spacing-3xl) * 2) var(--spacing-2xl);
   }
+  
+  .container {
+    padding: calc(var(--spacing-2xl) * 2) var(--spacing-2xl);
+  }
+  
+  .contactCard {
+    padding: var(--spacing-2xl) var(--spacing-xl);
+  }
+}
 
+/* ==========================================
+   REDUCED MOTION
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .contactWrapper,
+  .hero,
+  .contactCard,
+  .socialCard,
+  .contactIcon,
   .socialIcon {
-    width: 38px;
-    height: 38px;
+    animation: none;
+    transition: none;
   }
-
-  .availabilityCard {
-    padding: var(--spacing-md);
+  
+  .hero::before,
+  .availabilityCard::before {
+    animation: none;
   }
-
-  .availabilityTitle {
-    font-size: var(--font-size-lg);
+  
+  .contactCard:hover,
+  .contactCard:focus,
+  .socialCard:hover,
+  .socialCard:focus {
+    transform: none;
   }
 }
