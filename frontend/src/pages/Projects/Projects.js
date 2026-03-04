@@ -4,6 +4,57 @@ import styles from './Projects.module.css';
 import projectsData from '../../information/projects.json';
 import { LazyImage } from '../../components';
 
+// Dynamically import images and videos from project folders
+const importProjectMedia = (folderName) => {
+  const media = [];
+  
+  try {
+    const imageContext = require.context(
+      '../../images/Projects',
+      true,
+      /\.(png|jpe?g|svg|webp)$/
+    );
+    
+    imageContext.keys().forEach((key) => {
+      const folderMatch = key.match(/^\.\/([^/]+)\//);
+      if (folderMatch && folderMatch[1] === folderName) {
+        media.push({
+          type: 'image',
+          src: imageContext(key),
+          path: key,
+          name: key.split('/').pop()
+        });
+      }
+    });
+
+    try {
+      const videoContext = require.context(
+        '../../images/Projects',
+        true,
+        /\.(mp4|webm|ogg|mov)$/
+      );
+      
+      videoContext.keys().forEach((key) => {
+        const folderMatch = key.match(/^\.\/([^/]+)\//);
+        if (folderMatch && folderMatch[1] === folderName) {
+          media.push({
+            type: 'video',
+            src: videoContext(key),
+            path: key,
+            name: key.split('/').pop()
+          });
+        }
+      });
+    } catch (error) {
+      console.log(`No videos found in ${folderName}`);
+    }
+  } catch (error) {
+    console.error(`Error loading media from ${folderName}:`, error);
+  }
+  
+  return media;
+};
+
 const Projects = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +71,18 @@ const Projects = () => {
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
+
+      // Add escape key handler
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+          setSelectedMedia(null);
+        }
+      };
+      document.addEventListener('keydown', handleEscape);
+
+      return () => {
+        document.removeEventListener('keydown', handleEscape);
+      };
     } else {
       const scrollY = document.body.style.top;
       document.body.style.position = '';
@@ -28,73 +91,6 @@ const Projects = () => {
       window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
   }, [selectedMedia]);
-
-  // Dynamically import images and videos from project folders
-  const importProjectMedia = (folderName) => {
-    const media = [];
-    
-    try {
-      const imageContext = require.context(
-        '../../images/Projects',
-        true,
-        /\.(png|jpe?g|svg|webp)$/
-      );
-      
-      imageContext.keys().forEach((key) => {
-        const folderMatch = key.match(/^\.\/([^/]+)\//);
-        if (folderMatch && folderMatch[1] === folderName) {
-          const src = imageContext(key);
-          const img = new Image();
-          img.src = src;
-          
-          const mediaItem = {
-            type: 'image',
-            src: src,
-            path: key,
-            name: key.split('/').pop(),
-            dimensions: { width: 1, height: 1 },
-            aspectRatio: 1
-          };
-          
-          img.onload = () => {
-            mediaItem.dimensions = {
-              width: img.naturalWidth,
-              height: img.naturalHeight
-            };
-            mediaItem.aspectRatio = img.naturalWidth / img.naturalHeight;
-          };
-          
-          media.push(mediaItem);
-        }
-      });
-
-      try {
-        const videoContext = require.context(
-          '../../images/Projects',
-          true,
-          /\.(mp4|webm|ogg|mov)$/
-        );
-        
-        videoContext.keys().forEach((key) => {
-          const folderMatch = key.match(/^\.\/([^/]+)\//);
-          if (folderMatch && folderMatch[1] === folderName) {
-            media.push({
-              type: 'video',
-              src: videoContext(key),
-              path: key,
-              name: key.split('/').pop()
-            });
-          }
-        });
-      } catch (error) {
-        console.log(`No videos found in ${folderName}`);
-      }
-    } catch (error) {
-      console.error(`Error loading media from ${folderName}:`, error);
-    }
-    
-    return media;
-  };
 
   const projects = useMemo(() => {
     return projectsData.projects.map(project => ({
@@ -254,33 +250,46 @@ const Projects = () => {
 
       {/* Lightbox Modal */}
       {selectedMedia && ReactDOM.createPortal(
-        <div className={styles.lightbox} onClick={(e) => closeLightbox(e)}>
-          <button className={styles.lightboxClose} onClick={(e) => closeLightbox(e)} aria-label="Close" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-          
-          <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-            {selectedMedia.type === 'image' ? (
-              <img 
-                src={selectedMedia.src} 
-                alt={selectedMedia.name}
-                className={styles.lightboxImage}
-              />
-            ) : (
-              <video 
-                src={selectedMedia.src}
-                controls
-                autoPlay
-                className={styles.lightboxVideo}
-              />
-            )}
-            
-            <div className={styles.lightboxInfo}>
-              <h3 className={styles.lightboxTitle}>{selectedMedia.project.name}</h3>
-              <p className={styles.lightboxCaption}>{selectedMedia.name}</p>
+        <div className={styles.lightboxBackdrop} onClick={(e) => closeLightbox(e)}>
+          <div className={styles.lightboxContainer} onClick={(e) => e.stopPropagation()}>
+            {/* Close button */}
+            <button 
+              className={styles.lightboxCloseBtn} 
+              onClick={(e) => closeLightbox(e)} 
+              aria-label="Close"
+              type="button"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Media container */}
+            <div className={styles.lightboxMediaWrapper}>
+              {selectedMedia.type === 'image' ? (
+                <img 
+                  src={selectedMedia.src} 
+                  alt={selectedMedia.name}
+                  className={styles.lightboxMedia}
+                />
+              ) : (
+                <video 
+                  src={selectedMedia.src}
+                  controls
+                  autoPlay
+                  className={styles.lightboxMedia}
+                />
+              )}
+            </div>
+
+            {/* Info bar */}
+            <div className={styles.lightboxInfoBar}>
+              <div className={styles.lightboxInfoContent}>
+                <span className={styles.lightboxProjectName}>{selectedMedia.project.name}</span>
+                <span className={styles.lightboxDivider}>•</span>
+                <span className={styles.lightboxFileName}>{selectedMedia.name}</span>
+              </div>
             </div>
           </div>
         </div>,
