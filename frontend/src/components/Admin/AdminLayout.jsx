@@ -4,8 +4,10 @@ import { useAuth } from '../../context/AuthContext'
 import styles from './AdminLayout.module.css'
 
 const NAV = [
-  { label: 'Dashboard', to: '/admin',          end: true },
-  { label: 'Projects',  to: '/admin/projects', end: false },
+  { label: 'Dashboard', to: '/admin',           end: true  },
+  { label: 'Projects',  to: '/admin/projects',  end: false },
+  { label: 'About',     to: '/admin/about',     end: false },
+  { label: 'Settings',  to: '/admin/settings',  end: false },
 ]
 
 export default function AdminLayout() {

@@ -11,10 +11,12 @@ const Bio         = lazy(() => import('./pages/Bio/Bio'))
 const Projects    = lazy(() => import('./pages/Projects/Projects'))
 const Contact     = lazy(() => import('./pages/Contact/Contact'))
 const AdminLogin  = lazy(() => import('./pages/Admin/AdminLogin'))
-const AdminDash   = lazy(() => import('./pages/Admin/AdminDashboard'))
-const AdminProj   = lazy(() => import('./pages/Admin/AdminProjects'))
-const AdminForm   = lazy(() => import('./pages/Admin/AdminProjectForm'))
-const NotFound    = lazy(() => import('./pages/NotFound/NotFound'))
+const AdminDash     = lazy(() => import('./pages/Admin/AdminDashboard'))
+const AdminProj     = lazy(() => import('./pages/Admin/AdminProjects'))
+const AdminForm     = lazy(() => import('./pages/Admin/AdminProjectForm'))
+const AdminAbout    = lazy(() => import('./pages/Admin/AdminAbout'))
+const AdminSettings = lazy(() => import('./pages/Admin/AdminSettings'))
+const NotFound      = lazy(() => import('./pages/NotFound/NotFound'))
 
 function PublicLayout() {
   return (
@@ -50,6 +52,8 @@ export default function App() {
             <Route path="/admin/projects"              element={<AdminProj />} />
             <Route path="/admin/projects/new"          element={<AdminForm />} />
             <Route path="/admin/projects/:id/edit"     element={<AdminForm />} />
+            <Route path="/admin/about"                 element={<AdminAbout />} />
+            <Route path="/admin/settings"              element={<AdminSettings />} />
           </Route>
         </Route>
 
