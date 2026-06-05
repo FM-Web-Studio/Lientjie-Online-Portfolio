@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getProjects, deleteProject } from '../../lib/firestore'
+import { getProjects, deleteProject } from '../../firebase'
 import styles from './AdminProjects.module.css'
 
 export default function AdminProjects() {

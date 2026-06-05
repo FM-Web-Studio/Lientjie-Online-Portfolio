@@ -11,7 +11,7 @@
   width: 26px;
   height: 26px;
   border: 1.5px solid var(--border);
-  border-top-color: var(--accent);
+  border-top-color: var(--accent-1);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }

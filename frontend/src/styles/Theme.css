@@ -1,0 +1,139 @@
+/* ── Architect Design Tokens ──────────────────────────────── */
+:root {
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-sans:  'DM Sans', system-ui, -apple-system, sans-serif;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.9rem;
+  --text-base: 1rem;
+  --text-md:   1.125rem;
+  --text-lg:   1.375rem;
+  --text-xl:   1.75rem;
+  --text-2xl:  2.25rem;
+  --text-3xl:  clamp(2.25rem, 4.5vw, 3.25rem);
+  --text-4xl:  clamp(3rem, 7vw, 5rem);
+  --text-hero: clamp(5rem, 12vw, 10rem);
+
+  --leading-tight:   1.05;
+  --leading-snug:    1.25;
+  --leading-normal:  1.55;
+  --leading-relaxed: 1.75;
+
+  --sp-1:    4px;
+  --sp-2:    8px;
+  --sp-3:   12px;
+  --sp-4:   16px;
+  --sp-5:   20px;
+  --sp-6:   24px;
+  --sp-8:   32px;
+  --sp-10:  40px;
+  --sp-12:  48px;
+  --sp-16:  64px;
+  --sp-20:  80px;
+  --sp-24:  96px;
+  --sp-32: 128px;
+
+  --r-xs:   3px;
+  --r-sm:   6px;
+  --r-md:  10px;
+  --r-lg:  16px;
+  --r-xl:  24px;
+  --r-full: 9999px;
+
+  --t-fast:   150ms ease;
+  --t-base:   250ms ease;
+  --t-slow:   400ms ease;
+  --t-spring: 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --nav-h:  72px;
+  --max-w: 1200px;
+
+  --z-base:     1;
+  --z-above:   10;
+  --z-sticky: 100;
+  --z-overlay: 200;
+  --z-modal:   300;
+  --z-toast:   500;
+}
+
+/* ── Light — warm stone + brass ──────────────────────────────── */
+[data-theme='light'] {
+  --bg-0: #F6F3EE;
+  --bg-1: #FDFAF6;
+  --bg-2: #EDE7DB;
+  --bg-3: #E2DAD0;
+  --bg-glass:        rgba(253, 250, 246, 0.86);
+  --bg-glass-strong: rgba(246, 243, 238, 0.95);
+
+  --fg-1: #1B1916;
+  --fg-2: #3D3527;
+  --fg-3: #7C7060;
+  --fg-4: #B4A898;
+
+  --accent-1:    #7A5C1A;
+  --accent-2:    #A07A28;
+  --accent-3:    #4E3A0C;
+  --accent-h:    #8A6820;
+  --accent-text: #FDFAF6;
+  --accent-sub:  rgba(122, 92, 26, 0.10);
+  --accent-sub2: rgba(122, 92, 26, 0.20);
+
+  --accent-1-rgb: 122, 92, 26;
+  --accent-2-rgb: 160, 122, 40;
+
+  --border-1:     #D8D0C2;
+  --border-2:     #EBE4DA;
+  --border-hover: rgba(122, 92, 26, 0.30);
+
+  --success: #5A7828;
+  --warning: #C27818;
+  --error:   #A82A18;
+  --info:    #246080;
+
+  --shadow-xs: 0 1px 3px  rgba(60, 40, 10, 0.07);
+  --shadow-sm: 0 2px 8px  rgba(60, 40, 10, 0.09);
+  --shadow-md: 0 4px 20px rgba(60, 40, 10, 0.11), 0 1px 4px rgba(60, 40, 10, 0.06);
+  --shadow-lg: 0 8px 40px rgba(60, 40, 10, 0.13), 0 2px 8px rgba(60, 40, 10, 0.07);
+  --shadow-xl: 0 20px 60px rgba(60, 40, 10, 0.16);
+}
+
+/* ── Dark — deep walnut + warm gold ──────────────────────────── */
+[data-theme='dark'] {
+  --bg-0: #100F0C;
+  --bg-1: #1C1A14;
+  --bg-2: #252018;
+  --bg-3: #322A1E;
+  --bg-glass:        rgba(28, 26, 20, 0.88);
+  --bg-glass-strong: rgba(16, 15, 12, 0.96);
+
+  --fg-1: #F0E8DC;
+  --fg-2: #C8B48C;
+  --fg-3: #907C62;
+  --fg-4: #5A4E3A;
+
+  --accent-1:    #C89030;
+  --accent-2:    #E0B050;
+  --accent-3:    #8A6418;
+  --accent-h:    #D8A03A;
+  --accent-text: #1B1916;
+  --accent-sub:  rgba(200, 144, 48, 0.12);
+  --accent-sub2: rgba(200, 144, 48, 0.22);
+
+  --accent-1-rgb: 200, 144, 48;
+  --accent-2-rgb: 224, 176, 80;
+
+  --border-1:     #2E2618;
+  --border-2:     #1E1A10;
+  --border-hover: rgba(200, 144, 48, 0.35);
+
+  --success: #7A9C40;
+  --warning: #D89030;
+  --error:   #D04030;
+  --info:    #3A8AAC;
+
+  --shadow-xs: 0 1px 3px  rgba(0, 0, 0, 0.30);
+  --shadow-sm: 0 2px 8px  rgba(0, 0, 0, 0.40);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.50), 0 1px 4px rgba(0, 0, 0, 0.30);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.60), 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.70);
+}

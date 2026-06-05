@@ -2,7 +2,7 @@
   font-family: var(--font-serif);
   font-size: 2rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
   margin-bottom: 6px;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .stat {
-  background: var(--bg-card);
+  background: var(--bg-1);
   border: 1px solid var(--border-2);
   border-radius: var(--r-lg);
   padding: 24px 32px;
@@ -31,14 +31,14 @@
 }
 
 .statAlert {
-  border-color: var(--accent);
+  border-color: var(--accent-1);
 }
 
 .statNum {
   font-family: var(--font-serif);
   font-size: 2.2rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
   line-height: 1;
 }
 
@@ -59,7 +59,7 @@
 
 .actionCard {
   position: relative;
-  background: var(--bg-card);
+  background: var(--bg-1);
   border: 1px solid var(--border-2);
   border-radius: var(--r-lg);
   padding: 24px;
@@ -70,7 +70,7 @@
 }
 
 .actionCard:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-1);
   box-shadow: var(--shadow-sm);
 }
 
@@ -78,7 +78,7 @@
   font-family: var(--font-serif);
   font-size: 1.1rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
 }
 
 .actionDesc {
@@ -92,7 +92,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.1rem;
-  color: var(--accent);
+  color: var(--accent-1);
 }
 
 /* Messages */
@@ -102,7 +102,7 @@
   font-family: var(--font-serif);
   font-size: 1.4rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
   margin-bottom: 20px;
 }
 
@@ -113,7 +113,7 @@
 }
 
 .msg {
-  background: var(--bg-card);
+  background: var(--bg-1);
   border: 1px solid var(--border-2);
   border-radius: var(--r-base);
   padding: 16px 20px;
@@ -122,7 +122,7 @@
   gap: 4px;
 }
 
-.msgUnread { border-left: 3px solid var(--accent); }
+.msgUnread { border-left: 3px solid var(--accent-1); }
 
 .msgMeta {
   display: flex;
@@ -133,7 +133,7 @@
 .msgName {
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--fg);
+  color: var(--fg-1);
 }
 
 .msgEmail {

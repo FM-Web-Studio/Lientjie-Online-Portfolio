@@ -30,7 +30,7 @@
   transition: color var(--t-fast);
   flex-shrink: 0;
 }
-.logo:hover { color: var(--accent); }
+.logo:hover { color: var(--accent-1); }
 
 /* Desktop nav */
 .desktopNav {
@@ -55,7 +55,7 @@
   bottom: -3px;
   left: 0; right: 0;
   height: 1px;
-  background: var(--accent);
+  background: var(--accent-1);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--t-base);
@@ -83,7 +83,7 @@
   color: var(--fg-3);
   transition: color var(--t-fast), background var(--t-fast);
 }
-.iconBtn:hover { color: var(--fg); background: var(--bg-hover); }
+.iconBtn:hover { color: var(--fg); background: var(--bg-3); }
 
 /* Hamburger */
 .hamburger {
@@ -146,7 +146,7 @@
   padding: var(--sp-2) 0;
 }
 .overlayLink:hover,
-.overlayLinkActive { color: var(--accent); }
+.overlayLinkActive { color: var(--accent-1); }
 
 .overlayTheme {
   margin-top: var(--sp-8);

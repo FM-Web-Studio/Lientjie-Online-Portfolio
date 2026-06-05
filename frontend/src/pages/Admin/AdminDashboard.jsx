@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getProjects, getMessages } from '../../lib/firestore'
+import { getProjects, getMessages } from '../../firebase'
 import styles from './AdminDashboard.module.css'
 
 export default function AdminDashboard() {

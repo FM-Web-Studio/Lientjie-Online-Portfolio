@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signInWithGoogle } from '../../lib/auth'
-import { useAuth } from '../../context/AuthContext'
+import { signInWithGoogle } from '../../firebase'
+import { useAuth } from '../../hooks'
 import styles from './AdminLogin.module.css'
 
 export default function AdminLogin() {

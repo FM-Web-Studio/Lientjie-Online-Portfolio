@@ -7,7 +7,7 @@
 .sidebar {
   width: 210px;
   flex-shrink: 0;
-  background: var(--bg-card);
+  background: var(--bg-1);
   border-right: 1px solid var(--border-2);
   display: flex;
   flex-direction: column;
@@ -25,7 +25,7 @@
   font-size: 1.05rem;
   font-weight: 500;
   letter-spacing: 0.08em;
-  color: var(--fg);
+  color: var(--fg-1);
 }
 
 .sideNav { display: flex; flex-direction: column; gap: var(--sp-1); }
@@ -38,8 +38,8 @@
   color: var(--fg-2);
   transition: background var(--t-fast), color var(--t-fast);
 }
-.sideLink:hover { background: var(--bg-hover); color: var(--fg); }
-.sideLinkActive { background: var(--accent-bg); color: var(--accent); }
+.sideLink:hover { background: var(--bg-3); color: var(--fg-1); }
+.sideLinkActive { background: var(--accent-bg); color: var(--accent-1); }
 
 .sidebarBottom { display: flex; flex-direction: column; gap: var(--sp-3); }
 
@@ -60,7 +60,7 @@
   text-align: left;
   transition: color var(--t-fast);
 }
-.logoutBtn:hover { color: var(--accent); }
+.logoutBtn:hover { color: var(--accent-1); }
 
 .content { flex: 1; padding: var(--sp-10) var(--sp-12); overflow-x: hidden; }
 

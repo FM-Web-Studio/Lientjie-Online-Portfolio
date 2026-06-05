@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getSettings, updateSettings } from '../../lib/firestore'
+import { getSettings, updateSettings } from '../../firebase'
 import styles from './AdminSettings.module.css'
 
 const EMPTY = {

@@ -11,7 +11,7 @@
   font-weight: 600;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-1);
   margin-bottom: var(--sp-3);
 }
 
@@ -61,11 +61,11 @@
   white-space: nowrap;
   transition: background var(--t-fast), color var(--t-fast);
 }
-.filterBtn:hover { background: var(--bg-hover); color: var(--fg); }
+.filterBtn:hover { background: var(--bg-3); color: var(--fg); }
 
 .filterActive {
-  background: var(--accent);
-  color: var(--accent-fg) !important;
+  background: var(--accent-1);
+  color: var(--accent-text) !important;
 }
 .filterActive:hover { background: var(--accent-h) !important; }
 

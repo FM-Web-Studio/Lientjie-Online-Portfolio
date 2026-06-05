@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getProject, createProject, updateProject } from '../../lib/firestore'
-import { uploadMultiple } from '../../lib/storage'
+import { getProject, createProject, updateProject, uploadMultiple } from '../../firebase'
 import styles from './AdminProjectForm.module.css'
 
 const CATEGORIES = ['academic', 'installation', 'structural', 'urban', 'residential', 'competition']

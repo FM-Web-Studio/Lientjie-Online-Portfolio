@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getBioProfile, getBioSection, updateBioSection } from '../../lib/firestore'
-import { uploadImage } from '../../lib/storage'
+import { getBioProfile, getBioSection, updateBioSection, uploadFile } from '../../firebase'
 import styles from './AdminAbout.module.css'
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
@@ -68,7 +67,7 @@ function ProfileTab({ initial }) {
     if (!file) return
     setUploading(true)
     try {
-      const url = await uploadImage(file, 'profile')
+      const url = await uploadFile(file, 'profile')
       setForm(f => ({ ...f, profileImage: url }))
     } catch { alert('Image upload failed.') }
     finally { setUploading(false) }

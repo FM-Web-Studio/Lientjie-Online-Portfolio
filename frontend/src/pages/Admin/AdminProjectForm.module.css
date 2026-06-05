@@ -12,7 +12,7 @@
   font-family: var(--font-serif);
   font-size: 2rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
 }
 
 .cancelBtn {
@@ -20,12 +20,12 @@
   font-weight: 500;
   color: var(--fg-3);
   padding: 8px 18px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-1);
   border-radius: var(--r-sm);
   transition: color var(--t-fast), border-color var(--t-fast);
 }
 
-.cancelBtn:hover { color: var(--fg); border-color: var(--border); }
+.cancelBtn:hover { color: var(--fg-1); border-color: var(--border-1); }
 
 .form { display: flex; flex-direction: column; gap: 24px; }
 
@@ -64,19 +64,19 @@
 
 .input {
   width: 100%;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-1);
   border-radius: var(--r-base);
   padding: 10px 12px;
   font-size: 0.88rem;
-  color: var(--fg);
-  background: var(--bg-card);
+  color: var(--fg-1);
+  background: var(--bg-1);
   transition: border-color var(--t-fast);
   outline: none;
 }
 
-.input:focus { border-color: var(--accent); }
+.input:focus { border-color: var(--accent-1); }
 
-.input option { background: var(--bg-card); }
+.input option { background: var(--bg-1); }
 
 .ta { resize: vertical; min-height: 80px; }
 
@@ -87,9 +87,9 @@
   cursor: pointer;
 }
 
-.checkbox { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+.checkbox { width: 16px; height: 16px; accent-color: var(--accent-1); cursor: pointer; }
 
-.checkLabel { font-size: 0.88rem; color: var(--fg); }
+.checkLabel { font-size: 0.88rem; color: var(--fg-1); }
 
 .fileInput {
   font-size: 0.82rem;
@@ -106,7 +106,7 @@
 
 .uploadMsg {
   font-size: 0.8rem;
-  color: var(--accent);
+  color: var(--accent-1);
 }
 
 .error {
@@ -126,8 +126,8 @@
 
 .saveBtn {
   padding: 12px 32px;
-  background: var(--accent);
-  color: var(--accent-fg);
+  background: var(--accent-1);
+  color: var(--accent-text);
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.15em;

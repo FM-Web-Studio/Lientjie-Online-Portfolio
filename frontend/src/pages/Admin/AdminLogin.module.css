@@ -8,7 +8,7 @@
 }
 
 .card {
-  background: var(--bg-card);
+  background: var(--bg-1);
   border: 1px solid var(--border-2);
   border-radius: var(--r-lg);
   padding: 48px 40px;
@@ -23,7 +23,7 @@
   font-size: 1.8rem;
   font-weight: 500;
   letter-spacing: 0.1em;
-  color: var(--fg);
+  color: var(--fg-1);
   margin-bottom: 28px;
 }
 
@@ -31,7 +31,7 @@
   font-family: var(--font-serif);
   font-size: 1.6rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
   margin-bottom: 10px;
 }
 
@@ -49,16 +49,16 @@
   gap: 12px;
   width: 100%;
   padding: 13px 24px;
-  background: var(--bg-muted);
-  border: 1px solid var(--border);
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
   border-radius: var(--r-base);
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--fg);
+  color: var(--fg-1);
   transition: background var(--t-fast), border-color var(--t-fast);
 }
 
 .googleBtn:hover {
-  background: var(--bg-hover);
-  border-color: var(--border);
+  background: var(--bg-3);
+  border-color: var(--border-1);
 }

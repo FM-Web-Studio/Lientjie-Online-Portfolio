@@ -1,0 +1,102 @@
+.container {
+  position: fixed;
+  top: calc(var(--nav-h) + 16px);
+  right: 20px;
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  width: 340px;
+  max-width: calc(100vw - 40px);
+  padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-3);
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  pointer-events: all;
+  position: relative;
+  overflow: hidden;
+  animation: slideInRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast.leaving {
+  animation: slideOutRight 0.28s ease forwards;
+}
+
+.stripe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+}
+
+.success .stripe { background: var(--success); }
+.error   .stripe { background: var(--error); }
+.warning .stripe { background: var(--warning); }
+.info    .stripe { background: var(--info); }
+
+.iconWrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-md);
+  margin-top: 1px;
+}
+
+.success .iconWrap { color: var(--success); background: rgba(90, 120, 40, 0.12); }
+.error   .iconWrap { color: var(--error);   background: rgba(168, 42, 24, 0.12); }
+.warning .iconWrap { color: var(--warning); background: rgba(194, 120, 24, 0.12); }
+.info    .iconWrap { color: var(--info);    background: rgba(36, 96, 128, 0.12); }
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--fg-1);
+  margin-bottom: 2px;
+  line-height: 1.4;
+}
+
+.message {
+  font-size: var(--text-xs);
+  color: var(--fg-3);
+  line-height: 1.5;
+}
+
+.close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-sm);
+  color: var(--fg-4);
+  opacity: 0.6;
+  transition: opacity var(--t-fast), background var(--t-fast), color var(--t-fast);
+  margin-top: 2px;
+}
+
+.close:hover {
+  opacity: 1;
+  background: rgba(var(--accent-1-rgb), 0.10);
+  color: var(--fg-2);
+}

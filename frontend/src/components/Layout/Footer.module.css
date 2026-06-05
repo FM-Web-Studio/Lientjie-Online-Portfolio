@@ -1,7 +1,7 @@
 .footer {
   border-top: 1px solid var(--border-2);
   margin-top: var(--sp-24);
-  background: var(--bg-muted);
+  background: var(--bg-2);
 }
 
 .inner {
@@ -23,7 +23,7 @@
   color: var(--fg);
   transition: color var(--t-fast);
 }
-.logo:hover { color: var(--accent); }
+.logo:hover { color: var(--accent-1); }
 
 .tagline { font-size: 0.78rem; color: var(--fg-3); }
 
@@ -55,7 +55,7 @@
   color: var(--fg-3);
   transition: color var(--t-fast);
 }
-.socialLink:hover { color: var(--accent); }
+.socialLink:hover { color: var(--accent-1); }
 
 .bar {
   border-top: 1px solid var(--border-2);

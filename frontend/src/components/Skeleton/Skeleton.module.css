@@ -1,0 +1,78 @@
+.skel {
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    90deg,
+    var(--bg-2) 25%,
+    var(--bg-3) 50%,
+    var(--bg-2) 75%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.6s ease infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: -400px 0; }
+  to   { background-position:  400px 0; }
+}
+
+/* Project card skeleton */
+.card {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--bg-1);
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: linear-gradient(
+    90deg,
+    var(--bg-2) 25%,
+    var(--bg-3) 50%,
+    var(--bg-2) 75%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.6s ease infinite;
+}
+
+.cardMeta {
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Timeline skeleton */
+.timeline {
+  display: flex;
+  gap: var(--sp-5);
+  padding: var(--sp-5) 0;
+  border-bottom: 1px solid var(--border-2);
+}
+
+.timelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-3);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.timelineBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Skill skeleton */
+.skill {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--sp-4);
+}
+
+.skillMeta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--sp-2);
+}

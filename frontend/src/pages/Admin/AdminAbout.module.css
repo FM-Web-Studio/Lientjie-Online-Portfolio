@@ -4,7 +4,7 @@
   font-family: var(--font-serif);
   font-size: 2rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
   margin-bottom: var(--sp-2);
 }
 
@@ -29,8 +29,8 @@
   margin-bottom: -1px;
   transition: color var(--t-fast), border-color var(--t-fast);
 }
-.tab:hover { color: var(--fg); }
-.tabActive { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover { color: var(--fg-1); }
+.tabActive { color: var(--accent-1); border-bottom-color: var(--accent-1); }
 
 /* ── Tab content ─────────────────────────────────────── */
 .tabContent { display: flex; flex-direction: column; gap: var(--sp-6); }
@@ -54,27 +54,29 @@
 
 .input {
   width: 100%;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-1);
   border-radius: var(--r-md);
   padding: 9px 12px;
   font-size: 0.875rem;
-  color: var(--fg);
-  background: var(--bg-card);
+  color: var(--fg-1);
+  background: var(--bg-1);
   transition: border-color var(--t-fast);
   outline: none;
   resize: none;
 }
 .input::placeholder { color: var(--fg-3); }
-.input:focus { border-color: var(--accent); }
+.input:focus { border-color: var(--accent-1); }
 .ta { min-height: 90px; resize: vertical; }
 
 .imagePreview {
-  width: 100%;
-  max-height: 200px;
+  width: 112px;
+  height: 112px;
   object-fit: cover;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border-2);
-  margin-bottom: var(--sp-2);
+  border-radius: 50%;
+  border: 2px solid var(--border-1);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--sp-3);
+  display: block;
 }
 
 .uploadLabel {
@@ -84,7 +86,7 @@
   margin-top: var(--sp-2);
   font-size: 0.78rem;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--accent-1);
   cursor: pointer;
   transition: color var(--t-fast);
 }
@@ -104,7 +106,7 @@
   font-family: var(--font-serif);
   font-size: 1.1rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
 }
 
 .listItem {
@@ -113,20 +115,20 @@
   justify-content: space-between;
   gap: var(--sp-4);
   padding: var(--sp-4);
-  background: var(--bg-card);
+  background: var(--bg-1);
   border: 1px solid var(--border-2);
   border-radius: var(--r-md);
 }
 
 .listItemInfo { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.listItemTitle { font-size: 0.9rem; font-weight: 500; color: var(--fg); }
+.listItemTitle { font-size: 0.9rem; font-weight: 500; color: var(--fg-1); }
 .listItemSub   { font-size: 0.78rem; color: var(--fg-3); }
 
 .listItemActions { display: flex; gap: var(--sp-2); flex-shrink: 0; }
 
 /* ── Inline form ─────────────────────────────────────── */
 .inlineForm {
-  background: var(--bg-muted);
+  background: var(--bg-2);
   border: 1px solid var(--border-2);
   border-radius: var(--r-lg);
   padding: var(--sp-6);
@@ -139,16 +141,16 @@
   font-family: var(--font-serif);
   font-size: 1rem;
   font-weight: 400;
-  color: var(--fg);
+  color: var(--fg-1);
 }
 
 .inlineActions { display: flex; gap: var(--sp-3); align-items: center; }
 
-.savedMsg { font-size: 0.82rem; color: var(--accent); font-weight: 500; }
+.savedMsg { font-size: 0.82rem; color: var(--accent-1); font-weight: 500; }
 
 /* ── Skills ──────────────────────────────────────────── */
 .skillCat {
-  background: var(--bg-card);
+  background: var(--bg-1);
   border: 1px solid var(--border-2);
   border-radius: var(--r-lg);
   padding: var(--sp-6);
@@ -184,7 +186,7 @@
 
 .levelSlider {
   flex: 1;
-  accent-color: var(--accent);
+  accent-color: var(--accent-1);
   cursor: pointer;
 }
 
@@ -199,7 +201,7 @@
 .addSkillBtn {
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--accent-1);
   align-self: flex-start;
   transition: color var(--t-fast);
 }
@@ -210,8 +212,8 @@
 /* ── Buttons ─────────────────────────────────────────── */
 .saveBtn {
   padding: 10px 28px;
-  background: var(--accent);
-  color: var(--accent-fg);
+  background: var(--accent-1);
+  color: var(--accent-text);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -224,8 +226,8 @@
 
 .addBtn {
   padding: 8px 18px;
-  background: var(--accent);
-  color: var(--accent-fg);
+  background: var(--accent-1);
+  color: var(--accent-text);
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: var(--r-full);
@@ -237,12 +239,12 @@
   font-size: 0.75rem;
   font-weight: 600;
   padding: 5px 12px;
-  background: var(--bg-muted);
+  background: var(--bg-2);
   border-radius: var(--r-sm);
-  color: var(--fg);
+  color: var(--fg-1);
   transition: background var(--t-fast);
 }
-.editBtn:hover { background: var(--bg-hover); }
+.editBtn:hover { background: var(--bg-3); }
 
 .deleteBtn {
   font-size: 0.75rem;
@@ -259,11 +261,11 @@
   font-weight: 500;
   color: var(--fg-3);
   padding: 10px 20px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-1);
   border-radius: var(--r-full);
   transition: color var(--t-fast);
 }
-.cancelBtn:hover { color: var(--fg); }
+.cancelBtn:hover { color: var(--fg-1); }
 
 @media (max-width: 600px) {
   .formGrid  { grid-template-columns: 1fr; }
