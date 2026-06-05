@@ -1,5 +1,12 @@
 {
   "projects": {
     "default": "lientjie-project"
+  },
+  "targets": {
+    "lientjie-project": {
+      "hosting": {
+        "lientjie-portfolio": ["lientjie-portfolio"]
+      }
+    }
   }
 }

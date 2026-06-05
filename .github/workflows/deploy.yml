@@ -43,4 +43,5 @@ jobs:
           firebaseServiceAccount: ${{ secrets.SERVICE_ACCOUNT }}
           channelId:              live
           projectId:              lientjie-project
+          target:                 lientjie-portfolio
           entryPoint:             frontend

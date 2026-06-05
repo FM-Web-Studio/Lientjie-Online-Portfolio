@@ -32,5 +32,30 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+
+    // ── Petsitting ────────────────────────────────────────────────────────────
+    match /petsitting_services/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /petsitting_gallery/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /petsitting_bio/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /petsitting_messages/{msgId} {
+      allow create: if
+        request.resource.data.keys().hasAll(['name', 'email', 'message', 'createdAt']) &&
+        request.resource.data.name is string && request.resource.data.name.size() > 0 &&
+        request.resource.data.email is string && request.resource.data.email.size() > 0 &&
+        request.resource.data.message is string && request.resource.data.message.size() > 0;
+      allow read, update, delete: if isAdmin();
+    }
   }
 }
