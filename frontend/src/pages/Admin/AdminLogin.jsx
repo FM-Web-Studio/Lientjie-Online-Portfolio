@@ -2,11 +2,13 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signInWithGoogle } from '../../firebase'
 import { useAuth } from '../../hooks'
+import { useToast } from '../../context/ToastContext'
 import styles from './AdminLogin.module.css'
 
 export default function AdminLogin() {
   const { user, isAdmin, loading } = useAuth()
   const navigate = useNavigate()
+  const { addToast } = useToast()
 
   useEffect(() => {
     if (!loading && user && isAdmin) navigate('/admin', { replace: true })
@@ -16,7 +18,12 @@ export default function AdminLogin() {
     try {
       await signInWithGoogle()
     } catch (err) {
-      console.error('Login failed:', err)
+      const cancelled = err.code === 'auth/popup-closed-by-user'
+      addToast({
+        type: 'error',
+        title: cancelled ? 'Cancelled' : 'Sign-in failed',
+        message: cancelled ? 'The sign-in window was closed.' : 'Could not sign in with Google. Please try again.',
+      })
     }
   }
 

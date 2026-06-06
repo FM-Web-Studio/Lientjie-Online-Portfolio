@@ -8,6 +8,12 @@
       {
         "source": "**/*.@(js|css|svg|png|jpg|jpeg|webp|gif)",
         "headers": [{ "key": "Cache-Control", "value": "max-age=31536000" }]
+      },
+      {
+        "source": "**",
+        "headers": [
+          { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" }
+        ]
       }
     ]
   },
