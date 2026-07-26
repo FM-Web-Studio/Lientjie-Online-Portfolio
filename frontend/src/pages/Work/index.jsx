@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { getProjects } from '../../firebase'
 import { ProjectCard, ProjectLightbox, Reveal } from '../../components'
 import { ProjectCardSkeleton } from '../../components'
+import { useContent } from '../../context/ContentContext'
 import styles from './Work.module.css'
 
-const CATS = ['All', 'Academic', 'Installation', 'Structural', 'Urban']
-
 export default function Work() {
+  const { copy } = useContent()
+  const t = copy('work')
+  const CATS = ['All', ...t.categories.split(',').map(c => c.trim()).filter(Boolean)]
   const [projects, setProjects] = useState([])
   const [loading,  setLoading]  = useState(true)
   const [filter,   setFilter]   = useState('All')
@@ -28,14 +30,11 @@ export default function Work() {
       <section className={styles.header}>
         <div className="container">
           <Reveal>
-            <p className={styles.eyebrow}>Portfolio</p>
+            <p className={styles.eyebrow}>{t.eyebrow}</p>
             <h1 className={styles.heading}>
-              All<br /><em>Work</em>.
+              {t.heading1}<br /><em>{t.heading2}</em>.
             </h1>
-            <p className={styles.sub}>
-              Architecture projects spanning academic studios,
-              structural studies, and urban installations.
-            </p>
+            <p className={styles.sub}>{t.sub}</p>
           </Reveal>
         </div>
       </section>
@@ -64,7 +63,7 @@ export default function Work() {
               {Array.from({ length: 6 }).map((_, i) => <ProjectCardSkeleton key={i} />)}
             </div>
           ) : visible.length === 0 ? (
-            <p className={styles.empty}>No projects in this category yet.</p>
+            <p className={styles.empty}>{t.emptyText}</p>
           ) : (
             <div className={styles.grid}>
               {visible.map((p, i) => (

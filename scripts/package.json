@@ -1,0 +1,9 @@
+{
+  "name": "lientjie-portfolio-scripts",
+  "private": true,
+  "type": "module",
+  "description": "One-time data migration scripts for the portfolio",
+  "dependencies": {
+    "firebase-admin": "^12.5.0"
+  }
+}

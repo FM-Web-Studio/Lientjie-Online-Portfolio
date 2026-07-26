@@ -1,11 +1,13 @@
 import {
   collection, doc, getDocs, addDoc, updateDoc, deleteDoc,
-  query, orderBy, where, serverTimestamp,
+  query, orderBy, serverTimestamp,
 } from 'firebase/firestore'
 import { db } from './app'
 
+const COL = 'portfolio_memories'
+
 export async function getMemories() {
-  const q = query(collection(db, 'memories'), orderBy('order', 'asc'))
+  const q = query(collection(db, COL), orderBy('order', 'asc'))
   const snap = await getDocs(q)
   return snap.docs
     .map(d => ({ id: d.id, ...d.data() }))
@@ -13,13 +15,13 @@ export async function getMemories() {
 }
 
 export async function getAllMemories() {
-  const q = query(collection(db, 'memories'), orderBy('order', 'asc'))
+  const q = query(collection(db, COL), orderBy('order', 'asc'))
   const snap = await getDocs(q)
   return snap.docs.map(d => ({ id: d.id, ...d.data() }))
 }
 
 export async function createMemory(data) {
-  return addDoc(collection(db, 'memories'), {
+  return addDoc(collection(db, COL), {
     ...data,
     active: true,
     createdAt: serverTimestamp(),
@@ -27,9 +29,9 @@ export async function createMemory(data) {
 }
 
 export async function updateMemory(id, data) {
-  return updateDoc(doc(db, 'memories', id), data)
+  return updateDoc(doc(db, COL, id), data)
 }
 
 export async function deleteMemory(id) {
-  return deleteDoc(doc(db, 'memories', id))
+  return deleteDoc(doc(db, COL, id))
 }

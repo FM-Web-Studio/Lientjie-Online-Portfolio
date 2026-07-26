@@ -2,17 +2,22 @@ import { useState } from 'react'
 import { createMessage } from '../../firebase'
 import { Reveal } from '../../components'
 import { useToast } from '../../context/ToastContext'
+import { useContent } from '../../context/ContentContext'
 import styles from './Contact.module.css'
 
 const EMPTY = { name: '', email: '', subject: '', message: '' }
 
-const DETAILS = [
-  { label: 'Email',         value: 'meiringlientjie0214@gmail.com', href: 'mailto:meiringlientjie0214@gmail.com' },
-  { label: 'Phone',         value: '+27 74 695 4980',               href: 'tel:+27746954980' },
-  { label: 'Location',      value: 'Roodepoort, Gauteng' },
-  { label: 'Instagram',     value: '@live_love_lien',               href: 'https://www.instagram.com/live_love_lien', external: true },
-  { label: 'Response time', value: 'Within 24 hours' },
-]
+function buildDetails(info) {
+  return [
+    info.email && { label: 'Email', value: info.email, href: `mailto:${info.email}` },
+    info.phone && { label: 'Phone', value: info.phone, href: `tel:${info.phone.replace(/\s+/g, '')}` },
+    info.location && { label: 'Location', value: info.location },
+    info.instagram && { label: 'Instagram', value: info.instagramLabel || 'Instagram', href: info.instagram, external: true },
+    info.linkedin && { label: 'LinkedIn', value: 'LinkedIn', href: info.linkedin, external: true },
+    info.facebook && { label: 'Facebook', value: 'Facebook', href: info.facebook, external: true },
+    info.responseTime && { label: 'Response time', value: info.responseTime },
+  ].filter(Boolean)
+}
 
 function validate(data) {
   const e = {}
@@ -34,6 +39,9 @@ function SendIcon() {
 
 export default function Contact() {
   const { addToast } = useToast()
+  const { copy } = useContent()
+  const t = copy('contactPage')
+  const DETAILS = buildDetails(copy('contact'))
   const [form,    setForm]    = useState(EMPTY)
   const [errors,  setErrors]  = useState({})
   const [touched, setTouched] = useState({})
@@ -87,12 +95,9 @@ export default function Contact() {
       <section className={styles.header}>
         <div className="container">
           <Reveal>
-            <p className={styles.eyebrow}>Contact</p>
-            <h1 className={styles.heading}>Say<br />Hello.</h1>
-            <p className={styles.sub}>
-              Available for studio opportunities, collaborations,
-              and general enquiries. I'd love to hear from you.
-            </p>
+            <p className={styles.eyebrow}>{t.eyebrow}</p>
+            <h1 className={styles.heading}>{t.heading}</h1>
+            <p className={styles.sub}>{t.sub}</p>
           </Reveal>
         </div>
       </section>
@@ -110,10 +115,8 @@ export default function Contact() {
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
-                    <h3 className={styles.successTitle}>Message received.</h3>
-                    <p className={styles.successBody}>
-                      Thank you for reaching out — I'll be in touch within 24 hours.
-                    </p>
+                    <h3 className={styles.successTitle}>{t.successTitle}</h3>
+                    <p className={styles.successBody}>{t.successBody}</p>
                     <button className={styles.resetBtn} onClick={() => setStatus('idle')}>
                       Send another message
                     </button>
@@ -178,7 +181,7 @@ export default function Contact() {
                     )}
 
                     <button type="submit" className={styles.submitBtn} disabled={status === 'sending'}>
-                      {status === 'sending' ? 'Sending…' : <><SendIcon /> Send Message</>}
+                      {status === 'sending' ? 'Sending…' : <><SendIcon /> {t.submitLabel}</>}
                     </button>
                   </form>
                 )}
@@ -187,7 +190,7 @@ export default function Contact() {
 
             <Reveal delay={80}>
               <aside className={styles.details}>
-                <h2 className={styles.detailsTitle}>Contact Details</h2>
+                <h2 className={styles.detailsTitle}>{t.detailsTitle}</h2>
                 {DETAILS.map(({ label, value, href, external }) => (
                   <div key={label} className={styles.detailRow}>
                     <p className={styles.detailLabel}>{label}</p>

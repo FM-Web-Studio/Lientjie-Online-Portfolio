@@ -56,7 +56,7 @@
   --z-toast:   500;
 }
 
-/* ── Light — warm stone + brass ──────────────────────────────── */
+/* ── Light - warm stone + brass ──────────────────────────────── */
 [data-theme='light'] {
   --bg-0: #F6F3EE;
   --bg-1: #FDFAF6;
@@ -97,7 +97,7 @@
   --shadow-xl: 0 20px 60px rgba(60, 40, 10, 0.16);
 }
 
-/* ── Dark — deep walnut + warm gold ──────────────────────────── */
+/* ── Dark - deep walnut + warm gold ──────────────────────────── */
 [data-theme='dark'] {
   --bg-0: #100F0C;
   --bg-1: #1C1A14;

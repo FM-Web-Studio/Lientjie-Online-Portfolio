@@ -1,0 +1,103 @@
+/* =============================================================================
+ * ADMIN COMPAT TOKENS + SCROLLBAR
+ * =============================================================================
+ * The ported Modal + SearchableDropdown (and the admin CSS module) reference a
+ * Francois-style token vocabulary. We alias those onto the portfolio's real
+ * Theme.css tokens (--fg-*, --bg-*, --accent-1, --border-1, --r-*, --t-*) so the
+ * admin feels identical but stays on the brass/serif brand. These reference vars
+ * defined per-theme, so they flip automatically in dark mode - no extra block.
+ *
+ * We deliberately do NOT restyle bare <input>/<button> globally (would break the
+ * public site). The admin uses scoped .field/.formCard/.btn* classes instead.
+ * ========================================================================== */
+
+:root {
+  /* Text */
+  --primary-text-color: var(--fg-1);
+  --secondary-text-color: var(--fg-2);
+  --tertiary-text-color: var(--fg-3);
+  --disabled-color: var(--fg-4);
+
+  /* Surfaces */
+  --background-0: var(--bg-0);
+  --background-1: var(--bg-1);
+  --background-2: var(--bg-2);
+  --background-3: var(--bg-3);
+  --background-4: var(--bg-3);
+  --frosted-background: var(--bg-glass);
+
+  /* Borders */
+  --border-color: var(--border-1);
+  --border-color-hover: var(--border-hover);
+
+  /* Accent (real tokens already exist: --accent-1, --accent-1-rgb) */
+  --accent-hover: var(--accent-h);
+
+  /* Status */
+  --error-color: var(--error);
+  --success-color: var(--success);
+  --warning-color: var(--warning);
+
+  /* Radii (alias to the --r-* scale) */
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-full: var(--r-full);
+
+  /* Transitions */
+  --transition: var(--t-base);
+  --transition-fast: var(--t-fast);
+  --transition-base: var(--t-base);
+  --transition-slow: var(--t-slow);
+
+  /* Spacing scale */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+
+  /* Type scale */
+  --font-size-xs: 0.875rem;
+  --font-size-sm: 0.9375rem;
+  --font-size-base: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.875rem;
+  --font-size-3xl: 2.25rem;
+
+  /* Admin-only z-index (kept separate from the public scale) */
+  --z-dropdown: 1000;
+  --z-admin-sticky: 1020;
+}
+
+.admin-scope { color: var(--primary-text-color); -webkit-font-smoothing: antialiased; }
+
+/* ── Scrollbar - no track, only a floating brass thumb (the Francois look) ── */
+.admin-scope ::-webkit-scrollbar,
+.admin-modal ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+.admin-scope ::-webkit-scrollbar-track,
+.admin-scope ::-webkit-scrollbar-corner,
+.admin-modal ::-webkit-scrollbar-track,
+.admin-modal ::-webkit-scrollbar-corner { background: transparent; }
+.admin-scope ::-webkit-scrollbar-thumb,
+.admin-modal ::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-1-rgb), 0.5);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+.admin-scope ::-webkit-scrollbar-thumb:hover,
+.admin-modal ::-webkit-scrollbar-thumb:hover { background: rgba(var(--accent-1-rgb), 0.8); }
+.admin-scope, .admin-modal {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-1-rgb), 0.55) transparent;
+}

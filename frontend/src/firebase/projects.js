@@ -1,11 +1,13 @@
 import {
   collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc,
-  query, orderBy, where, serverTimestamp,
+  query, orderBy, serverTimestamp,
 } from 'firebase/firestore'
 import { db } from './app'
 
+const COL = 'portfolio_projects'
+
 export async function getProjects() {
-  const q = query(collection(db, 'projects'), orderBy('order', 'asc'))
+  const q = query(collection(db, COL), orderBy('order', 'asc'))
   const snap = await getDocs(q)
   return snap.docs.map(d => ({ id: d.id, ...d.data() }))
 }
@@ -17,12 +19,12 @@ export async function getFeaturedProjects() {
 }
 
 export async function getProject(id) {
-  const snap = await getDoc(doc(db, 'projects', id))
+  const snap = await getDoc(doc(db, COL, id))
   return snap.exists() ? { id: snap.id, ...snap.data() } : null
 }
 
 export async function createProject(data) {
-  return addDoc(collection(db, 'projects'), {
+  return addDoc(collection(db, COL), {
     ...data,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -30,12 +32,12 @@ export async function createProject(data) {
 }
 
 export async function updateProject(id, data) {
-  return updateDoc(doc(db, 'projects', id), {
+  return updateDoc(doc(db, COL, id), {
     ...data,
     updatedAt: serverTimestamp(),
   })
 }
 
 export async function deleteProject(id) {
-  return deleteDoc(doc(db, 'projects', id))
+  return deleteDoc(doc(db, COL, id))
 }

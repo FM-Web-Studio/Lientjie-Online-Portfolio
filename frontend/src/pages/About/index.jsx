@@ -3,6 +3,7 @@ import { getBioProfile, getBioSection } from '../../firebase'
 import { Reveal } from '../../components'
 import Skeleton, { TimelineSkeleton, SkillSkeleton } from '../../components/Skeleton'
 import { useInView } from '../../hooks'
+import { useContent } from '../../context/ContentContext'
 import styles from './About.module.css'
 
 function SkillBar({ label, level }) {
@@ -21,6 +22,9 @@ function SkillBar({ label, level }) {
 }
 
 export default function About() {
+  const { copy } = useContent()
+  const t = copy('about')
+  const info = copy('contact')
   const [profile,    setProfile]    = useState(null)
   const [education,  setEducation]  = useState(null)
   const [experience, setExperience] = useState(null)
@@ -50,7 +54,7 @@ export default function About() {
       <section className={styles.hero}>
         <div className="container">
           <Reveal>
-            <p className={styles.eyebrow}>About</p>
+            <p className={styles.eyebrow}>{t.eyebrow}</p>
             {loading ? (
               <>
                 <Skeleton width="55%" height="clamp(2.5rem,6vw,4rem)" style={{ display: 'block', marginBottom: 12 }} />
@@ -59,11 +63,11 @@ export default function About() {
             ) : (
               <>
                 <h1 className={styles.name}>
-                  {(profile?.name ?? 'Lientjie Meiring').split(' ').map((w, i) => (
+                  {(profile?.name ?? t.fallbackName).split(' ').map((w, i) => (
                     <span key={i} style={{ display: 'block' }}>{w}</span>
                   ))}
                 </h1>
-                <p className={styles.titleLine}>{profile?.title ?? 'Architecture Student'}</p>
+                <p className={styles.titleLine}>{profile?.title ?? t.fallbackTitle}</p>
               </>
             )}
           </Reveal>
@@ -88,7 +92,7 @@ export default function About() {
             )}
             <Reveal delay={profile?.profileImage ? 80 : 0}>
               <div className={styles.profileText}>
-                <h2 className={styles.sectionTitle}>Profile</h2>
+                <h2 className={styles.sectionTitle}>{t.sectionProfile}</h2>
                 {loading ? (
                   <div className={styles.skelStack}>
                     {[90, 85, 70, 55].map(w => (
@@ -98,16 +102,16 @@ export default function About() {
                 ) : (
                   <p className={styles.bio}>{profile?.bio}</p>
                 )}
-                {!loading && profile && (
+                {!loading && (
                   <div className={styles.contacts}>
-                    {profile.email && (
-                      <a href={`mailto:${profile.email}`} className={styles.contactLink}>{profile.email}</a>
+                    {info.email && (
+                      <a href={`mailto:${info.email}`} className={styles.contactLink}>{info.email}</a>
                     )}
-                    {profile.phone && (
-                      <a href={`tel:${profile.phone}`} className={styles.contactLink}>{profile.phone}</a>
+                    {info.phone && (
+                      <a href={`tel:${info.phone}`} className={styles.contactLink}>{info.phone}</a>
                     )}
-                    {profile.location && (
-                      <span className={styles.contactText}>{profile.location}</span>
+                    {info.location && (
+                      <span className={styles.contactText}>{info.location}</span>
                     )}
                   </div>
                 )}
@@ -121,7 +125,7 @@ export default function About() {
       <section className={`${styles.section} ${styles.sectionAlt}`}>
         <div className="container">
           <Reveal>
-            <h2 className={styles.sectionTitle}>Education</h2>
+            <h2 className={styles.sectionTitle}>{t.sectionEducation}</h2>
           </Reveal>
           <div className={styles.timeline}>
             {loading
@@ -151,7 +155,7 @@ export default function About() {
         <section className={styles.section}>
           <div className="container">
             <Reveal>
-              <h2 className={styles.sectionTitle}>Experience</h2>
+              <h2 className={styles.sectionTitle}>{t.sectionExperience}</h2>
             </Reveal>
             <div className={styles.timeline}>
               {loading
@@ -182,7 +186,7 @@ export default function About() {
         <section className={`${styles.section} ${styles.sectionAlt}`}>
           <div className="container">
             <Reveal>
-              <h2 className={styles.sectionTitle}>Skills</h2>
+              <h2 className={styles.sectionTitle}>{t.sectionSkills}</h2>
             </Reveal>
             <div className={styles.skillsGrid}>
               {loading

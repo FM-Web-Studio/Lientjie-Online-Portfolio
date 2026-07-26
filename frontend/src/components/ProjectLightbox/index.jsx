@@ -75,7 +75,7 @@ export default function ProjectLightbox({ project, onClose }) {
             <img
               key={idx}
               src={images[idx]}
-              alt={`${project.title} — ${idx + 1} of ${images.length}`}
+              alt={`${project.title} - ${idx + 1} of ${images.length}`}
               className={styles.mainImg}
               onError={() => handleImgError(idx)}
             />

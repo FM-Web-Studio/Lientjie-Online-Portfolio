@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════
-   HOME PAGE — Architect Portfolio
+   HOME PAGE - Architect Portfolio
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Hero ────────────────────────────────────────────────────── */
@@ -13,7 +13,7 @@
   padding-top: var(--nav-h);
 }
 
-/* Large architectural arc decoration — top right */
+/* Large architectural arc decoration - top right */
 .heroArc {
   position: absolute;
   top: -20%;
@@ -97,7 +97,7 @@
   flex-shrink: 0;
 }
 
-/* Hero name — the hero's hero */
+/* Hero name - the hero's hero */
 .heroName {
   font-family: var(--font-serif);
   font-size: clamp(4rem, 10.5vw, 9.5rem);

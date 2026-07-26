@@ -1,0 +1,71 @@
+import { useState, useEffect, useRef } from 'react'
+import { getBioProfile, updateBioSection, uploadFile } from '../../../firebase'
+import { useToast } from '../../../context/ToastContext'
+import styles from '../Admin.module.css'
+
+const BLANK = { name: '', title: '', subtitle: '', bio: '', profileImage: '' }
+
+export default function ProfileSection() {
+  const { addToast } = useToast()
+  const [form, setForm] = useState(BLANK)
+  const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileRef = useRef()
+
+  useEffect(() => {
+    getBioProfile().then(p => { if (p) setForm({ ...BLANK, ...p }) })
+  }, [])
+
+  const set = (f) => (e) => setForm(prev => ({ ...prev, [f]: e.target.value }))
+
+  async function handleSave(e) {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      await updateBioSection('profile', form)
+      addToast({ type: 'success', title: 'Profile saved' })
+    } catch { addToast({ type: 'error', title: 'Save failed' }) }
+    finally { setSaving(false) }
+  }
+
+  async function handleImage(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    try {
+      const url = await uploadFile(file, 'portfolio/profile')
+      setForm(f => ({ ...f, profileImage: url }))
+      addToast({ type: 'success', title: 'Image uploaded' })
+    } catch { addToast({ type: 'error', title: 'Upload failed' }) }
+    finally { setUploading(false); if (fileRef.current) fileRef.current.value = '' }
+  }
+
+  return (
+    <div>
+      <p className={styles.intro}>
+        Your name, title and bio shown on the About page and home hero. Email, phone,
+        location and social links live under <strong>Contact Info</strong>.
+      </p>
+      <form className={styles.formCard} onSubmit={handleSave}>
+        <div className={styles.grid2}>
+          <div className={styles.field}><label>Full Name</label><input value={form.name} onChange={set('name')} placeholder="Lientjie Meiring" /></div>
+          <div className={styles.field}><label>Title</label><input value={form.title} onChange={set('title')} placeholder="Architecture Student" /></div>
+          <div className={`${styles.field} ${styles.span2}`}><label>Subtitle</label><input value={form.subtitle} onChange={set('subtitle')} placeholder="Aspiring Architect & Design Enthusiast" /></div>
+          <div className={`${styles.field} ${styles.span2}`}><label>Bio</label><textarea rows={5} value={form.bio} onChange={set('bio')} placeholder="Short professional bio shown on the About page…" /></div>
+          <div className={`${styles.field} ${styles.span2}`}>
+            <label>Profile Image</label>
+            {form.profileImage && <img src={form.profileImage} alt="Profile" className={styles.imgPreview} onError={e => { e.currentTarget.style.display = 'none' }} />}
+            <input value={form.profileImage} onChange={set('profileImage')} placeholder="https://… (paste URL or upload below)" />
+            <label className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm} ${styles.uploadBtn}`} style={{ alignSelf: 'flex-start', marginTop: '0.5rem' }}>
+              {uploading ? 'Uploading…' : 'Upload image'}
+              <input type="file" accept="image/*" ref={fileRef} onChange={handleImage} hidden disabled={uploading} />
+            </label>
+          </div>
+        </div>
+        <div className={styles.formActions}>
+          <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} disabled={saving}>{saving ? 'Saving…' : 'Save Profile'}</button>
+        </div>
+      </form>
+    </div>
+  )
+}
