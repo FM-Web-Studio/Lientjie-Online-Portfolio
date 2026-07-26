@@ -86,7 +86,7 @@ export default function NavigationBar() {
           onMouseMove={handleMouseMove}
         >
           <Link to="/" className={styles.logo} onClick={close}>
-            L<span className={styles.logoDot} aria-hidden="true">·</span>M
+            <img src="/logo.png" alt="Lientjie Meiring" className={styles.logoImg} />
           </Link>
 
           <nav className={styles.navLinks} ref={navRef} aria-label="Main navigation">
@@ -128,7 +128,7 @@ export default function NavigationBar() {
 
       <div className={`${styles.overlay} ${open ? styles.overlayOpen : ''}`} aria-hidden={!open}>
         <div className={styles.overlayTop}>
-          <span className={styles.overlayLogo}>L·M</span>
+          <img src="/logo.png" alt="Lientjie Meiring" className={styles.overlayLogoImg} />
           <button className={styles.overlayClose} onClick={close} aria-label="Close menu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />

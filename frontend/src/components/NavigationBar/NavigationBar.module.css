@@ -60,6 +60,13 @@
 
 .logo:hover { color: var(--accent-1); }
 
+.logoImg {
+  height: 30px;
+  width: auto;
+  display: block;
+  border-radius: var(--r-xs);
+}
+
 .logoDot {
   color: var(--accent-1);
   margin: 0 1px;
@@ -205,6 +212,13 @@
   font-weight: 500;
   color: var(--fg-1);
   letter-spacing: 0.04em;
+}
+
+.overlayLogoImg {
+  height: 40px;
+  width: auto;
+  display: block;
+  border-radius: var(--r-xs);
 }
 
 .overlayClose {

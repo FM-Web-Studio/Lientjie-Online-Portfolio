@@ -33,6 +33,13 @@
 
 .logo:hover { color: var(--accent-1); }
 
+.logoImg {
+  height: 30px;
+  width: auto;
+  display: block;
+  border-radius: var(--r-xs);
+}
+
 .logoDot {
   color: var(--accent-1);
   margin: 0 1px;

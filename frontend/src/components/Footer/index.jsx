@@ -17,7 +17,7 @@ export default function Footer() {
       <div className={`container ${styles.inner}`}>
         <div className={styles.brand}>
           <Link to="/" className={styles.logo}>
-            L<span className={styles.logoDot}>·</span>M
+            <img src="/logo.png" alt="Lientjie Meiring" className={styles.logoImg} />
           </Link>
           <p className={styles.tagline}>{brand.footerTagline}</p>
         </div>
