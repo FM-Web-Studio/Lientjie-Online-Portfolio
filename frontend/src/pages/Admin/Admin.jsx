@@ -9,7 +9,6 @@ import SiteCopySection from './sections/SiteCopySection'
 import EducationSection from './sections/EducationSection'
 import ExperienceSection from './sections/ExperienceSection'
 import SkillsSection from './sections/SkillsSection'
-import MemoriesSection from './sections/MemoriesSection'
 import ProjectsSection from './sections/ProjectsSection'
 import MessagesSection from './sections/MessagesSection'
 import styles from './Admin.module.css'
@@ -24,7 +23,6 @@ const SECTIONS = [
   { id: 'education',  group: 'Content',  title: 'Education',    icon: '🎓' },
   { id: 'experience', group: 'Content',  title: 'Experience',   icon: '💼' },
   { id: 'skills',     group: 'Content',  title: 'Skills',       icon: '📊' },
-  { id: 'memories',   group: 'Content',  title: 'Memories',     icon: '🖼️' },
   { id: 'projects',   group: 'Work',     title: 'Projects',     icon: '🏛️' },
   { id: 'messages',   group: 'Inbox',    title: 'Messages',     icon: '✉️' },
 ]
@@ -107,7 +105,6 @@ export default function Admin() {
       case 'education':  return <EducationSection />
       case 'experience': return <ExperienceSection />
       case 'skills':     return <SkillsSection />
-      case 'memories':   return <MemoriesSection />
       case 'projects':   return <ProjectsSection />
       case 'messages':   return <MessagesSection />
       default:           return null

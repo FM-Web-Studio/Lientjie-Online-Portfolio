@@ -2,9 +2,7 @@
   margin-top: var(--sp-32);
   padding: var(--sp-12) 0 var(--sp-8);
   border-top: 1px solid var(--border-2);
-  background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-panel);
 }
 
 .inner {

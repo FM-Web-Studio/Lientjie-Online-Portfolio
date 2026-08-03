@@ -57,10 +57,10 @@
   margin-top: 1px;
 }
 
-.success .iconWrap { color: var(--success); background: rgba(90, 120, 40, 0.12); }
-.error   .iconWrap { color: var(--error);   background: rgba(168, 42, 24, 0.12); }
-.warning .iconWrap { color: var(--warning); background: rgba(194, 120, 24, 0.12); }
-.info    .iconWrap { color: var(--info);    background: rgba(36, 96, 128, 0.12); }
+.success .iconWrap { color: var(--success); background: var(--success-sub); }
+.error   .iconWrap { color: var(--error);   background: var(--error-sub); }
+.warning .iconWrap { color: var(--warning); background: var(--warning-sub); }
+.info    .iconWrap { color: var(--info);    background: var(--info-sub); }
 
 .body {
   flex: 1;

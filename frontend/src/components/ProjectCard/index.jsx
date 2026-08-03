@@ -21,6 +21,7 @@ export default function ProjectCard({ project, index, onClick }) {
             alt={project.title}
             className={styles.image}
             loading="lazy"
+            decoding="async"
             onError={() => setImgError(true)}
           />
         ) : (
@@ -37,13 +38,13 @@ export default function ProjectCard({ project, index, onClick }) {
             </svg>
           </span>
         </div>
+        <span className={styles.frameNum} aria-hidden="true">{num}</span>
         {project.category && (
           <span className={styles.badge}>{project.category}</span>
         )}
       </div>
 
       <div className={styles.meta}>
-        <span className={styles.num}>{num}</span>
         <div className={styles.info}>
           <h3 className={styles.title}>{project.title}</h3>
           {project.description && (

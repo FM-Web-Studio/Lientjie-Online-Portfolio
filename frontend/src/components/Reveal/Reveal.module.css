@@ -9,3 +9,11 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Animation finished - drop the transform and the promoted compositor layer
+   so the element costs nothing on subsequent scrolls. */
+.settled {
+  will-change: auto;
+  transform: none;
+  transition: none;
+}

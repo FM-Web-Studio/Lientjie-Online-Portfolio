@@ -51,8 +51,6 @@ export const HOME_FIELDS = [
   { key: 'process4Title', label: 'Process 4 - title', type: 'text',     default: 'Detail' },
   { key: 'process4Body',  label: 'Process 4 - body',  type: 'textarea', default: 'The detail is where architecture becomes real. A well-crafted joint speaks of care and intention.' },
 
-  { key: 'memoriesEyebrow', label: 'Memories - eyebrow', type: 'text', default: 'Memories' },
-  { key: 'memoriesTitle',   label: 'Memories - title',   type: 'text', default: 'A Few Moments' },
 
   { key: 'contactEyebrow', label: 'Contact strip - eyebrow', type: 'text',     default: 'Get In Touch' },
   { key: 'contactHeading', label: 'Contact strip - heading', type: 'textarea', default: 'Open for studio placements, collaborations & enquiries.' },

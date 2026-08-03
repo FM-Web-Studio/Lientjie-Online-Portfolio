@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createMessage } from '../../firebase'
-import { Reveal } from '../../components'
+import { PageHero } from '../../components'
 import { useToast } from '../../context/ToastContext'
 import { useContent } from '../../context/ContentContext'
 import styles from './Contact.module.css'
@@ -92,22 +92,13 @@ export default function Contact() {
 
   return (
     <>
-      <section className={styles.header}>
-        <div className="container">
-          <Reveal>
-            <p className={styles.eyebrow}>{t.eyebrow}</p>
-            <h1 className={styles.heading}>{t.heading}</h1>
-            <p className={styles.sub}>{t.sub}</p>
-          </Reveal>
-        </div>
-      </section>
+      <PageHero eyebrow={t.eyebrow} heading={t.heading} sub={t.sub} />
 
       <section className={styles.body}>
         <div className="container">
           <div className={styles.grid}>
 
-            <Reveal>
-              <div className={styles.formWrap}>
+            <div className={`${styles.formWrap} k-rise`}>
                 {status === 'sent' ? (
                   <div className={styles.success}>
                     <div className={styles.successIcon} aria-hidden="true">
@@ -185,11 +176,9 @@ export default function Contact() {
                     </button>
                   </form>
                 )}
-              </div>
-            </Reveal>
+            </div>
 
-            <Reveal delay={80}>
-              <aside className={styles.details}>
+            <aside className={`${styles.details} k-rise`}>
                 <h2 className={styles.detailsTitle}>{t.detailsTitle}</h2>
                 {DETAILS.map(({ label, value, href, external }) => (
                   <div key={label} className={styles.detailRow}>
@@ -207,8 +196,7 @@ export default function Contact() {
                     )}
                   </div>
                 ))}
-              </aside>
-            </Reveal>
+            </aside>
 
           </div>
         </div>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getBioProfile, getBioSection } from '../../firebase'
-import { Reveal } from '../../components'
+import { PageHero, SectionHead } from '../../components'
 import Skeleton, { TimelineSkeleton, SkillSkeleton } from '../../components/Skeleton'
-import { useInView } from '../../hooks'
+import { useInView, useSpotlight } from '../../hooks'
 import { useContent } from '../../context/ContentContext'
 import styles from './About.module.css'
 
@@ -16,6 +16,21 @@ function SkillBar({ label, level }) {
       </div>
       <div className={styles.skillTrack} ref={ref}>
         <div className={styles.skillFill} style={{ width: inView ? `${level}%` : '0%' }} />
+      </div>
+    </div>
+  )
+}
+
+function TimelineEntry({ period, role, place, description }) {
+  const spot = useSpotlight()
+  return (
+    <div className={`${styles.entry} k-spotlight`} {...spot}>
+      <span className={styles.entryDot} aria-hidden="true" />
+      <div className={styles.entryBody}>
+        <span className={styles.period}>{period}</span>
+        <h3 className={styles.entryRole}>{role}</h3>
+        <p className={styles.entryPlace}>{place}</p>
+        {description && <p className={styles.entryDesc}>{description}</p>}
       </div>
     </div>
   )
@@ -48,132 +63,121 @@ export default function About() {
       .finally(() => setLoading(false))
   }, [])
 
+  const name  = profile?.name  ?? t.fallbackName
+  const title = profile?.title ?? t.fallbackTitle
+
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────── */}
-      <section className={styles.hero}>
-        <div className="container">
-          <Reveal>
-            <p className={styles.eyebrow}>{t.eyebrow}</p>
-            {loading ? (
-              <>
-                <Skeleton width="55%" height="clamp(2.5rem,6vw,4rem)" style={{ display: 'block', marginBottom: 12 }} />
-                <Skeleton width="30%" height="1rem" />
-              </>
-            ) : (
-              <>
-                <h1 className={styles.name}>
-                  {(profile?.name ?? t.fallbackName).split(' ').map((w, i) => (
-                    <span key={i} style={{ display: 'block' }}>{w}</span>
-                  ))}
-                </h1>
-                <p className={styles.titleLine}>{profile?.title ?? t.fallbackTitle}</p>
-              </>
-            )}
-          </Reveal>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={t.eyebrow}
+        heading={
+          loading
+            ? <Skeleton width="9ch" height="0.82em" style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+            : <>{name.split(' ').map((w, i) => (
+                i === 0
+                  ? <em key={i}>{w}<br /></em>
+                  : <span key={i}>{w}</span>
+              ))}<span className="dot">.</span></>
+        }
+        sub={loading ? undefined : title}
+      />
 
-      {/* ── Profile ──────────────────────────────────── */}
-      <section className={styles.profileSection}>
+      {/* ── 01 Profile ─────────────────────────────────────────── */}
+      <section className={styles.section}>
         <div className="container">
-          <div className={`${styles.profileGrid} ${!profile?.profileImage ? styles.noImage : ''}`}>
-            {profile?.profileImage && (
-              <Reveal>
-                <div className={styles.imageWrap}>
-                  <img
-                    src={profile.profileImage}
-                    alt={profile.name ?? 'Profile'}
-                    className={styles.profileImg}
-                    onError={e => { e.currentTarget.parentElement.style.display = 'none' }}
-                  />
-                </div>
-              </Reveal>
-            )}
-            <Reveal delay={profile?.profileImage ? 80 : 0}>
-              <div className={styles.profileText}>
-                <h2 className={styles.sectionTitle}>{t.sectionProfile}</h2>
-                {loading ? (
-                  <div className={styles.skelStack}>
-                    {[90, 85, 70, 55].map(w => (
-                      <Skeleton key={w} width={`${w}%`} style={{ display: 'block', marginBottom: 8 }} />
-                    ))}
-                  </div>
-                ) : (
-                  <p className={styles.bio}>{profile?.bio}</p>
-                )}
-                {!loading && (
-                  <div className={styles.contacts}>
-                    {info.email && (
-                      <a href={`mailto:${info.email}`} className={styles.contactLink}>{info.email}</a>
-                    )}
-                    {info.phone && (
-                      <a href={`tel:${info.phone}`} className={styles.contactLink}>{info.phone}</a>
-                    )}
-                    {info.location && (
-                      <span className={styles.contactText}>{info.location}</span>
-                    )}
-                  </div>
-                )}
+          <SectionHead num="01" eyebrow="Introduction" title={t.sectionProfile} />
+
+          {/* The image column is held open while loading. Collapsing it to a
+              single column and back reflows the bio and shifts the page. */}
+          <div className={`${styles.profileGrid} ${!loading && !profile?.profileImage ? styles.noImage : ''}`}>
+            {loading ? (
+              <div className={styles.imageWrap} aria-hidden="true" />
+            ) : profile?.profileImage && (
+              <div className={`${styles.imageWrap} k-rise`}>
+                <img
+                  src={profile.profileImage}
+                  alt={name}
+                  className={styles.profileImg}
+                  decoding="async"
+                  onError={e => { e.currentTarget.parentElement.style.display = 'none' }}
+                />
               </div>
-            </Reveal>
+            )}
+
+            <div className={`${styles.profileText} k-rise`}>
+              {loading ? (
+                <div className={styles.skelStack}>
+                  {[96, 92, 88, 94, 76, 48].map((w, i) => (
+                    <Skeleton key={i} width={`${w}%`} style={{ display: 'block', marginBottom: 8 }} />
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.bio}>{profile?.bio}</p>
+              )}
+
+              {loading ? (
+                <div className={styles.contacts} aria-hidden="true">
+                  {[42, 32, 36].map((w, i) => (
+                    <Skeleton key={i} width={`${w}%`} height="0.95rem" />
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.contacts}>
+                  {info.email && (
+                    <a href={`mailto:${info.email}`} className={styles.contactLink}>{info.email}</a>
+                  )}
+                  {info.phone && (
+                    <a href={`tel:${info.phone}`} className={styles.contactLink}>{info.phone}</a>
+                  )}
+                  {info.location && (
+                    <span className={styles.contactText}>{info.location}</span>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Education ────────────────────────────────── */}
+      {/* ── 02 Education ───────────────────────────────────────── */}
       <section className={`${styles.section} ${styles.sectionAlt}`}>
         <div className="container">
-          <Reveal>
-            <h2 className={styles.sectionTitle}>{t.sectionEducation}</h2>
-          </Reveal>
+          <SectionHead num="02" eyebrow="Background" title={t.sectionEducation} />
           <div className={styles.timeline}>
+            <span className={`${styles.spine} k-draw-y`} aria-hidden="true" />
             {loading
               ? Array.from({ length: 3 }).map((_, i) => <TimelineSkeleton key={i} />)
               : education?.items?.map((item, i) => (
-                  <Reveal key={i} delay={i * 70}>
-                    <div className={styles.entry}>
-                      <div className={styles.entryDot} />
-                      <div className={styles.entryBody}>
-                        <span className={styles.period}>{item.period}</span>
-                        <h3 className={styles.entryRole}>{item.degree}</h3>
-                        <p className={styles.entryPlace}>{item.institution}</p>
-                        {item.description && (
-                          <p className={styles.entryDesc}>{item.description}</p>
-                        )}
-                      </div>
-                    </div>
-                  </Reveal>
+                  <TimelineEntry
+                    key={i}
+                    period={item.period}
+                    role={item.degree}
+                    place={item.institution}
+                    description={item.description}
+                  />
                 ))
             }
           </div>
         </div>
       </section>
 
-      {/* ── Experience ───────────────────────────────── */}
+      {/* ── 03 Experience ──────────────────────────────────────── */}
       {(loading || experience?.items?.length > 0) && (
         <section className={styles.section}>
           <div className="container">
-            <Reveal>
-              <h2 className={styles.sectionTitle}>{t.sectionExperience}</h2>
-            </Reveal>
+            <SectionHead num="03" eyebrow="Practice" title={t.sectionExperience} />
             <div className={styles.timeline}>
+              <span className={`${styles.spine} k-draw-y`} aria-hidden="true" />
               {loading
                 ? Array.from({ length: 3 }).map((_, i) => <TimelineSkeleton key={i} />)
                 : experience?.items?.map((item, i) => (
-                    <Reveal key={i} delay={i * 70}>
-                      <div className={styles.entry}>
-                        <div className={styles.entryDot} />
-                        <div className={styles.entryBody}>
-                          <span className={styles.period}>{item.period}</span>
-                          <h3 className={styles.entryRole}>{item.role}</h3>
-                          <p className={styles.entryPlace}>{item.company}</p>
-                          {item.description && (
-                            <p className={styles.entryDesc}>{item.description}</p>
-                          )}
-                        </div>
-                      </div>
-                    </Reveal>
+                    <TimelineEntry
+                      key={i}
+                      period={item.period}
+                      role={item.role}
+                      place={item.company}
+                      description={item.description}
+                    />
                   ))
               }
             </div>
@@ -181,14 +185,12 @@ export default function About() {
         </section>
       )}
 
-      {/* ── Skills ───────────────────────────────────── */}
+      {/* ── 04 Skills ──────────────────────────────────────────── */}
       {(loading || skills?.categories?.length > 0) && (
         <section className={`${styles.section} ${styles.sectionAlt}`}>
           <div className="container">
-            <Reveal>
-              <h2 className={styles.sectionTitle}>{t.sectionSkills}</h2>
-            </Reveal>
-            <div className={styles.skillsGrid}>
+            <SectionHead num="04" eyebrow="Toolkit" title={t.sectionSkills} />
+            <div className={`${styles.skillsGrid} k-stagger`}>
               {loading
                 ? Array.from({ length: 3 }).map((_, gi) => (
                     <div key={gi}>
@@ -196,8 +198,8 @@ export default function About() {
                       {Array.from({ length: 4 }).map((_, si) => <SkillSkeleton key={si} />)}
                     </div>
                   ))
-                : skills?.categories?.map(cat => (
-                    <Reveal key={cat.name}>
+                : skills?.categories?.map((cat, i) => (
+                    <div key={cat.name} style={{ '--i': i }}>
                       <div className={styles.skillCat}>
                         <p className={styles.skillCatName}>{cat.name}</p>
                         <div className={styles.skillList}>
@@ -206,7 +208,7 @@ export default function About() {
                           ))}
                         </div>
                       </div>
-                    </Reveal>
+                    </div>
                   ))
               }
             </div>

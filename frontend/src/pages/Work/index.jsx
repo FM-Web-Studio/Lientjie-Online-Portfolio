@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getProjects } from '../../firebase'
-import { ProjectCard, ProjectLightbox, Reveal } from '../../components'
-import { ProjectCardSkeleton } from '../../components'
+import { ProjectCard, ProjectLightbox, PageHero, ProjectCardSkeleton } from '../../components'
 import { useContent } from '../../context/ContentContext'
 import styles from './Work.module.css'
 
@@ -25,26 +24,24 @@ export default function Work() {
     ? projects
     : projects.filter(p => p.category?.toLowerCase() === filter.toLowerCase())
 
+  const count = String(visible.length).padStart(2, '0')
+
   return (
     <>
-      <section className={styles.header}>
-        <div className="container">
-          <Reveal>
-            <p className={styles.eyebrow}>{t.eyebrow}</p>
-            <h1 className={styles.heading}>
-              {t.heading1}<br /><em>{t.heading2}</em>.
-            </h1>
-            <p className={styles.sub}>{t.sub}</p>
-          </Reveal>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={t.eyebrow}
+        heading={<><em>{t.heading1}</em><br />{t.heading2}<span className="dot">.</span></>}
+        sub={t.sub}
+      />
 
+      {/* ── Filters ────────────────────────────────────────────── */}
       <div className={styles.filterBar}>
-        <div className="container">
+        <div className={`container ${styles.filterInner}`}>
           <div className={styles.filters} role="group" aria-label="Filter projects">
             {CATS.map(cat => (
               <button
                 key={cat}
+                type="button"
                 className={`${styles.filterBtn} ${filter === cat ? styles.filterActive : ''}`}
                 onClick={() => setFilter(cat)}
                 aria-pressed={filter === cat}
@@ -53,9 +50,18 @@ export default function Work() {
               </button>
             ))}
           </div>
+
+          {/* Live count doubles as the editorial index for the grid below. */}
+          <p className={styles.count} aria-live="polite">
+            {loading ? '—' : count}
+            <span className={styles.countLabel}>
+              {visible.length === 1 ? 'Project' : 'Projects'}
+            </span>
+          </p>
         </div>
       </div>
 
+      {/* ── Grid ───────────────────────────────────────────────── */}
       <section className={styles.gridSection}>
         <div className="container">
           {loading ? (
@@ -65,20 +71,19 @@ export default function Work() {
           ) : visible.length === 0 ? (
             <p className={styles.empty}>{t.emptyText}</p>
           ) : (
-            <div className={styles.grid}>
+            /* Keyed on the filter so the stagger replays when it changes. */
+            <div className={`${styles.grid} k-stagger`} key={filter}>
               {visible.map((p, i) => (
-                <Reveal key={p.id} delay={i * 50}>
+                <div key={p.id} style={{ '--i': i % 3 }}>
                   <ProjectCard project={p} index={i} onClick={() => setActive(p)} />
-                </Reveal>
+                </div>
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {active && (
-        <ProjectLightbox project={active} onClose={() => setActive(null)} />
-      )}
+      {active && <ProjectLightbox project={active} onClose={() => setActive(null)} />}
     </>
   )
 }

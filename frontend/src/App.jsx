@@ -1,6 +1,6 @@
 import { Routes, Route, Outlet } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
-import { NavigationBar, Footer, ToastContainer } from './components'
+import { NavigationBar, Footer, ToastContainer, ScrollToTop } from './components'
 import { ToastProvider } from './context/ToastContext'
 import { ContentProvider } from './context/ContentContext'
 import useMomentumScroll from './hooks/useMomentumScroll'
@@ -12,23 +12,30 @@ const Contact  = lazy(() => import('./pages/Contact'))
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 const Admin    = lazy(() => import('./pages/Admin/Admin'))
 
-function LoadingFallback() {
-  return (
-    <div style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      minHeight: '100vh', color: 'var(--fg-4)', fontSize: 'var(--text-sm)', fontFamily: 'var(--font-sans)',
-    }} />
-  )
+// Holds the viewport open while a route chunk arrives so the footer does not
+// jump up into view and back down. Deliberately empty of content: the chunks
+// are a few KB, so anything drawn here would be a flash, not a loading state.
+function PageFallback() {
+  return <div style={{ minHeight: '100svh' }} aria-hidden="true" />
 }
 
 // Public site chrome - nav + footer. The admin panel is standalone (no chrome),
 // and momentum scrolling is only mounted here so admin keeps native scrolling.
+//
+// The Suspense boundary sits inside the layout, around the Outlet only. Wrapping
+// the whole router instead would unmount the nav and footer on every navigation,
+// blanking the screen before the next page appears.
 function PublicLayout() {
   useMomentumScroll()
   return (
     <>
+      <ScrollToTop />
       <NavigationBar />
-      <main><Outlet /></main>
+      <main>
+        <Suspense fallback={<PageFallback />}>
+          <Outlet />
+        </Suspense>
+      </main>
       <Footer />
     </>
   )
@@ -39,20 +46,21 @@ export default function App() {
     <ToastProvider>
       <ContentProvider>
         <ToastContainer />
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Admin - standalone, self-gating, no public chrome */}
-            <Route path="/admin" element={<Admin />} />
+        <Routes>
+          {/* Admin - standalone, self-gating, no public chrome */}
+          <Route
+            path="/admin"
+            element={<Suspense fallback={<PageFallback />}><Admin /></Suspense>}
+          />
 
-            <Route element={<PublicLayout />}>
-              <Route path="/"        element={<Home />} />
-              <Route path="/work"    element={<Work />} />
-              <Route path="/about"   element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="*"        element={<NotFound />} />
-            </Route>
-          </Routes>
-        </Suspense>
+          <Route element={<PublicLayout />}>
+            <Route path="/"        element={<Home />} />
+            <Route path="/work"    element={<Work />} />
+            <Route path="/about"   element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*"        element={<NotFound />} />
+          </Route>
+        </Routes>
       </ContentProvider>
     </ToastProvider>
   )

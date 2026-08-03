@@ -77,6 +77,7 @@ export default function ProjectLightbox({ project, onClose }) {
               src={images[idx]}
               alt={`${project.title} - ${idx + 1} of ${images.length}`}
               className={styles.mainImg}
+              decoding="async"
               onError={() => handleImgError(idx)}
             />
           ) : (

@@ -1,7 +1,5 @@
 .card {
-  background: var(--bg-glass);
-  backdrop-filter: blur(8px) saturate(130%);
-  -webkit-backdrop-filter: blur(8px) saturate(130%);
+  background: var(--bg-panel);
   border-radius: var(--r-lg);
   overflow: hidden;
   cursor: pointer;
@@ -32,9 +30,33 @@
 .imageWrap {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 4 / 5;
   background: var(--bg-2);
   flex-shrink: 0;
+}
+
+/* Scrim so the oversized index reads over any cover image. */
+.imageWrap::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 45%;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(12, 14, 13, 0.62), transparent);
+}
+
+/* Oversized index over the frame, mirroring the Home rail. */
+.frameNum {
+  position: absolute;
+  left: var(--sp-4);
+  bottom: var(--sp-2);
+  z-index: 1;
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5vw, 3.75rem);
+  line-height: 1;
+  color: #fff;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
 }
 
 .image {
@@ -70,10 +92,11 @@
 .overlay {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 8, 4, 0.50);
+  background: var(--overlay);
   backdrop-filter: blur(2px);
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -104,15 +127,17 @@
 /* Category badge */
 .badge {
   position: absolute;
-  top: var(--sp-3);
-  left: var(--sp-3);
-  font-size: 10px;
+  top: var(--sp-4);
+  right: var(--sp-4);
+  z-index: 1;
+  font-size: var(--text-xs);
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent-text);
-  background: var(--accent-1);
-  padding: 4px 10px;
+  color: var(--fg-1);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-1);
+  padding: 5px var(--sp-3);
   border-radius: var(--r-full);
 }
 
@@ -120,20 +145,9 @@
 .meta {
   display: flex;
   align-items: flex-start;
-  gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+  gap: var(--sp-4);
+  padding: var(--sp-5);
   flex: 1;
-}
-
-.num {
-  font-family: var(--font-serif);
-  font-size: var(--text-xs);
-  font-weight: 400;
-  color: var(--accent-1);
-  letter-spacing: 0.08em;
-  margin-top: 4px;
-  flex-shrink: 0;
-  opacity: 0.65;
 }
 
 .info {
