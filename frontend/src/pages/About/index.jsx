@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { getBioProfile, getBioSection } from '../../firebase'
-import { PageHero, SectionHead } from '../../components'
+import { subscribeBioSection } from '../../firebase'
+import { PageHero, SectionHead, Ornament, SectionDots } from '../../components'
 import Skeleton, { TimelineSkeleton, SkillSkeleton } from '../../components/Skeleton'
-import { useInView, useSpotlight } from '../../hooks'
+import { useInView, useSpotlight, useSectionTracker } from '../../hooks'
 import { useContent } from '../../context/ContentContext'
 import styles from './About.module.css'
 
@@ -36,54 +36,91 @@ function TimelineEntry({ period, role, place, description }) {
   )
 }
 
+// The four bio documents, each on its own live listener.
+const BIO_SECTIONS = ['profile', 'education', 'experience', 'skills']
+
 export default function About() {
   const { copy } = useContent()
   const t = copy('about')
   const info = copy('contact')
-  const [profile,    setProfile]    = useState(null)
-  const [education,  setEducation]  = useState(null)
-  const [experience, setExperience] = useState(null)
-  const [skills,     setSkills]     = useState(null)
-  const [loading,    setLoading]    = useState(true)
+  const [bio, setBio] = useState({})
+  const [loading, setLoading] = useState(true)
 
+  /*
+   * One listener per bio document. The loading flag clears once every one has
+   * reported at least once, tracked with a Set of section names rather than a
+   * counter: a listener that fires twice before its siblings fire at all
+   * (which happens whenever one document is edited during first paint) would
+   * push a counter to 4 early and reveal the page with empty sections.
+   */
   useEffect(() => {
-    Promise.all([
-      getBioProfile(),
-      getBioSection('education'),
-      getBioSection('experience'),
-      getBioSection('skills'),
-    ])
-      .then(([p, edu, exp, sk]) => {
-        setProfile(p)
-        setEducation(edu)
-        setExperience(exp)
-        setSkills(sk)
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false))
+    const seen = new Set()
+    const markSeen = section => {
+      seen.add(section)
+      if (seen.size === BIO_SECTIONS.length) setLoading(false)
+    }
+
+    const unsubs = BIO_SECTIONS.map(section =>
+      subscribeBioSection(
+        section,
+        data => { setBio(prev => ({ ...prev, [section]: data })); markSeen(section) },
+        err  => { console.error(`[About] ${section} failed:`, err); markSeen(section) },
+      ),
+    )
+    return () => unsubs.forEach(u => u && u())
   }, [])
+
+  const { profile, education, experience, skills } = bio
 
   const name  = profile?.name  ?? t.fallbackName
   const title = profile?.title ?? t.fallbackTitle
 
+  const hasExperience = loading || experience?.items?.length > 0
+  const hasSkills     = loading || skills?.categories?.length > 0
+
+  const sections = [
+    { id: 'profile',   label: t.sectionProfile   },
+    { id: 'education', label: t.sectionEducation },
+    ...(hasExperience ? [{ id: 'experience', label: t.sectionExperience }] : []),
+    ...(hasSkills     ? [{ id: 'skills',     label: t.sectionSkills     }] : []),
+  ]
+  const { active, register, goTo } = useSectionTracker(sections.map(s => s.id))
+
   return (
     <>
+      <SectionDots sections={sections} active={active} onJump={goTo} />
+
       <PageHero
         eyebrow={t.eyebrow}
         heading={
-          loading
-            ? <Skeleton width="9ch" height="0.82em" style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-            : <>{name.split(' ').map((w, i) => (
-                i === 0
-                  ? <em key={i}>{w}<br /></em>
-                  : <span key={i}>{w}</span>
-              ))}<span className="dot">.</span></>
+          /*
+           * No loading skeleton here, deliberately.
+           *
+           * `name` and `title` already fall back to the copy defaults, so the
+           * real heading can be rendered on the very first paint. Swapping a
+           * one-line grey bar (and a missing sub) for a two-line name plus a
+           * subtitle grew the hero the instant the bio snapshot landed and
+           * shoved the whole page down - measured at CLS 0.085 on this route,
+           * against 0.0006 on Home. Rendering the fallback immediately keeps
+           * the box the same size before and after the data arrives, and a
+           * real name reads better than a placeholder anyway.
+           */
+          <>{name.split(' ').map((w, i) => (
+            i === 0
+              ? <em key={i}>{w}<br /></em>
+              : <span key={i}>{w}</span>
+          ))}<span className="dot">.</span></>
         }
-        sub={loading ? undefined : title}
+        sub={title}
+        ornament="compass"
       />
 
       {/* ── 01 Profile ─────────────────────────────────────────── */}
-      <section className={styles.section}>
+      <section ref={register('profile')} data-section="profile" className={styles.section}>
+        <span className={`deco-orn ${styles.ornProfile}`} aria-hidden="true">
+          <Ornament variant="arc" />
+        </span>
+
         <div className="container">
           <SectionHead num="01" eyebrow="Introduction" title={t.sectionProfile} />
 
@@ -140,7 +177,13 @@ export default function About() {
       </section>
 
       {/* ── 02 Education ───────────────────────────────────────── */}
-      <section className={`${styles.section} ${styles.sectionAlt}`}>
+      <section
+        ref={register('education')}
+        data-section="education"
+        className={`${styles.section} ${styles.sectionAlt}`}
+      >
+        <span className="deco-grain" aria-hidden="true" />
+
         <div className="container">
           <SectionHead num="02" eyebrow="Background" title={t.sectionEducation} />
           <div className={styles.timeline}>
@@ -162,8 +205,12 @@ export default function About() {
       </section>
 
       {/* ── 03 Experience ──────────────────────────────────────── */}
-      {(loading || experience?.items?.length > 0) && (
-        <section className={styles.section}>
+      {hasExperience && (
+        <section ref={register('experience')} data-section="experience" className={styles.section}>
+          <span className={`deco-orn ${styles.ornExperience}`} aria-hidden="true">
+            <Ornament variant="colonnade" />
+          </span>
+
           <div className="container">
             <SectionHead num="03" eyebrow="Practice" title={t.sectionExperience} />
             <div className={styles.timeline}>
@@ -186,8 +233,14 @@ export default function About() {
       )}
 
       {/* ── 04 Skills ──────────────────────────────────────────── */}
-      {(loading || skills?.categories?.length > 0) && (
-        <section className={`${styles.section} ${styles.sectionAlt}`}>
+      {hasSkills && (
+        <section
+          ref={register('skills')}
+          data-section="skills"
+          className={`${styles.section} ${styles.sectionAlt}`}
+        >
+          <span className="deco-grain" aria-hidden="true" />
+
           <div className="container">
             <SectionHead num="04" eyebrow="Toolkit" title={t.sectionSkills} />
             <div className={`${styles.skillsGrid} k-stagger`}>

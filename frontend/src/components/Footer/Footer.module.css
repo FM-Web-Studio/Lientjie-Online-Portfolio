@@ -1,8 +1,15 @@
+/* No margin-top. Every page now ends on a section that owns its own bottom
+   padding (the clay contact panel on Home, a padded section elsewhere), so
+   the old 128px margin stacked on top of that and left a dead plaster gap
+   above the footer. */
+/* bg-3, not bg-2. The alternating page sections already use bg-2, so a bg-2
+   footer following one of them was separated from it by nothing but a 1px
+   rule and read as more page rather than as chrome. bg-3 is distinct from
+   both bg-0 and bg-2, so the footer reads as a footer after any section. */
 .footer {
-  margin-top: var(--sp-32);
   padding: var(--sp-12) 0 var(--sp-8);
-  border-top: 1px solid var(--border-2);
-  background: var(--bg-panel);
+  border-top: 1px solid var(--border-1);
+  background: var(--bg-3);
 }
 
 .inner {
@@ -44,11 +51,12 @@
 }
 
 .tagline {
-  font-size: 10px;
-  font-weight: 400;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--fg-4);
+  color: var(--accent-sec);
 }
 
 .nav {
@@ -58,20 +66,22 @@
 }
 
 .navLink {
+  font-family: var(--font-mono);
   font-size: var(--text-xs);
-  font-weight: 400;
-  letter-spacing: 0.08em;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--fg-4);
+  color: var(--fg-3);
   transition: color var(--t-fast);
 }
 
 .navLink:hover { color: var(--accent-1); }
 
 .copy {
-  font-size: 11px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   color: var(--fg-4);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-align: right;
 }
 

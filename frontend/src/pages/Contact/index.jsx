@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createMessage } from '../../firebase'
-import { PageHero } from '../../components'
+import { PageHero, Ornament } from '../../components'
 import { useToast } from '../../context/ToastContext'
 import { useContent } from '../../context/ContentContext'
 import styles from './Contact.module.css'
@@ -92,9 +92,13 @@ export default function Contact() {
 
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} heading={t.heading} sub={t.sub} />
+      <PageHero eyebrow={t.eyebrow} heading={t.heading} sub={t.sub} ornament="arch" />
 
       <section className={styles.body}>
+        <span className={`deco-orn ${styles.ornBody}`} aria-hidden="true">
+          <Ornament variant="stair" />
+        </span>
+
         <div className="container">
           <div className={styles.grid}>
 

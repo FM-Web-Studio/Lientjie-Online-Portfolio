@@ -22,9 +22,12 @@
   background: var(--bg-1);
 }
 
+/* Must track ProjectCard's .imageWrap aspect-ratio. If the two drift apart
+   the grid resizes the moment the real cards arrive, which is exactly the
+   reflow the skeleton exists to prevent. */
 .cardImage {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;
   background: linear-gradient(
     90deg,
     var(--bg-2) 25%,

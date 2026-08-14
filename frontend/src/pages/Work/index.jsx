@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { getProjects } from '../../firebase'
-import { ProjectCard, ProjectLightbox, PageHero, ProjectCardSkeleton } from '../../components'
+import { subscribeProjects } from '../../firebase'
+import {
+  ProjectCard, ProjectLightbox, PageHero, ProjectCardSkeleton, Ornament,
+} from '../../components'
 import { useContent } from '../../context/ContentContext'
 import styles from './Work.module.css'
 
@@ -13,11 +15,14 @@ export default function Work() {
   const [filter,   setFilter]   = useState('All')
   const [active,   setActive]   = useState(null)
 
+  // Live, so reordering or editing a project in the admin panel is reflected
+  // here immediately rather than on the visitor's next reload.
   useEffect(() => {
-    getProjects()
-      .then(setProjects)
-      .catch(console.error)
-      .finally(() => setLoading(false))
+    const unsubscribe = subscribeProjects(
+      items => { setProjects(items); setLoading(false) },
+      err   => { console.error('[Work] projects failed:', err); setLoading(false) },
+    )
+    return unsubscribe
   }, [])
 
   const visible = filter === 'All'
@@ -32,6 +37,7 @@ export default function Work() {
         eyebrow={t.eyebrow}
         heading={<><em>{t.heading1}</em><br />{t.heading2}<span className="dot">.</span></>}
         sub={t.sub}
+        ornament="plan"
       />
 
       {/* ── Filters ────────────────────────────────────────────── */}
@@ -63,18 +69,24 @@ export default function Work() {
 
       {/* ── Grid ───────────────────────────────────────────────── */}
       <section className={styles.gridSection}>
+        <span className={`deco-orn ${styles.ornGrid}`} aria-hidden="true">
+          <Ornament variant="elevation" />
+        </span>
+
         <div className="container">
           {loading ? (
             <div className={styles.grid}>
-              {Array.from({ length: 6 }).map((_, i) => <ProjectCardSkeleton key={i} />)}
+              {Array.from({ length: 4 }).map((_, i) => <ProjectCardSkeleton key={i} />)}
             </div>
           ) : visible.length === 0 ? (
             <p className={styles.empty}>{t.emptyText}</p>
           ) : (
-            /* Keyed on the filter so the stagger replays when it changes. */
+            /* Keyed on the filter so the stagger replays when it changes.
+               `--i` cycles over 2, matching the two-column grid - at the old
+               modulo 3 the reveal delays no longer lined up with the rows. */
             <div className={`${styles.grid} k-stagger`} key={filter}>
               {visible.map((p, i) => (
-                <div key={p.id} style={{ '--i': i % 3 }}>
+                <div key={p.id} style={{ '--i': i % 2 }}>
                   <ProjectCard project={p} index={i} onClick={() => setActive(p)} />
                 </div>
               ))}

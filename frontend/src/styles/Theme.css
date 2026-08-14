@@ -1,7 +1,13 @@
 /* ── Architect Design Tokens ──────────────────────────────── */
 :root {
-  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-  --font-sans:  'DM Sans', system-ui, -apple-system, sans-serif;
+  /* The fallbacks are metric-matched faces declared in global.css, not raw
+     system fonts, so the swap from fallback to webfont does not reflow.
+     'Playfair Display' used to sit in this stack but was never loaded, so it
+     only applied on machines that happened to have it installed - i.e. the
+     site rendered differently for those visitors for no reason. */
+  --font-serif: 'Cormorant Garamond', 'Cormorant Fallback', Georgia, serif;
+  --font-sans:  'DM Sans', 'DM Sans Fallback', system-ui, -apple-system, sans-serif;
+  --font-mono:  'IBM Plex Mono', 'Plex Mono Fallback', ui-monospace, 'SF Mono', Menlo, monospace;
 
   --text-xs:   0.75rem;
   --text-sm:   0.9rem;
@@ -45,8 +51,15 @@
   --t-slow:   400ms ease;
   --t-spring: 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
+  /* Named easings for scroll-linked motion, matched to kinetic.css. */
+  --ease-out:      cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
   --nav-h:  72px;
   --max-w: 1200px;
+  /* Wider measure for the full-bleed editorial rows on Home, which are
+     deliberately not held to the same column as body copy. */
+  --max-w-wide: 1480px;
 
   --z-base:     1;
   --z-above:   10;
@@ -56,125 +69,193 @@
   --z-toast:   500;
 }
 
-/* ── Brand - JBM Architex identity palette ──────────────────────
-   Sampled from the brand sheet. These are the literal ribbon
-   colours; theme blocks below derive legible variants from them. */
+/* ── Brand - Clay & Blueprint ────────────────────────────────────
+   An architecture palette drawn from the materials of the discipline:
+   fired clay, drafting-paper plaster, blueprint ink, brass fittings.
+   These are the raw pigments; the theme blocks below derive legible
+   variants from them. */
 :root {
-  --brand-grey:  #E6E6E6;
-  --brand-mint:  #B0EFC3;
-  --brand-coral: #EC7373;
-  --brand-peach: #DDB1A0;
-  --brand-sage:  #838A85;
-  --brand-slate: #808080;
+  --brand-clay:      #B5533A;  /* fired terracotta        */
+  --brand-blueprint: #2F4B6E;  /* drafting ink indigo     */
+  --brand-brass:     #A8762E;  /* brass fitting / ochre   */
+  --brand-plaster:   #F6F2EC;  /* warm lime plaster       */
+  --brand-limestone: #EDE6DA;  /* cut limestone           */
+  --brand-graphite:  #4A443B;  /* pencil graphite         */
 
-  --brand-mint-rgb:  176, 239, 195;
-  --brand-coral-rgb: 236, 115, 115;
-  --brand-peach-rgb: 221, 177, 160;
+  --brand-clay-rgb:      181, 83, 58;
+  --brand-blueprint-rgb:  47, 75, 110;
+  --brand-brass-rgb:     168, 118, 46;
 }
 
-/* ── Light - brand grey + deep sage mint ─────────────────────── */
+/* ── Light - warm plaster + fired clay ───────────────────────────
+   The surfaces themselves carry the warmth. Nothing here is a neutral
+   grey: bg-0 is plaster, bg-1 is drafting paper, bg-2/3 are cut stone.
+   That is what stops the page reading as a stack of grey rectangles. */
 [data-theme='light'] {
-  --bg-0: #E6E6E6;
-  --bg-1: #F4F4F4;
-  --bg-2: #DBDBDB;
-  --bg-3: #CCCECD;
-  --bg-glass:        rgba(244, 244, 244, 0.86);
-  --bg-panel:        rgba(244, 244, 244, 0.94);
-  --bg-glass-strong: rgba(230, 230, 230, 0.95);
+  --bg-0: #F6F2EC;
+  --bg-1: #FFFDFA;
+  --bg-2: #EDE6DA;
+  --bg-3: #E2D9C9;
+  --bg-glass:        rgba(255, 253, 250, 0.86);
+  --bg-panel:        rgba(255, 253, 250, 0.94);
+  --bg-glass-strong: rgba(246, 242, 236, 0.95);
 
-  --fg-1: #1E211F;
-  --fg-2: #3C413E;
-  --fg-3: #5F6562;
-  --fg-4: #9AA09C;
+  /* Warm inks, not black. #1F1B16 keeps the plaster from looking dirty. */
+  --fg-1: #1F1B16;
+  --fg-2: #443D33;
+  --fg-3: #6B6255;
+  --fg-4: #9C9384;
 
-  --accent-1:    #1F6B44;
-  --accent-2:    #2E7D52;
-  --accent-3:    #144D31;
-  --accent-h:    #175837;
-  --accent-text: #F4F4F4;
-  --accent-sub:  rgba(31, 107, 68, 0.10);
-  --accent-sub2: rgba(31, 107, 68, 0.20);
+  /* Fired clay. accent-1 is the deeper #A8452C rather than the raw brand
+     clay so it clears 4.5:1 on the plaster canvas (5.30:1) and can carry
+     body-size text, not just headings. */
+  --accent-1:    #A8452C;
+  --accent-2:    #C4643F;
+  --accent-3:    #7E301D;
+  --accent-h:    #8E3823;
+  --accent-text: #FFFDFA;
+  --accent-sub:  rgba(168, 69, 44, 0.10);
+  --accent-sub2: rgba(168, 69, 44, 0.20);
 
-  --accent-1-rgb: 31, 107, 68;
-  --accent-2-rgb: 46, 125, 82;
+  --accent-1-rgb: 168, 69, 44;
+  --accent-2-rgb: 196, 100, 63;
 
-  /* Page wash - coral top-left, mint bottom-right, echoing the ribbons. */
-  --wash-1-rgb: 236, 115, 115;
-  --wash-2-rgb: 176, 239, 195;
-  --wash-1-a: 0.18;
-  --wash-2-a: 0.30;
+  /* Secondary - blueprint indigo. 8.0:1 on the canvas. */
+  --accent-sec:      #2F4B6E;
+  --accent-sec-2:    #3E5F87;
+  --accent-sec-rgb:  47, 75, 110;
+  --accent-sec-sub:  rgba(47, 75, 110, 0.10);
+  --accent-sec-text: #FFFDFA;
 
-  --border-1:     #C9CBCA;
-  --border-2:     #DEDEDE;
-  --border-hover: rgba(31, 107, 68, 0.30);
+  /* Tertiary - brass. The text-safe #8A5F1F (5.04:1); --brand-brass stays
+     available for decoration where contrast does not apply. */
+  --accent-ter:      #8A5F1F;
+  --accent-ter-2:    #A8762E;
+  --accent-ter-rgb:  138, 95, 31;
+  --accent-ter-sub:  rgba(138, 95, 31, 0.12);
 
-  --success: #1F6B44;
-  --warning: #7C580E;
-  --error:   #B03C38;
-  --info:    #215E7A;
+  /* Page wash - clay top-left, blueprint bottom-right. */
+  --wash-1-rgb: 181, 83, 58;
+  --wash-2-rgb: 47, 75, 110;
+  --wash-1-a: 0.14;
+  --wash-2-a: 0.10;
 
-  --success-sub: rgba(31, 107, 68, 0.12);
-  --warning-sub: rgba(124, 88, 14, 0.12);
-  --error-sub:   rgba(176, 60, 56, 0.12);
-  --error-line:  rgba(176, 60, 56, 0.40);
-  --info-sub:    rgba(33, 94, 122, 0.12);
-  --overlay:     rgba(24, 26, 25, 0.55);
-  --overlay-deep: rgba(16, 18, 17, 0.85);
+  --border-1:     #DCD2C2;
+  --border-2:     #E9E1D4;
+  --border-hover: rgba(168, 69, 44, 0.32);
 
-  --shadow-xs: 0 1px 3px  rgba(24, 30, 26, 0.07);
-  --shadow-sm: 0 2px 8px  rgba(24, 30, 26, 0.10);
-  --shadow-md: 0 4px 20px rgba(24, 30, 26, 0.12), 0 1px 4px rgba(24, 30, 26, 0.07);
-  --shadow-lg: 0 8px 40px rgba(24, 30, 26, 0.14), 0 2px 8px rgba(24, 30, 26, 0.08);
-  --shadow-xl: 0 20px 60px rgba(24, 30, 26, 0.18);
+  --success: #3F6B44;
+  --warning: #8A5F1F;
+  --error:   #A8452C;
+  --info:    #2F4B6E;
+
+  --success-sub: rgba(63, 107, 68, 0.12);
+  --warning-sub: rgba(138, 95, 31, 0.12);
+  --error-sub:   rgba(168, 69, 44, 0.12);
+  --error-line:  rgba(168, 69, 44, 0.40);
+  --info-sub:    rgba(47, 75, 110, 0.12);
+  --overlay:      rgba(31, 27, 22, 0.55);
+  --overlay-deep: rgba(20, 18, 15, 0.86);
+
+  /* Inverted full-bleed band (the Home quote section). Its own token pair
+     rather than `background: var(--fg-1)`: in dark mode fg-1 is near-white,
+     so inverting off it would fire a full-viewport white band at a reader
+     who chose the dark theme. Here light mode gets deep warm ink and dark
+     mode gets a deep blueprint tint - a hue break instead of a glare. */
+  --band-bg: #241E17;
+  --band-fg: #F6F2EC;
+  --band-accent: #E08A6A;
+  --band-line: rgba(246, 242, 236, 0.16);
+
+  /* The closing call-to-action panel. Its own pair rather than --accent-1,
+     because a full-width solid fill needs a deeper value than a button does:
+     in dark mode --accent-1 is a light salmon, and a 1000x440 block of it
+     glares against a warm-ink page. Deep clay in both themes instead. */
+  --cta-bg: #A8452C;
+  --cta-fg: #FFFDFA;
+
+  /* Shadows carry a clay tint rather than neutral black, so elevation
+     reads as part of the palette instead of dirtying it. */
+  --shadow-xs: 0 1px 3px  rgba(74, 52, 40, 0.07);
+  --shadow-sm: 0 2px 8px  rgba(74, 52, 40, 0.10);
+  --shadow-md: 0 4px 20px rgba(74, 52, 40, 0.12), 0 1px 4px rgba(74, 52, 40, 0.07);
+  --shadow-lg: 0 8px 40px rgba(74, 52, 40, 0.15), 0 2px 8px rgba(74, 52, 40, 0.08);
+  --shadow-xl: 0 20px 60px rgba(74, 52, 40, 0.20);
 }
 
-/* ── Dark - graphite + brand mint ────────────────────────────── */
+/* ── Dark - warm ink + lifted clay ───────────────────────────────
+   Warm-shifted throughout (#14120F, not #131514). A cool graphite dark
+   mode under a warm light mode reads as two different sites. */
 [data-theme='dark'] {
-  --bg-0: #131514;
-  --bg-1: #1C1F1D;
-  --bg-2: #242826;
-  --bg-3: #2F3432;
-  --bg-glass:        rgba(28, 31, 29, 0.88);
-  --bg-panel:        rgba(28, 31, 29, 0.94);
-  --bg-glass-strong: rgba(19, 21, 20, 0.96);
+  --bg-0: #14120F;
+  --bg-1: #1D1A16;
+  --bg-2: #262119;
+  --bg-3: #302A20;
+  --bg-glass:        rgba(29, 26, 22, 0.88);
+  --bg-panel:        rgba(29, 26, 22, 0.94);
+  --bg-glass-strong: rgba(20, 18, 15, 0.96);
 
-  --fg-1: #ECEFED;
-  --fg-2: #C6CDC9;
-  --fg-3: #8D948F;
-  --fg-4: #5E6562;
+  --fg-1: #F0EAE0;
+  --fg-2: #CDC4B6;
+  --fg-3: #98907F;
+  --fg-4: #6B6456;
 
-  --accent-1:    #B0EFC3;
-  --accent-2:    #86D9A3;
-  --accent-3:    #5FB884;
-  --accent-h:    #C6F5D4;
-  --accent-text: #131514;
-  --accent-sub:  rgba(176, 239, 195, 0.12);
-  --accent-sub2: rgba(176, 239, 195, 0.22);
+  --accent-1:    #E08A6A;
+  --accent-2:    #EDA588;
+  --accent-3:    #C06B4C;
+  --accent-h:    #EFA98D;
+  --accent-text: #14120F;
+  --accent-sub:  rgba(224, 138, 106, 0.12);
+  --accent-sub2: rgba(224, 138, 106, 0.22);
 
-  --accent-1-rgb: 176, 239, 195;
-  --accent-2-rgb: 134, 217, 163;
+  --accent-1-rgb: 224, 138, 106;
+  --accent-2-rgb: 237, 165, 136;
 
-  --wash-1-rgb: 236, 115, 115;
-  --wash-2-rgb: 176, 239, 195;
+  --accent-sec:      #7FA8D4;
+  --accent-sec-2:    #9BBEE2;
+  --accent-sec-rgb:  127, 168, 212;
+  --accent-sec-sub:  rgba(127, 168, 212, 0.14);
+  --accent-sec-text: #14120F;
+
+  --accent-ter:      #D4A458;
+  --accent-ter-2:    #E2B872;
+  --accent-ter-rgb:  212, 164, 88;
+  --accent-ter-sub:  rgba(212, 164, 88, 0.14);
+
+  --wash-1-rgb: 224, 138, 106;
+  --wash-2-rgb: 127, 168, 212;
   --wash-1-a: 0.10;
-  --wash-2-a: 0.08;
+  --wash-2-a: 0.07;
 
-  --border-1:     #2E3331;
-  --border-2:     #1F2321;
-  --border-hover: rgba(176, 239, 195, 0.35);
+  --border-1:     #352E24;
+  --border-2:     #242019;
+  --border-hover: rgba(224, 138, 106, 0.35);
 
-  --success: #86D9A3;
-  --warning: #E8B44A;
-  --error:   #EC7373;
-  --info:    #5AB0D0;
+  --success: #86C08E;
+  --warning: #D4A458;
+  --error:   #E08A6A;
+  --info:    #7FA8D4;
 
-  --success-sub: rgba(134, 217, 163, 0.14);
-  --warning-sub: rgba(232, 180, 74, 0.14);
-  --error-sub:   rgba(236, 115, 115, 0.14);
-  --error-line:  rgba(236, 115, 115, 0.45);
-  --info-sub:    rgba(90, 176, 208, 0.14);
-  --overlay:     rgba(10, 12, 11, 0.55);
-  --overlay-deep: rgba(8, 10, 9, 0.88);
+  --success-sub: rgba(134, 192, 142, 0.14);
+  --warning-sub: rgba(212, 164, 88, 0.14);
+  --error-sub:   rgba(224, 138, 106, 0.14);
+  --error-line:  rgba(224, 138, 106, 0.45);
+  --info-sub:    rgba(127, 168, 212, 0.14);
+  --overlay:      rgba(10, 9, 7, 0.55);
+  --overlay-deep: rgba(8, 7, 6, 0.88);
+
+  /* Deep blueprint rather than a lighter warm tone: the band still reads as
+     a distinct section because the HUE shifts, so it needs no lift in
+     lightness that would glare against the surrounding ink. */
+  --band-bg: #141E2B;
+  --band-fg: #E6EDF5;
+  --band-accent: #9BBEE2;
+  --band-line: rgba(230, 237, 245, 0.16);
+
+  /* Deep clay with cream text (5.4:1), rather than the light-salmon
+     --accent-1 that a solid panel this size turns into a glare. */
+  --cta-bg: #9E4028;
+  --cta-fg: #F8EFEA;
 
   --shadow-xs: 0 1px 3px  rgba(0, 0, 0, 0.30);
   --shadow-sm: 0 2px 8px  rgba(0, 0, 0, 0.40);

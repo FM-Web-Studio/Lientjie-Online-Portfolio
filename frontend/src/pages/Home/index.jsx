@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getFeaturedProjects, getProjects } from '../../firebase'
-import { ProjectRail, ProjectLightbox, SectionHead, CountUp } from '../../components'
-import { useSpotlight } from '../../hooks'
+import { subscribeFeaturedProjects } from '../../firebase'
+import {
+  ProjectLightbox, ProjectRow, ProjectRowSkeleton,
+  SectionHead, CountUp, Ornament, SectionDots,
+} from '../../components'
+import { useSectionTracker } from '../../hooks'
 import { useContent } from '../../context/ContentContext'
 import styles from './Home.module.css'
 
@@ -15,33 +18,28 @@ function ArrowRight() {
   )
 }
 
-function ProcessCard({ num, title, body }) {
-  const spot = useSpotlight()
-  return (
-    <div className={`${styles.processCard} k-lift k-spotlight`} {...spot}>
-      <span className={styles.processNum}>{num}</span>
-      <h3 className={styles.processTitle}>{title}</h3>
-      <p className={styles.processBody}>{body}</p>
-    </div>
-  )
-}
+// How many featured projects the home page carries as full editorial rows.
+// Four is the point where the page still reads as a selection rather than the
+// Work page duplicated; the rest live behind "View all".
+const FEATURED_COUNT = 4
+
+const SECTIONS = [
+  { id: 'hero',    label: 'Intro'   },
+  { id: 'work',    label: 'Work'    },
+  { id: 'about',   label: 'About'   },
+  { id: 'process', label: 'Process' },
+  { id: 'contact', label: 'Contact' },
+]
 
 export default function Home() {
   const { copy } = useContent()
   const t = copy('home')
 
-  const QUOTES = [
-    { text: t.quote1Text, author: t.quote1Author },
-    { text: t.quote2Text, author: t.quote2Author },
-    { text: t.quote3Text, author: t.quote3Author },
-    { text: t.quote4Text, author: t.quote4Author },
-    { text: t.quote5Text, author: t.quote5Author },
-  ]
   const PROCESS = [
-    { num: '01', title: t.process1Title, body: t.process1Body },
-    { num: '02', title: t.process2Title, body: t.process2Body },
-    { num: '03', title: t.process3Title, body: t.process3Body },
-    { num: '04', title: t.process4Title, body: t.process4Body },
+    { num: '01', title: t.process1Title, body: t.process1Body, orn: 'plan'      },
+    { num: '02', title: t.process2Title, body: t.process2Body, orn: 'arch'      },
+    { num: '03', title: t.process3Title, body: t.process3Body, orn: 'elevation' },
+    { num: '04', title: t.process4Title, body: t.process4Body, orn: 'stair'     },
   ]
   const STATS = [
     { value: t.stat1Value, label: t.stat1Label },
@@ -57,24 +55,53 @@ export default function Home() {
   const [projects, setProjects] = useState([])
   const [loading,  setLoading]  = useState(true)
   const [active,   setActive]   = useState(null)
-  const [quoteIdx] = useState(() => Math.floor(Math.random() * 5))
-  const quote = QUOTES[quoteIdx]
 
-  useEffect(() => {
-    getFeaturedProjects()
-      .then(featured => (featured.length > 0 ? featured : getProjects().then(a => a.slice(0, 6))))
-      .then(setProjects)
-      .catch(console.error)
-      .finally(() => setLoading(false))
+  /*
+   * The quote is picked once per mount from whichever quote fields are
+   * actually filled in. The old version indexed a fixed 0-4 range, so
+   * blanking quote 3 in the admin panel left a one-in-five chance of
+   * rendering an empty blockquote with a stray attribution dash.
+   */
+  const quote = useMemo(() => {
+    const filled = [1, 2, 3, 4, 5]
+      .map(i => ({ text: t[`quote${i}Text`], author: t[`quote${i}Author`] }))
+      .filter(q => q.text?.trim())
+    if (filled.length === 0) return null
+    return filled[Math.floor(Math.random() * filled.length)]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Live subscription rather than a one-shot read, so an admin reordering or
+  // re-flagging a project sees the home page update without a reload.
+  useEffect(() => {
+    const unsubscribe = subscribeFeaturedProjects(
+      items => { setProjects(items.slice(0, FEATURED_COUNT)); setLoading(false) },
+      err   => { console.error('[Home] featured projects failed:', err); setLoading(false) },
+      FEATURED_COUNT,
+    )
+    return unsubscribe
+  }, [])
+
+  const { active: activeSection, register, goTo } = useSectionTracker(
+    SECTIONS.map(s => s.id),
+  )
 
   return (
     <>
-      {/* ── Hero ───────────────────────────────────────────────── */}
-      <section className={styles.hero}>
-        <div className={styles.heroArt} aria-hidden="true">
+      <SectionDots sections={SECTIONS} active={activeSection} onJump={goTo} />
+
+      {/* ══ Hero ═══════════════════════════════════════════════════
+          Full height, blueprint-gridded, with the display name as the
+          only thing competing for attention. */}
+      <section ref={register('hero')} data-section="hero" className={styles.hero}>
+        <div className={styles.heroDeco} aria-hidden="true">
+          <span className="deco-grid" />
+          <span className={`deco-blob ${styles.blobClay}`} />
+          <span className={`deco-blob ${styles.blobInk}`} />
           <span className={`${styles.arcOuter} k-drift-up`} />
           <span className={`${styles.arcInner} k-drift-down`} />
+          <span className={`deco-orn ${styles.ornHeroTR}`}><Ornament variant="compass" /></span>
+          <span className={`deco-orn ${styles.ornHeroBR}`}><Ornament variant="colonnade" /></span>
         </div>
 
         <div className={`container ${styles.heroInner}`}>
@@ -104,6 +131,8 @@ export default function Home() {
             </div>
           </div>
 
+          {/* The stats read as a drawing-sheet title block: ruled cells,
+              mono labels, serif figures. */}
           <dl className={`${styles.heroStats} ${styles.in6}`}>
             {STATS.map(({ value, label }) => (
               <div key={label} className={styles.heroStat}>
@@ -121,7 +150,7 @@ export default function Home() {
         </span>
       </section>
 
-      {/* ── Marquee - the process vocabulary, drifting on scroll ── */}
+      {/* ══ Marquee ════════════════════════════════════════════════ */}
       <div className={styles.marquee} aria-hidden="true">
         <div className={`${styles.marqueeTrack} k-marquee-track`}>
           {[0, 1, 2].map(rep => (
@@ -135,8 +164,14 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── 01 Selected work ───────────────────────────────────── */}
-      <section className={styles.section}>
+      {/* ══ 01 Selected work ═══════════════════════════════════════
+          Full-width alternating rows on the wide measure. Deliberately
+          the widest thing on the page. */}
+      <section
+        ref={register('work')}
+        data-section="work"
+        className={`${styles.section} ${styles.workSection}`}
+      >
         <div className="container">
           <SectionHead
             num="01"
@@ -145,32 +180,58 @@ export default function Home() {
             linkTo="/work"
             linkLabel={t.workLink}
           />
+        </div>
+
+        <div className={`container-wide ${styles.rows}`}>
           {loading ? (
-            <div className={styles.railSkeleton}>
-              {[0, 1, 2].map(i => <div key={i} className={styles.railSkelCard} />)}
-            </div>
+            /* FEATURED_COUNT skeletons, not two. Each row is roughly a
+               viewport tall, so holding space for two while four arrive let
+               the page grow by two row-heights the moment the snapshot
+               landed - which yanks the content out from under anyone who has
+               already started scrolling. Reserving the full expected count
+               costs nothing and keeps the scroll position honest. */
+            Array.from({ length: FEATURED_COUNT }, (_, i) => (
+              <ProjectRowSkeleton key={i} flip={i % 2 === 1} />
+            ))
+          ) : projects.length === 0 ? (
+            <p className={`container ${styles.empty}`}>Projects are on their way.</p>
           ) : (
-            <ProjectRail
-              projects={projects}
-              onOpen={setActive}
-              emptyText="Projects are on their way."
-            />
+            projects.map((p, i) => (
+              <div key={p.id} className="k-rise">
+                <ProjectRow
+                  project={p}
+                  index={i}
+                  flip={i % 2 === 1}
+                  onOpen={() => setActive(p)}
+                  viewLabel="View project"
+                />
+              </div>
+            ))
           )}
         </div>
       </section>
 
-      {/* ── 02 About ───────────────────────────────────────────── */}
-      <section className={`${styles.section} ${styles.sectionAlt}`}>
-        <div className="container">
-          <SectionHead num="02" eyebrow={t.aboutEyebrow} title={t.aboutHeading} />
+      {/* ══ 02 About ═══════════════════════════════════════════════
+          Two columns where the heading sticks while the body scrolls
+          past it - a different shape from every other section. */}
+      <section
+        ref={register('about')}
+        data-section="about"
+        className={`${styles.section} ${styles.aboutSection}`}
+      >
+        <span className={`deco-orn ${styles.ornAbout}`} aria-hidden="true">
+          <Ornament variant="arc" />
+        </span>
 
-          <div className={styles.aboutGrid}>
-            <div className={`${styles.aboutBody} k-rise`}>
-              <p>{t.aboutBody}</p>
-              <Link to="/about" className={styles.btnPrimary}>
-                {t.aboutCta} <ArrowRight />
-              </Link>
+        <div className={`container ${styles.stickyGrid}`}>
+          <div className={styles.stickyCol}>
+            <div className={styles.stickyInner}>
+              <SectionHead num="02" eyebrow={t.aboutEyebrow} title={t.aboutHeading} />
             </div>
+          </div>
+
+          <div className={styles.flowCol}>
+            <p className={`${styles.aboutBody} k-rise`}>{t.aboutBody}</p>
 
             <div className={`${styles.numbers} k-stagger`}>
               {ABOUT_NUMS.map(({ value, label }, i) => (
@@ -181,39 +242,82 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            <Link to="/about" className={`${styles.btnPrimary} k-rise`}>
+              {t.aboutCta} <ArrowRight />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── 03 Process ─────────────────────────────────────────── */}
-      <section className={styles.section}>
+      {/* ══ 03 Process ═════════════════════════════════════════════
+          A numbered spine, not four identical cards. Each step is a
+          band on a vertical rule with its own drafting figure. */}
+      <section
+        ref={register('process')}
+        data-section="process"
+        className={`${styles.section} ${styles.processSection}`}
+      >
+        <span className="deco-grain" aria-hidden="true" />
+
         <div className="container">
           <SectionHead num="03" eyebrow={t.processEyebrow} title={t.processTitle} />
-          <div className={`${styles.processGrid} k-stagger`}>
-            {PROCESS.map(({ num, title, body }, i) => (
-              <div key={num} style={{ '--i': i }}>
-                <ProcessCard num={num} title={title} body={body} />
-              </div>
+
+          <ol className={styles.spine}>
+            <span className={`${styles.spineRule} k-draw-y`} aria-hidden="true" />
+            {PROCESS.map(({ num, title, body, orn }) => (
+              <li key={num} className={`${styles.step} k-rise`}>
+                <span className={styles.stepMark} aria-hidden="true">
+                  <span className={styles.stepNum}>{num}</span>
+                </span>
+
+                <div className={styles.stepBody}>
+                  <h3 className={styles.stepTitle}>{title}</h3>
+                  <p className={styles.stepText}>{body}</p>
+                </div>
+
+                <span className={styles.stepOrn} aria-hidden="true">
+                  <Ornament variant={orn} />
+                </span>
+              </li>
             ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ══ Quote ══════════════════════════════════════════════════
+          A full-bleed inverted band. The tonal flip is what gives the
+          scroll its beat - without it the page is one continuous
+          plaster field from nav to footer. */}
+      {quote && (
+        <section className={styles.quoteSection} aria-label="Quote">
+          <span className="deco-grid" aria-hidden="true" />
+          <span className={`deco-orn ${styles.ornQuote}`} aria-hidden="true">
+            <Ornament variant="arch" />
+          </span>
+
+          <div className="container">
+            <blockquote className={`${styles.quote} k-rise`}>
+              <span className={styles.quoteMark} aria-hidden="true">&ldquo;</span>
+              <p className={styles.quoteText}>{quote.text}</p>
+              {quote.author && <cite className={styles.quoteCite}>{quote.author}</cite>}
+            </blockquote>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* ── Quote ──────────────────────────────────────────────── */}
-      <section className={styles.quoteSection} aria-label="Quote">
-        <div className="container">
-          <blockquote className={`${styles.quote} k-rise`}>
-            <span className={styles.quoteMark} aria-hidden="true">&ldquo;</span>
-            <p className={styles.quoteText}>{quote.text}</p>
-            <cite className={styles.quoteCite}>{quote.author}</cite>
-          </blockquote>
-        </div>
-      </section>
-
-      {/* ── Contact ────────────────────────────────────────────── */}
-      <section className={styles.contactSection}>
+      {/* ══ Contact ════════════════════════════════════════════════ */}
+      <section
+        ref={register('contact')}
+        data-section="contact"
+        className={styles.contactSection}
+      >
         <div className="container">
           <Link to="/contact" className={`${styles.contactPanel} k-rise`}>
+            <span className={`deco-orn ${styles.ornContact}`} aria-hidden="true">
+              <Ornament variant="colonnade" />
+            </span>
+
             <span className={styles.contactEyebrow}>{t.contactEyebrow}</span>
             <span className={styles.contactHeading}>{t.contactHeading}</span>
             <span className={styles.contactAction}>
