@@ -2,55 +2,41 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { subscribeFeaturedProjects } from '../../firebase'
 import {
-  ProjectLightbox, ProjectRow, ProjectRowSkeleton,
-  SectionHead, CountUp, Ornament, SectionDots,
+  Figure, Reveal, ProjectBleed, ProjectBleedSkeleton, ProjectLightbox,
 } from '../../components'
-import { useSectionTracker } from '../../hooks'
 import { useContent } from '../../context/ContentContext'
 import styles from './Home.module.css'
 
-function ArrowRight() {
+/* How many featured projects the home page carries as full-bleed rows.
+   Four is the point where the page still reads as a selection rather than as
+   the Work page duplicated; the rest live behind "All work". */
+const FEATURED_COUNT = 4
+
+function Arrow() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <line x1="5" y1="12" x2="19" y2="12" />
       <polyline points="12 5 19 12 12 19" />
     </svg>
   )
 }
 
-// How many featured projects the home page carries as full editorial rows.
-// Four is the point where the page still reads as a selection rather than the
-// Work page duplicated; the rest live behind "View all".
-const FEATURED_COUNT = 4
-
-const SECTIONS = [
-  { id: 'hero',    label: 'Intro'   },
-  { id: 'work',    label: 'Work'    },
-  { id: 'about',   label: 'About'   },
-  { id: 'process', label: 'Process' },
-  { id: 'contact', label: 'Contact' },
-]
+/** Numbered section opener. This is what makes the page read as a sequence of
+    named places rather than as one continuous scroll. */
+function Marker({ num, children }) {
+  return (
+    <p className="marker">
+      <span className="marker-num">{num}</span>
+      <span>{children}</span>
+    </p>
+  )
+}
 
 export default function Home() {
   const { copy } = useContent()
   const t = copy('home')
-
-  const PROCESS = [
-    { num: '01', title: t.process1Title, body: t.process1Body, orn: 'plan'      },
-    { num: '02', title: t.process2Title, body: t.process2Body, orn: 'arch'      },
-    { num: '03', title: t.process3Title, body: t.process3Body, orn: 'elevation' },
-    { num: '04', title: t.process4Title, body: t.process4Body, orn: 'stair'     },
-  ]
-  const STATS = [
-    { value: t.stat1Value, label: t.stat1Label },
-    { value: t.stat2Value, label: t.stat2Label },
-    { value: t.stat3Value, label: t.stat3Label },
-  ]
-  const ABOUT_NUMS = [
-    { value: t.stat1Value, label: t.aboutNum1Label },
-    { value: t.stat2Value, label: t.aboutNum2Label },
-    { value: t.stat3Value, label: t.aboutNum3Label },
-  ]
+  const info = copy('contact')
 
   const [projects, setProjects] = useState([])
   const [loading,  setLoading]  = useState(true)
@@ -58,9 +44,12 @@ export default function Home() {
 
   /*
    * The quote is picked once per mount from whichever quote fields are
-   * actually filled in. The old version indexed a fixed 0-4 range, so
-   * blanking quote 3 in the admin panel left a one-in-five chance of
-   * rendering an empty blockquote with a stray attribution dash.
+   * actually filled in. Indexing a fixed 1-5 range would leave a one-in-five
+   * chance of rendering an empty blockquote with a stray attribution rule
+   * whenever one of them is blanked in the admin panel.
+   *
+   * The empty dependency array is deliberate: re-rolling the quote whenever
+   * the content document changes would swap it under the reader mid-scroll.
    */
   const quote = useMemo(() => {
     const filled = [1, 2, 3, 4, 5]
@@ -71,8 +60,8 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Live subscription rather than a one-shot read, so an admin reordering or
-  // re-flagging a project sees the home page update without a reload.
+  // Live subscription rather than a one-shot read, so an admin reordering,
+  // hiding or re-flagging a project sees the page update without a reload.
   useEffect(() => {
     const unsubscribe = subscribeFeaturedProjects(
       items => { setProjects(items.slice(0, FEATURED_COUNT)); setLoading(false) },
@@ -82,251 +71,239 @@ export default function Home() {
     return unsubscribe
   }, [])
 
-  const { active: activeSection, register, goTo } = useSectionTracker(
-    SECTIONS.map(s => s.id),
-  )
+  /* The hero background is an explicit, optional choice (Admin → Site Copy →
+     Home → "Hero background image"), NOT the first project's cover.
+     Auto-using a cover was tried and abandoned: the covers are presentation
+     sheets on white, and the hero's bone-white display type vanished against
+     one while the sheet's own captions collided with it. With no image the
+     hero is composed type on a ruled ground, which always reads. */
+  const heroImage = t.heroImage?.trim() || ''
+  const heroProject = projects[0]
+
+  const STATS = [
+    { value: t.stat1Value, label: t.stat1Label },
+    { value: t.stat2Value, label: t.stat2Label },
+    { value: t.stat3Value, label: t.stat3Label },
+  ]
+
+  const PROCESS = [
+    { num: '01', title: t.process1Title, body: t.process1Body },
+    { num: '02', title: t.process2Title, body: t.process2Body },
+    { num: '03', title: t.process3Title, body: t.process3Body },
+    { num: '04', title: t.process4Title, body: t.process4Body },
+  ]
 
   return (
     <>
-      <SectionDots sections={SECTIONS} active={activeSection} onJump={goTo} />
-
-      {/* ══ Hero ═══════════════════════════════════════════════════
-          Full height, blueprint-gridded, with the display name as the
-          only thing competing for attention. */}
-      <section ref={register('hero')} data-section="hero" className={styles.hero}>
-        <div className={styles.heroDeco} aria-hidden="true">
-          <span className="deco-grid" />
-          <span className={`deco-blob ${styles.blobClay}`} />
-          <span className={`deco-blob ${styles.blobInk}`} />
-          <span className={`${styles.arcOuter} k-drift-up`} />
-          <span className={`${styles.arcInner} k-drift-down`} />
-          <span className={`deco-orn ${styles.ornHeroTR}`}><Ornament variant="compass" /></span>
-          <span className={`deco-orn ${styles.ornHeroBR}`}><Ornament variant="colonnade" /></span>
+      {/* ════ HERO ══════════════════════════════════════════════════════════
+          Full-viewport, full-bleed photograph with the name set over its
+          lower-left. Nothing is centred: the type sits on the page gutter and
+          the metadata rail sits against the opposite edge. */}
+      <section className={`${styles.hero} ${heroImage ? '' : styles.heroBare}`}>
+        <div className={styles.heroMedia} aria-hidden="true">
+          {heroImage ? (
+            <>
+              <Figure
+                src={heroImage}
+                alt=""
+                ratio="auto"
+                priority
+                className={styles.heroFigure}
+              />
+              <span className={styles.heroScrim} />
+            </>
+          ) : (
+            /* Ruled drafting ground. Two repeating gradients rather than an
+               asset: no request, and it scales with the viewport for free. */
+            <span className={styles.heroGrid} />
+          )}
         </div>
 
-        <div className={`container ${styles.heroInner}`}>
-          <div className={`${styles.heroType} k-hero-out`}>
-            <p className={`${styles.eyebrow} ${styles.in1}`}>
-              <span className={styles.eyebrowRule} aria-hidden="true" />
-              {t.heroEyebrow}
-            </p>
-
+        <div className={styles.heroContent}>
+          <div className={styles.heroType}>
+            <p className={styles.heroEyebrow}>{t.heroEyebrow}</p>
             <h1 className={styles.heroName}>
-              <em className={`${styles.nameFirst} ${styles.in2}`}>{t.heroNameFirst}</em>
-              <span className={`${styles.nameLast} ${styles.in3}`}>
-                {t.heroNameLast}
-                <span className={styles.namePeriod} aria-hidden="true">.</span>
+              <em>{t.heroNameFirst}</em>
+              <span className={styles.heroLast}>
+                {t.heroNameLast}<span className="dot">.</span>
               </span>
             </h1>
+            <p className={styles.heroBio}>{t.heroBio}</p>
 
-            <p className={`${styles.heroBio} ${styles.in4}`}>{t.heroBio}</p>
-
-            <div className={`${styles.heroCta} ${styles.in5}`}>
-              <Link to="/work" className={styles.btnPrimary}>
-                {t.heroCtaPrimary} <ArrowRight />
+            <div className={styles.heroActions}>
+              <Link to="/work" className={`btn btn-accent ${styles.heroBtn}`}>
+                {t.heroCtaPrimary}<Arrow />
               </Link>
-              <Link to="/about" className={styles.btnGhost}>
-                {t.heroCtaSecondary} <span aria-hidden="true">↗</span>
+              <Link to="/about" className={`btn ${styles.heroBtnGhost}`}>
+                {t.heroCtaSecondary}
               </Link>
             </div>
           </div>
 
-          {/* The stats read as a drawing-sheet title block: ruled cells,
-              mono labels, serif figures. */}
-          <dl className={`${styles.heroStats} ${styles.in6}`}>
-            {STATS.map(({ value, label }) => (
-              <div key={label} className={styles.heroStat}>
-                <dt className={styles.statLabel}>{label}</dt>
-                <dd className={styles.statValue}>
-                  <CountUp value={value} />
-                </dd>
+          {/* Metadata rail, pinned against the opposite edge. Hidden below the
+              grid breakpoint, where there is no room for a second column. */}
+          <dl className={styles.heroRail}>
+            {heroProject && (
+              <div className={styles.railItem}>
+                <dt className={styles.railKey}>Featured</dt>
+                <dd className={styles.railVal}>{heroProject.title}</dd>
               </div>
-            ))}
+            )}
+            {info.location && (
+              <div className={styles.railItem}>
+                <dt className={styles.railKey}>Based in</dt>
+                <dd className={styles.railVal}>{info.location}</dd>
+              </div>
+            )}
+            <div className={styles.railItem}>
+              <dt className={styles.railKey}>Status</dt>
+              <dd className={styles.railVal}>Open to placements</dd>
+            </div>
           </dl>
         </div>
 
-        <span className={styles.scrollCue} aria-hidden="true">
-          <span className={styles.scrollLine} />
-        </span>
+        <span className={`cue ${styles.heroCue}`} aria-hidden="true">Scroll</span>
       </section>
 
-      {/* ══ Marquee ════════════════════════════════════════════════ */}
-      <div className={styles.marquee} aria-hidden="true">
-        <div className={`${styles.marqueeTrack} k-marquee-track`}>
-          {[0, 1, 2].map(rep => (
-            PROCESS.map(({ num, title }) => (
-              <span key={`${rep}-${num}`} className={styles.marqueeItem}>
-                {title}
-                <span className={styles.marqueeDot}>◦</span>
-              </span>
-            ))
+
+      {/* ════ 01 — STATEMENT ════════════════════════════════════════════════
+          One large statement, set on the grid from column 4 so it is
+          emphatically not centred, with the facts row as a ruled band under
+          it. */}
+      <section className={`section tone-accent-soft ${styles.statement}`}>
+        <div className="grid12">
+          <Reveal className={styles.statementMarker} variant="rise-sm">
+            <Marker num="01">{t.aboutEyebrow}</Marker>
+          </Reveal>
+
+          <Reveal className={styles.statementBody} variant="rise">
+            <h2 className={styles.statementHead}>{t.aboutHeading}</h2>
+            <p className={styles.statementText}>{t.aboutBody}</p>
+            <Link to="/about" className={`link ${styles.statementLink}`}>
+              {t.aboutCta}
+            </Link>
+          </Reveal>
+        </div>
+
+        <div className={`grid12 ${styles.facts}`}>
+          {STATS.map((s, i) => (
+            <Reveal key={s.label} className={styles.fact} variant="rise-sm" index={i}>
+              <span className={styles.factValue}>{s.value}</span>
+              <span className={styles.factLabel}>{s.label}</span>
+            </Reveal>
           ))}
         </div>
-      </div>
-
-      {/* ══ 01 Selected work ═══════════════════════════════════════
-          Full-width alternating rows on the wide measure. Deliberately
-          the widest thing on the page. */}
-      <section
-        ref={register('work')}
-        data-section="work"
-        className={`${styles.section} ${styles.workSection}`}
-      >
-        <div className="container">
-          <SectionHead
-            num="01"
-            eyebrow={t.workEyebrow}
-            title={t.workTitle}
-            linkTo="/work"
-            linkLabel={t.workLink}
-          />
-        </div>
-
-        <div className={`container-wide ${styles.rows}`}>
-          {loading ? (
-            /* FEATURED_COUNT skeletons, not two. Each row is roughly a
-               viewport tall, so holding space for two while four arrive let
-               the page grow by two row-heights the moment the snapshot
-               landed - which yanks the content out from under anyone who has
-               already started scrolling. Reserving the full expected count
-               costs nothing and keeps the scroll position honest. */
-            Array.from({ length: FEATURED_COUNT }, (_, i) => (
-              <ProjectRowSkeleton key={i} flip={i % 2 === 1} />
-            ))
-          ) : projects.length === 0 ? (
-            <p className={`container ${styles.empty}`}>Projects are on their way.</p>
-          ) : (
-            projects.map((p, i) => (
-              <div key={p.id} className="k-rise">
-                <ProjectRow
-                  project={p}
-                  index={i}
-                  flip={i % 2 === 1}
-                  onOpen={() => setActive(p)}
-                  viewLabel="View project"
-                />
-              </div>
-            ))
-          )}
-        </div>
       </section>
 
-      {/* ══ 02 About ═══════════════════════════════════════════════
-          Two columns where the heading sticks while the body scrolls
-          past it - a different shape from every other section. */}
-      <section
-        ref={register('about')}
-        data-section="about"
-        className={`${styles.section} ${styles.aboutSection}`}
-      >
-        <span className={`deco-orn ${styles.ornAbout}`} aria-hidden="true">
-          <Ornament variant="arc" />
-        </span>
-
-        <div className={`container ${styles.stickyGrid}`}>
-          <div className={styles.stickyCol}>
-            <div className={styles.stickyInner}>
-              <SectionHead num="02" eyebrow={t.aboutEyebrow} title={t.aboutHeading} />
-            </div>
-          </div>
-
-          <div className={styles.flowCol}>
-            <p className={`${styles.aboutBody} k-rise`}>{t.aboutBody}</p>
-
-            <div className={`${styles.numbers} k-stagger`}>
-              {ABOUT_NUMS.map(({ value, label }, i) => (
-                <div key={label} className={styles.number} style={{ '--i': i }}>
-                  <span className={styles.numberRule} aria-hidden="true" />
-                  <CountUp value={value} className={styles.numberValue} />
-                  <span className={styles.numberLabel}>{label}</span>
-                </div>
-              ))}
-            </div>
-
-            <Link to="/about" className={`${styles.btnPrimary} k-rise`}>
-              {t.aboutCta} <ArrowRight />
+      {/* ════ 02 — SELECTED WORK ════════════════════════════════════════════
+          The core of the layout: alternating full-bleed rows. */}
+      <section className={`tone-base ${styles.work}`}>
+        <div className={`grid12 ${styles.workHead}`}>
+          <Reveal className={styles.workHeadMarker} variant="rise-sm">
+            <Marker num="02">{t.workEyebrow}</Marker>
+          </Reveal>
+          <Reveal className={styles.workHeadTitle} variant="rise">
+            <h2 className={styles.sectionTitle}>{t.workTitle}</h2>
+          </Reveal>
+          <Reveal className={styles.workHeadLink} variant="rise-sm">
+            <Link to="/work" className={`link ${styles.workLink}`}>
+              {t.workLink}<Arrow />
             </Link>
+          </Reveal>
+        </div>
+
+        {loading ? (
+          Array.from({ length: 2 }).map((_, i) => (
+            <ProjectBleedSkeleton key={i} index={i} />
+          ))
+        ) : projects.length === 0 ? (
+          <div className="grid12">
+            <p className={styles.empty}>
+              No featured projects yet. Flag a project as featured in the admin
+              panel and it will appear here.
+            </p>
           </div>
+        ) : (
+          projects.map((p, i) => (
+            <ProjectBleed
+              key={p.id}
+              project={p}
+              index={i}
+              onOpen={setActive}
+            />
+          ))
+        )}
+      </section>
+
+      {/* ════ 03 — APPROACH ═════════════════════════════════════════════════
+          Four numbered columns on a ruled grid. Each cell is top-ruled, so the
+          section reads as a table of contents rather than as four cards. */}
+      <section className={`section tone-accent ${styles.approach}`}>
+        <div className="grid12">
+          <Reveal className={styles.approachMarker} variant="rise-sm">
+            <Marker num="03">{t.processEyebrow}</Marker>
+          </Reveal>
+          <Reveal className={styles.approachTitle} variant="rise">
+            <h2 className={styles.sectionTitle}>{t.processTitle}</h2>
+          </Reveal>
+        </div>
+
+        <div className={`grid12 ${styles.approachGrid}`}>
+          {PROCESS.map((p, i) => (
+            <Reveal key={p.num} className={styles.step} variant="rise" index={i}>
+              <span className={styles.stepNum}>{p.num}</span>
+              <h3 className={styles.stepTitle}>{p.title}</h3>
+              <p className={styles.stepBody}>{p.body}</p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      {/* ══ 03 Process ═════════════════════════════════════════════
-          A numbered spine, not four identical cards. Each step is a
-          band on a vertical rule with its own drafting figure. */}
-      <section
-        ref={register('process')}
-        data-section="process"
-        className={`${styles.section} ${styles.processSection}`}
-      >
-        <span className="deco-grain" aria-hidden="true" />
-
-        <div className="container">
-          <SectionHead num="03" eyebrow={t.processEyebrow} title={t.processTitle} />
-
-          <ol className={styles.spine}>
-            <span className={`${styles.spineRule} k-draw-y`} aria-hidden="true" />
-            {PROCESS.map(({ num, title, body, orn }) => (
-              <li key={num} className={`${styles.step} k-rise`}>
-                <span className={styles.stepMark} aria-hidden="true">
-                  <span className={styles.stepNum}>{num}</span>
-                </span>
-
-                <div className={styles.stepBody}>
-                  <h3 className={styles.stepTitle}>{title}</h3>
-                  <p className={styles.stepText}>{body}</p>
-                </div>
-
-                <span className={styles.stepOrn} aria-hidden="true">
-                  <Ornament variant={orn} />
-                </span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* ══ Quote ══════════════════════════════════════════════════
-          A full-bleed inverted band. The tonal flip is what gives the
-          scroll its beat - without it the page is one continuous
-          plaster field from nav to footer. */}
+      {/* ════ QUOTE ═════════════════════════════════════════════════════════
+          An unnumbered full-bleed interlude between sections. Inverted, so it
+          breaks the vertical rhythm without introducing another colour. */}
       {quote && (
-        <section className={styles.quoteSection} aria-label="Quote">
-          <span className="deco-grid" aria-hidden="true" />
-          <span className={`deco-orn ${styles.ornQuote}`} aria-hidden="true">
-            <Ornament variant="arch" />
-          </span>
-
-          <div className="container">
-            <blockquote className={`${styles.quote} k-rise`}>
-              <span className={styles.quoteMark} aria-hidden="true">&ldquo;</span>
-              <p className={styles.quoteText}>{quote.text}</p>
-              {quote.author && <cite className={styles.quoteCite}>{quote.author}</cite>}
-            </blockquote>
+        <section className={`tone-invert ${styles.band}`}>
+          <div className="grid12">
+            <Reveal className={styles.bandInner} variant="rise">
+              <blockquote className={styles.quote}>{quote.text}</blockquote>
+              {quote.author && (
+                <p className={styles.quoteBy}>
+                  <span className={styles.quoteRule} aria-hidden="true" />
+                  {quote.author}
+                </p>
+              )}
+            </Reveal>
           </div>
         </section>
       )}
 
-      {/* ══ Contact ════════════════════════════════════════════════ */}
-      <section
-        ref={register('contact')}
-        data-section="contact"
-        className={styles.contactSection}
-      >
-        <div className="container">
-          <Link to="/contact" className={`${styles.contactPanel} k-rise`}>
-            <span className={`deco-orn ${styles.ornContact}`} aria-hidden="true">
-              <Ornament variant="colonnade" />
-            </span>
+      {/* ════ 04 — CONTACT ══════════════════════════════════════════════════ */}
+      <section className={`section tone-accent-deep ${styles.cta}`}>
+        <div className="grid12">
+          <Reveal className={styles.ctaMarker} variant="rise-sm">
+            <Marker num="04">{t.contactEyebrow}</Marker>
+          </Reveal>
 
-            <span className={styles.contactEyebrow}>{t.contactEyebrow}</span>
-            <span className={styles.contactHeading}>{t.contactHeading}</span>
-            <span className={styles.contactAction}>
-              {t.contactCta}
-              <span className={styles.contactArrow} aria-hidden="true">
-                <ArrowRight />
-              </span>
-            </span>
-          </Link>
+          <Reveal className={styles.ctaBody} variant="rise">
+            <h2 className={styles.ctaHead}>{t.contactHeading}</h2>
+            <Link to="/contact" className={`btn btn-accent ${styles.ctaBtn}`}>
+              {t.contactCta}<Arrow />
+            </Link>
+          </Reveal>
+
+          <Reveal className={styles.ctaRail} variant="rise-sm" index={1}>
+            {info.email && (
+              <a href={`mailto:${info.email}`} className={styles.ctaMeta}>
+                {info.email}
+              </a>
+            )}
+            {info.responseTime && (
+              <p className={styles.ctaMetaDim}>
+                Replies {info.responseTime.toLowerCase()}
+              </p>
+            )}
+          </Reveal>
         </div>
       </section>
 

@@ -1,763 +1,544 @@
-/* ══ Home ═══════════════════════════════════════════════════════
-   Editorial rhythm, not a stack of identical container sections.
-   Section shapes deliberately differ so the scroll has a beat:
+/* =============================================================================
+   HOME
+   -----------------------------------------------------------------------------
+   Section order: hero → 01 statement → 02 selected work → 03 approach →
+   quote interlude → 04 contact.
 
-     hero      full height, centred, blueprint-gridded
-     work      widest measure, alternating full-width rows
-     about     two columns, heading sticks while body scrolls past
-     process   narrow, a numbered spine on a vertical rule
-     quote     full-bleed INVERTED band - the tonal flip
-     contact   a single solid clay panel as the closer
+   Every block is placed on the twelve-column grid by explicit column number.
+   Nothing uses `margin: auto`, and there is no centred container anywhere in
+   this file — that was the specific problem with the previous layout.
+   ========================================================================== */
 
-   The previous version made every section `container` + SectionHead +
-   content at identical padding and width, which is why the page read
-   as bland regardless of what was in it.
-
-   Scroll-linked motion comes from the global `k-*` classes in
-   styles/kinetic.css; everything local here is layout, type and hover.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Hero ───────────────────────────────────────────────────────── */
+/* ── Hero ───────────────────────────────────────────────────────────────────
+   Full viewport, photograph behind, type over the lower left. */
 .hero {
   position: relative;
+  /* svh, not vh: on mobile Safari `100vh` is the tallest the viewport ever
+     gets, so a 100vh hero is cropped by the address bar on first paint and
+     then grows. svh is the *small* viewport height, which is stable. */
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding-top: calc(var(--nav-h) + clamp(32px, 8vh, 88px));
-  padding-bottom: clamp(64px, 12vh, 128px);
-  overflow: clip;
+  justify-content: flex-end;
+  overflow: hidden;
+  /* The nav sits over this section transparently, so the content needs to
+     clear it. */
+  padding-top: var(--nav-h);
 }
 
-/* Pinned to the viewport height, NOT `inset: 0`.
-   Every child here is placed in percentages of this box, so with `inset: 0`
-   the whole decorative layer was sized by the hero - and the hero is taller
-   than 100svh, so its height is set by its text. The moment the webfonts
-   swapped in, the text remetered, the hero grew, and every arc and blob
-   jumped: that was the residual layout shift after the font-loading fix
-   (CLS 0.020, and the shift's reported sources were exactly .arcOuter,
-   .blobClay and .blobInk).
-   A fixed 100svh box cannot be moved by text, so the decoration now holds
-   still through the swap. It is also the box these positions were composed
-   against in the first place. */
-.heroDeco {
+.heroMedia {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100svh;
-  pointer-events: none;
-  overflow: clip;
+  inset: 0;
+  z-index: 0;
 }
 
-/* Three stops rather than two. With the blur gone (see .deco-blob in
-   global.css) the falloff has to come entirely from the gradient, and a
-   straight colour->transparent ramp bands visibly across a 620px box.
-   A mid stop at 45% keeps the centre dense and the edge feathered. */
-.blobClay {
-  width: min(52vw, 620px);
-  aspect-ratio: 1;
-  top: -14%;
-  left: -12%;
-  background: radial-gradient(
-    circle,
-    rgba(var(--accent-1-rgb), 0.42) 0%,
-    rgba(var(--accent-1-rgb), 0.18) 45%,
-    transparent 72%
+/* The Figure component sizes itself from `aspect-ratio`; the hero overrides
+   that to fill the section instead, since here the viewport sets the box. */
+.heroFigure {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto !important;
+}
+
+/* Gradient rather than a flat wash. A flat 50% scrim greys the whole
+   photograph; a gradient keeps the top of the frame clean and darkens only
+   where the type actually sits. The mid stop stops it looking like a fade. */
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--scrim-from) 0%,
+    var(--scrim-from) 46%,
+    var(--scrim-to) 100%
   );
 }
 
-.blobInk {
-  width: min(44vw, 520px);
-  aspect-ratio: 1;
-  bottom: -18%;
-  right: -10%;
-  background: radial-gradient(
-    circle,
-    rgba(var(--accent-sec-rgb), 0.34) 0%,
-    rgba(var(--accent-sec-rgb), 0.15) 45%,
-    transparent 72%
-  );
-}
-
-/* Two drafting arcs that drift at different rates as the page scrolls. */
-.arcOuter,
-.arcInner {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid var(--border-1);
-}
-
-.arcOuter {
-  width: min(78vw, 900px);
-  aspect-ratio: 1;
-  top: -18%;
-  right: -16%;
-}
-
-.arcInner {
-  width: min(52vw, 620px);
-  aspect-ratio: 1;
-  top: 6%;
-  right: -4%;
-  border-color: var(--border-hover);
-  border-style: dashed;
-}
-
-.ornHeroTR {
-  top: 16%;
-  right: 5%;
-  width: clamp(58px, 7vw, 118px);
-  color: var(--accent-sec);
-  opacity: 0.4;
-}
-
-/* Bottom RIGHT, not bottom left. On the left it landed on top of the stats
-   title block, whose left edge is pinned to the container gutter and so
-   cannot move out of the way. The left half of the hero already carries all
-   the weight (the display name); the ornaments belong on the open right. */
-.ornHeroBR {
-  bottom: 9%;
-  right: 9%;
-  width: clamp(64px, 9vw, 150px);
-  color: var(--accent-ter);
-  opacity: 0.35;
-}
-
-.heroInner {
+.heroContent {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(48px, 9vh, 96px);
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(12px, 2vw, 28px);
+  align-items: end;
+  padding-inline: var(--gutter);
+  padding-bottom: clamp(56px, 10vh, 120px);
+  width: 100%;
 }
 
-/* No max-width here - the display type sets its own measure and the bio
-   below it has its own, narrower one. Constraining the whole block would
-   crush the body copy into a column. */
-.heroType { position: relative; }
+.heroType {
+  grid-column: 1 / 9;
+  min-width: 0;
+}
 
-/* ── Eyebrow ────────────────────────────────────────────────────── */
-.eyebrow {
+.heroEyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--on-image-dim);
+  margin: 0 0 var(--sp-5);
   display: flex;
   align-items: center;
   gap: var(--sp-4);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--accent-sec);
-  margin-bottom: var(--sp-6);
-  white-space: nowrap;
 }
 
-.eyebrowRule {
-  width: clamp(28px, 5vw, 56px);
+/* A short rule before the eyebrow, anchoring it to the gutter. */
+.heroEyebrow::before {
+  content: '';
+  width: 40px;
   height: 1px;
-  background: var(--accent-1);
-  flex: none;
+  background: var(--accent);
+  flex-shrink: 0;
 }
 
-/* ── Name ───────────────────────────────────────────────────────── */
 .heroName {
   font-family: var(--font-serif);
-  line-height: 0.86;
-  letter-spacing: -0.03em;
-  margin-bottom: var(--sp-8);
+  font-size: var(--text-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  font-weight: 400;
+  color: var(--on-image);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  /* Optical alignment: a large serif's left sidebearing makes the text look
+     indented against the gutter. Pulling back by a fraction of an em lines
+     the glyph itself up rather than its box. */
+  margin-left: -0.045em;
 }
 
-.nameFirst {
-  display: block;
-  font-size: clamp(3rem, 9.5vw, 8rem);
+.heroName em {
   font-style: italic;
   font-weight: 300;
-  color: var(--fg-3);
-  padding-left: 0.06em;
 }
 
-/* Weight 600, not 400. Nothing on the old page was ever a typographic
-   anchor, which is a large part of why it read as flat. */
-.nameLast {
-  display: block;
-  font-size: clamp(4rem, 13vw, 11rem);
-  font-weight: 600;
-  color: var(--fg-1);
-  margin-top: -0.06em;
-}
+/* The surname is set back from the given name so the two lines read as a
+   composed lockup rather than as a flush-left stack. */
+.heroLast { margin-left: 0.14em; }
 
-.namePeriod { color: var(--accent-1); }
-
-/* ── Bio + CTAs ─────────────────────────────────────────────────── */
 .heroBio {
+  max-width: 46ch;
+  margin: clamp(20px, 3vh, 36px) 0 0;
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--on-image-dim);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: clamp(24px, 4vh, 44px);
+}
+
+.heroBtn { flex-shrink: 0; }
+
+/* Over a photograph the outline button needs the fixed light values, not
+   --fg-1: the scrim under it is dark in both themes, so a theme-flipping
+   token would put charcoal type on a dark scrim in light mode. */
+.heroBtnGhost {
+  color: var(--on-image);
+  border-color: rgba(244, 244, 244, 0.42);
+}
+
+.heroBtnGhost:hover {
+  background: var(--on-image);
+  border-color: var(--on-image);
+  color: #121212;
+}
+
+/* ── Hero metadata rail ─────────────────────────────────────────────────── */
+.heroRail {
+  grid-column: 10 / 13;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  margin: 0;
+  /* Aligns the rail's last row with the baseline block of the type on the
+     left, rather than with the bottom of the section. */
+  padding-bottom: var(--sp-2);
+}
+
+.railItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--sp-3);
+  border-top: 1px solid rgba(244, 244, 244, 0.22);
+}
+
+.railKey {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--on-image-dim);
+}
+
+.railVal {
+  font-size: var(--text-sm);
+  color: var(--on-image);
+  margin: 0;
+}
+
+.heroCue {
+  position: absolute;
+  right: var(--gutter);
+  bottom: var(--sp-5);
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--on-image-dim);
+  /* Rotated to read up the right edge, so it occupies the margin instead of
+     competing with the type block. */
+  writing-mode: vertical-rl;
+}
+
+/* ── Hero without a background image ────────────────────────────────────────
+   The default state. A ruled drafting ground instead of a photograph, and the
+   type reverts to the THEME colours — the --on-image tokens are fixed light
+   values for use over a dark scrim, so leaving them in place here would put
+   near-white type on an alabaster background in light mode. */
+.heroGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(to right,  var(--rule) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px 96px);
+  /* Fades the grid out towards the lower left so it never competes with the
+     name set over it. */
+  mask-image: radial-gradient(ellipse 120% 100% at 85% 10%, #000 0%, transparent 78%);
+  transform: translateZ(0);
+}
+
+.heroBare .heroName    { color: var(--fg-1); }
+.heroBare .heroEyebrow { color: var(--fg-3); }
+.heroBare .heroBio     { color: var(--fg-2); }
+.heroBare .heroCue     { color: var(--fg-4); }
+.heroBare .railKey     { color: var(--fg-3); }
+.heroBare .railVal     { color: var(--fg-1); }
+.heroBare .railItem    { border-top-color: var(--rule); }
+
+.heroBare .heroBtnGhost {
+  color: var(--fg-1);
+  border-color: var(--edge);
+}
+
+.heroBare .heroBtnGhost:hover {
+  background: var(--fg-1);
+  border-color: var(--fg-1);
+  color: var(--bg-0);
+}
+
+/* ── Shared section title ───────────────────────────────────────────────── */
+.sectionTitle {
+  font-family: var(--font-serif);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  font-weight: 400;
+  color: var(--fg-1);
+  margin: 0;
+  margin-left: -0.04em;
+}
+
+/* ── 01 Statement ───────────────────────────────────────────────────────── */
+/* Ground comes from the tone class on the element. */
+.statement { }
+
+.statementMarker { grid-column: 1 / 4; }
+
+/* Column 4 onward, so the statement is set well off the left edge without
+   being centred — the asymmetry is the point. */
+.statementBody {
+  grid-column: 4 / 12;
+  min-width: 0;
+}
+
+.statementHead {
+  font-family: var(--font-serif);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  font-weight: 400;
+  color: var(--fg-1);
+  margin: 0 0 var(--sp-8);
+  max-width: 26ch;
+}
+
+.statementText {
+  max-width: var(--measure);
   font-size: var(--text-md);
   line-height: var(--leading-relaxed);
   color: var(--fg-2);
-  font-weight: 300;
-  max-width: 46ch;
-  margin-bottom: var(--sp-8);
+  margin: 0 0 var(--sp-8);
 }
 
-.heroCta {
+.statementLink {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+}
+
+/* Facts row: three cells, each four columns wide and top-ruled, so they read
+   as a table rather than as three cards. */
+.facts { margin-top: clamp(56px, 8vh, 104px); }
+
+.fact {
+  grid-column: span 4;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-4);
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--rule);
 }
 
-.btnPrimary,
-.btnGhost {
+.factValue {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: var(--tracking-display);
+  color: var(--fg-1);
+}
+
+.factLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-3);
+}
+
+/* ── 02 Selected work ───────────────────────────────────────────────────── */
+.work {
+  padding-top: var(--section-y);
+  padding-bottom: var(--section-y);
+}
+
+/* The last row already carries its own generous bottom padding, so the next
+   section's top padding would stack on top of it and leave roughly 300px of
+   dead ground. Pulled back by the row's own value instead of shortening the
+   section rhythm, which every other section still needs. */
+.work + .approach { padding-top: clamp(24px, 4vh, 56px); }
+
+.workHead {
+  align-items: end;
+  padding-bottom: clamp(24px, 4vh, 48px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.workHeadMarker { grid-column: 1 / 4; }
+.workHeadTitle  { grid-column: 4 / 10; }
+
+.workHeadLink {
+  grid-column: 11 / 13;
+  /* Baseline-aligned with the title rather than the grid row, so the link
+     sits on the same optical line as the heading it belongs to. */
+  justify-self: end;
+  padding-bottom: var(--sp-2);
+}
+
+.workLink {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-8);
-  border-radius: var(--r-full);
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  font-size: var(--text-2xs);
   text-transform: uppercase;
-  transition: transform var(--t-spring), background var(--t-base),
-              color var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
-}
-
-.btnPrimary {
-  background: var(--accent-1);
-  color: var(--accent-text);
-  box-shadow: var(--shadow-sm);
-}
-
-.btnPrimary:hover {
-  background: var(--accent-h);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.btnGhost {
-  color: var(--fg-1);
-  border: 1px solid var(--border-1);
-  background: var(--bg-panel);
-}
-
-.btnGhost:hover {
-  border-color: var(--accent-1);
-  color: var(--accent-1);
-  transform: translateY(-2px);
-}
-
-/* ── Hero stats - a drawing-sheet title block ───────────────────── */
-.heroStats {
-  display: flex;
-  flex-wrap: wrap;
-  border: 1px solid var(--border-1);
-  border-radius: var(--r-sm);
-  background: var(--bg-panel);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  overflow: hidden;
-  max-width: 680px;
-}
-
-.heroStat {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: var(--sp-1);
-  flex: 1 1 150px;
-  padding: var(--sp-5) var(--sp-6);
-  /* Ruled cells, like a title block. The last cell's divider is removed
-     rather than using a gap, so the block reads as one ruled object. */
-  border-right: 1px solid var(--border-1);
-}
-
-.heroStat:last-child { border-right: none; }
-
-.statValue {
-  font-family: var(--font-serif);
-  font-size: var(--text-2xl);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--fg-1);
-  font-variant-numeric: tabular-nums;
-}
-
-.statLabel {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--fg-3);
-}
-
-/* ── Scroll cue ─────────────────────────────────────────────────── */
-.scrollCue {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(20px, 4vh, 40px);
-  translate: -50% 0;
-  width: 1px;
-  height: clamp(32px, 6vh, 56px);
-  overflow: hidden;
-  background: var(--border-1);
-}
-
-.scrollLine {
-  display: block;
-  width: 100%;
-  height: 40%;
-  background: var(--accent-1);
-  animation: scrollFall 2.1s ease-in-out infinite;
-}
-
-/* ── Marquee ────────────────────────────────────────────────────── */
-.marquee {
-  position: relative;
-  overflow: clip;
-  border-block: 1px solid var(--border-1);
-  background: var(--bg-2);
-  padding-block: clamp(16px, 3vw, 30px);
-}
-
-.marqueeTrack {
-  display: flex;
-  align-items: center;
-  gap: clamp(24px, 4vw, 56px);
-  width: max-content;
-}
-
-.marqueeItem {
-  display: inline-flex;
-  align-items: center;
-  gap: clamp(24px, 4vw, 56px);
-  font-family: var(--font-serif);
-  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
-  font-weight: 400;
-  font-style: italic;
-  color: var(--fg-4);
+  letter-spacing: var(--tracking-mono);
   white-space: nowrap;
-  letter-spacing: -0.01em;
-}
-
-.marqueeDot { color: var(--accent-1); font-size: 0.5em; font-style: normal; }
-
-/* ── Section shell ──────────────────────────────────────────────── */
-.section {
-  position: relative;
-  padding-block: clamp(72px, 12vw, 144px);
-}
-
-/* ── 01 Work ────────────────────────────────────────────────────── */
-.workSection { background: var(--bg-0); }
-
-.rows {
-  display: flex;
-  flex-direction: column;
-  /* Generous, because each row is a large object. Tight gaps here made the
-     rows read as a list instead of a portfolio. */
-  gap: clamp(64px, 10vw, 140px);
 }
 
 .empty {
+  grid-column: 4 / 11;
+  padding-block: var(--sp-20);
   font-size: var(--text-md);
-  font-weight: 300;
   color: var(--fg-3);
 }
 
-/* ── 02 About - sticky two-column ───────────────────────────────── */
-.aboutSection {
-  background: var(--bg-2);
-  border-block: 1px solid var(--border-1);
-  overflow: clip;
-}
+/* ── 03 Approach ────────────────────────────────────────────────────────── */
+.approach { }
 
-/* right: 8%, clear of the fixed section dots at the viewport edge. */
-.ornAbout {
-  top: 8%;
-  right: 8%;
-  width: clamp(70px, 9vw, 150px);
-  color: var(--accent-ter);
-  opacity: 0.3;
-}
+.approachMarker { grid-column: 1 / 4; }
+.approachTitle  { grid-column: 4 / 10; }
 
-.stickyGrid {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(40px, 7vw, 96px);
-  /* NOT `align-items: start`. A sticky element can only travel inside its
-     containing block, so if this column shrink-wraps its own heading there
-     is nowhere for it to stick - it just sits there. Leaving the default
-     `stretch` makes .stickyCol span the full row height, which is the
-     travel range the sticky heading needs. */
-  align-items: stretch;
-}
-
-/* The heading column holds its place while the body column scrolls past.
-   This is the section's whole identity, so it must not be broken by an
-   ancestor becoming a scroll container - see the overflow-x note on <html>
-   in global.css. */
-.stickyCol { position: relative; }
-
-.stickyInner {
-  position: sticky;
-  top: calc(var(--nav-h) + clamp(24px, 6vh, 64px));
-}
-
-.flowCol {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: clamp(32px, 5vw, 56px);
-}
-
-.aboutBody {
-  font-size: var(--text-lg);
-  line-height: var(--leading-relaxed);
-  color: var(--fg-2);
-  font-weight: 300;
-  max-width: 52ch;
-}
-
-/* ── About numbers ──────────────────────────────────────────────── */
-/* minmax(115px, …), not 150px. The flow column lands around 545px wide, and
-   at a 150px minimum three tracks plus two 48px gaps needed 546px - one pixel
-   over, so auto-fit dropped to two columns and left the third stat orphaned
-   on its own row. 115px leaves real headroom for the same three-up row. */
-.numbers {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
-  gap: var(--sp-8) clamp(20px, 3vw, 40px);
-  width: 100%;
-}
-
-.number { display: grid; gap: var(--sp-2); }
-
-.numberRule {
-  width: 100%;
-  height: 1px;
-  background: var(--accent-sub2);
-}
-
-.numberValue {
-  font-family: var(--font-serif);
-  font-size: clamp(2.5rem, 5vw, 3.75rem);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--accent-1);
-  font-variant-numeric: tabular-nums;
-}
-
-.numberLabel {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--fg-3);
-}
-
-/* ── 03 Process - a numbered spine ──────────────────────────────── */
-.processSection {
-  background: var(--bg-0);
-  overflow: clip;
-}
-
-.spine {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(40px, 6vw, 72px);
-  /* Room for the rule and the numbered marks that sit on it. */
-  padding-left: clamp(52px, 7vw, 88px);
-}
-
-.spineRule {
-  position: absolute;
-  /* Centred under the marks: half the padding, minus half the rule. */
-  left: calc(clamp(52px, 7vw, 88px) / 2);
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: var(--border-1);
+.approachGrid {
+  margin-top: clamp(48px, 7vh, 88px);
+  row-gap: clamp(32px, 5vh, 56px);
 }
 
 .step {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: clamp(20px, 4vw, 56px);
-}
-
-/* The numbered mark sits ON the rule, so it is pulled back out of the
-   list's left padding and centred on the same axis. */
-.stepMark {
-  position: absolute;
-  left: calc(clamp(52px, 7vw, 88px) / -2);
-  top: 0;
-  translate: -50% 0;
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: var(--r-full);
-  border: 1px solid var(--border-1);
-  background: var(--bg-1);
-  box-shadow: var(--shadow-xs);
+  grid-column: span 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--rule);
+  min-width: 0;
 }
 
 .stepNum {
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--accent-1);
-  font-variant-numeric: tabular-nums;
-}
-
-.stepBody {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-mono);
+  color: var(--accent);
 }
 
 .stepTitle {
   font-family: var(--font-serif);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 500;
+  font-size: var(--text-xl);
   line-height: var(--leading-snug);
+  font-weight: 400;
   color: var(--fg-1);
+  margin: 0;
 }
 
-.stepText {
-  font-size: var(--text-md);
+.stepBody {
+  font-size: var(--text-sm);
   line-height: var(--leading-relaxed);
-  font-weight: 300;
   color: var(--fg-2);
-  max-width: 54ch;
+  margin: 0;
 }
 
-.stepOrn {
-  display: block;
-  width: clamp(56px, 7vw, 104px);
-  color: var(--accent-sec);
-  opacity: 0.32;
-  flex: none;
+/* ── Quote interlude ────────────────────────────────────────────────────────
+   Inverted full-bleed band. Uses the surface tokens flipped by hand rather
+   than a dedicated pair, because in this monochrome palette bg-3/fg-1 already
+   give enough separation from bg-0 without introducing a new colour. */
+.band {
+  padding-block: clamp(72px, 12vh, 152px);
 }
 
-/* ── Quote - the inverted full-bleed band ───────────────────────── */
-/* The one tonal break in the page. Without it the scroll is a single
-   continuous plaster field from nav to footer, which is most of why the
-   old page felt like one long section.
-   Colours come from the --band-* pair rather than inverting --fg-1/--bg-1:
-   in dark mode fg-1 is near-white, so that inversion would fire a
-   full-viewport white band at a dark-theme reader. See Theme.css. */
-.quoteSection {
-  position: relative;
-  padding-block: clamp(96px, 16vw, 200px);
-  background: var(--band-bg);
-  color: var(--band-fg);
-  overflow: clip;
-  isolation: isolate;
+.bandInner {
+  grid-column: 2 / 11;
+  min-width: 0;
 }
 
-/* The decoration stays on the base layer and the content lifts above it,
-   rather than giving every child the same z-index and relying on DOM order.
-   `:global` is required - .container is a global utility from global.css, and
-   an unwrapped .container here would be hashed to a class nothing carries. */
-.quoteSection > :global(.container) { position: relative; z-index: 1; }
-
-/* Fully inside the band. At `bottom: -8%` the section's own `overflow: clip`
-   sliced the arch off mid-figure, and a cropped ornament reads as a stray
-   rectangle rather than as decoration. */
-.ornQuote {
-  bottom: 7%;
-  left: 5%;
-  width: clamp(90px, 13vw, 200px);
-  color: var(--band-fg);
-  opacity: 0.16;
-}
-
-/* The measure lives on .quoteText, NOT here. `ch` resolves against the
-   element's OWN font-size, and .quote inherits the section's 16px - so a
-   `max-width: 26ch` on this wrapper computed to about 208px and wrung the
-   quote into a four-word column. On .quoteText the same unit resolves
-   against its clamped display size, which is what was intended. */
 .quote {
-  position: relative;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.quoteMark {
-  display: block;
   font-family: var(--font-serif);
-  font-size: clamp(4rem, 10vw, 7rem);
-  line-height: 0.6;
-  /* --band-accent, tuned against the band rather than the page. */
-  color: var(--band-accent);
-  opacity: 0.75;
-  margin-bottom: var(--sp-4);
-}
-
-/* --band-fg, not --bg-1. On the dark band --bg-1 is the page's dark surface,
-   so in dark mode this was dark brown text on a dark blue band: invisible. */
-.quoteText {
-  font-family: var(--font-serif);
-  font-size: clamp(1.6rem, 4.2vw, 3rem);
-  font-weight: 300;
-  font-style: italic;
+  font-size: clamp(1.75rem, 4.2vw, 3.25rem);
   line-height: var(--leading-snug);
-  color: var(--band-fg);
-  letter-spacing: -0.01em;
-  /* Two or three lines of display italic. The measure belongs here rather
-     than on the wrapper - see the note on .quote above. */
-  max-width: 24ch;
-  margin: 0 auto;
+  letter-spacing: var(--tracking-tight);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--fg-1);
+  margin: 0;
+  /* Hanging quote mark, set in the margin so the first line of text stays
+     flush with the grid column. */
+  text-indent: -0.42em;
 }
 
-.quoteCite {
-  display: block;
-  margin-top: var(--sp-8);
-  font-family: var(--font-mono);
-  font-style: normal;
-  font-size: var(--text-xs);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--band-accent);
-}
+.quote::before { content: '\201C'; }
+.quote::after  { content: '\201D'; }
 
-/* ── Contact closer ────────────────────────────────────────────── */
-.contactSection {
-  padding-block: clamp(72px, 12vw, 144px);
-  background: var(--bg-0);
-}
-
-.contactPanel {
-  position: relative;
-  display: grid;
-  gap: var(--sp-5);
-  padding: clamp(40px, 7vw, 96px);
-  border-radius: var(--r-xl);
-  /* --cta-* rather than --accent-1/--accent-text: see the note in Theme.css
-     on why a solid panel this large needs a deeper value than a button. */
-  background: var(--cta-bg);
-  color: var(--cta-fg);
-  overflow: clip;
-  isolation: isolate;
-  transition: transform var(--t-spring), box-shadow var(--t-base);
-}
-
-.contactPanel > *:not(.ornContact) { position: relative; z-index: 1; }
-
-.contactPanel:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
-.ornContact {
-  top: -10%;
-  right: 3%;
-  width: clamp(110px, 18vw, 260px);
-  color: var(--cta-fg);
-  opacity: 0.18;
-}
-
-.contactEyebrow {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.8;
-}
-
-.contactHeading {
-  font-family: var(--font-serif);
-  font-size: clamp(1.85rem, 5vw, 3.75rem);
-  font-weight: 500;
-  line-height: var(--leading-tight);
-  letter-spacing: -0.02em;
-  max-width: 26ch;
-}
-
-.contactAction {
-  display: inline-flex;
+.quoteBy {
+  display: flex;
   align-items: center;
   gap: var(--sp-4);
-  margin-top: var(--sp-4);
+  margin: var(--sp-8) 0 0;
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-size: var(--text-2xs);
   text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-3);
 }
 
-.contactArrow {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--r-full);
-  border: 1px solid currentColor;
-  transition: transform var(--t-spring), background var(--t-base), color var(--t-base);
+.quoteRule {
+  width: 56px;
+  height: 1px;
+  background: var(--accent);
+  flex-shrink: 0;
 }
 
-.contactPanel:hover .contactArrow {
-  transform: translateX(6px);
-  background: var(--cta-fg);
-  color: var(--cta-bg);
+/* ── 04 Contact ─────────────────────────────────────────────────────────── */
+.cta { }
+
+.ctaMarker { grid-column: 1 / 4; }
+
+.ctaBody {
+  grid-column: 4 / 10;
+  min-width: 0;
 }
 
-/* ── Hero entrance - time-based, runs once on mount ─────────────── */
-.in1, .in2, .in3, .in4, .in5, .in6 {
-  animation: fadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+.ctaHead {
+  font-family: var(--font-serif);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  font-weight: 400;
+  color: var(--fg-1);
+  margin: 0 0 var(--sp-10);
+  max-width: 22ch;
+  margin-left: -0.04em;
 }
 
-.in1 { animation-delay: 0.05s; }
-.in2 { animation-delay: 0.14s; }
-.in3 { animation-delay: 0.22s; }
-.in4 { animation-delay: 0.34s; }
-.in5 { animation-delay: 0.44s; }
-.in6 { animation-delay: 0.54s; }
+.ctaBtn { flex-shrink: 0; }
 
-/* ── Responsive ─────────────────────────────────────────────────── */
+.ctaRail {
+  grid-column: 10 / 13;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--rule);
+}
+
+.ctaMeta {
+  font-size: var(--text-sm);
+  color: var(--fg-1);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color var(--t-fast);
+}
+
+.ctaMeta:hover { color: var(--accent); }
+
+.ctaMetaDim {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-3);
+  margin: 0;
+}
+
+/* ── Stacked ────────────────────────────────────────────────────────────────
+   The 12-column grid collapses at 900px (see global.css), which forces every
+   child to column 1. What remains here is the type scale and the pieces that
+   only make sense with two columns. */
 @media (max-width: 900px) {
-  /* Sticky collapses to a normal flow heading. Keeping it sticky in a
-     single column pins the heading over its own body copy. */
-  .stickyGrid { grid-template-columns: 1fr; }
-  .stickyInner { position: static; }
+  .heroContent {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-  .step { grid-template-columns: 1fr; }
-  .stepOrn { display: none; }
+  .heroType { grid-column: 1; }
+
+  /* The rail is second-column furniture. Stacked under the hero type it
+     pushes the name off the top of a phone screen, so it goes. Its content is
+     not lost: "based in" is in the footer and on the About page, and the
+     featured project is the next thing on the page. */
+  .heroRail { display: none; }
+
+  .heroCue { display: none; }
+
+  .heroLast { margin-left: 0.08em; }
+
+  .facts { row-gap: var(--sp-8); }
+
+  /* Two-up rather than one: the facts are three short numbers and a single
+     column makes the section needlessly tall. The third wraps and sits
+     under the first, which still reads as a table. */
+  .fact { grid-column: span 1; }
+
+  .quote { text-indent: 0; }
 }
 
-@media (max-width: 640px) {
-  .hero { min-height: auto; padding-bottom: clamp(48px, 10vh, 96px); }
-  .heroType { max-width: none; }
-  .heroInner { gap: 48px; }
-  .arcOuter, .arcInner { opacity: 0.5; }
-  .ornHeroTR, .ornHeroBR { display: none; }
-  .scrollCue { display: none; }
-
-  /* Cells stack, so the vertical rules become horizontal ones. */
-  .heroStats { flex-direction: column; }
-  .heroStat {
-    border-right: none;
-    border-bottom: 1px solid var(--border-1);
-    /* `flex: none`, because flex-basis resolves against the MAIN axis: once
-       the container is a column, the desktop `flex: 1 1 150px` made every
-       cell 150px TALL instead of 150px wide, so three stats filled most of
-       the viewport with empty ruled boxes. */
-    flex: none;
-  }
-  .heroStat:last-child { border-bottom: none; }
-  .statValue { font-size: var(--text-xl); }
-
-  .spine { padding-left: 0; }
-  .spineRule { display: none; }
-  /* The mark rejoins the flow as the step's first grid row. No margin-bottom:
-     the grid's own row gap already separates it from the body, and the two
-     together left a 40px hole between the number and its heading. */
-  .stepMark { position: static; translate: none; }
-
-  .quote { max-width: none; }
-  .contactPanel { border-radius: var(--r-lg); }
+@media (min-width: 901px) and (max-width: 1180px) {
+  /* At tablet widths four approach columns give each about 16 characters of
+     measure, which breaks every title onto two lines. Two-up instead. */
+  .step { grid-column: span 6; }
 }

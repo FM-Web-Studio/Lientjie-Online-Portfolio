@@ -1,299 +1,240 @@
-/* ── Floating capsule wrapper ────────────────────────────────── */
-.navWrap {
+/* ── Bar ────────────────────────────────────────────────────────────────────
+   Fixed, transparent over the hero, and it gains a ground once scrolled.
+   Deliberately thin: the brief asks for minimal chrome so the photography
+   carries the page, so this is a rule and three words, not a capsule. */
+.bar {
   position: fixed;
-  top: 16px;
+  top: 0;
   left: 0;
   right: 0;
   z-index: var(--z-sticky);
+  height: var(--nav-h);
   display: flex;
-  justify-content: center;
-  pointer-events: none;
+  align-items: center;
+  /* Only the paint properties transition. Transitioning `all` here would
+     animate `height` on the first scroll frame and jitter the whole bar. */
+  transition: background-color var(--t-base), border-color var(--t-base),
+              backdrop-filter var(--t-base);
+  border-bottom: 1px solid transparent;
 }
 
-/* ── Glass capsule ───────────────────────────────────────────── */
-.capsule {
+.barLifted {
+  background: color-mix(in srgb, var(--bg-0) 82%, transparent);
+  border-bottom-color: var(--rule);
+  backdrop-filter: blur(14px) saturate(1.1);
+}
+
+/* No backdrop-filter support (older Firefox): fall back to an opaque ground
+   rather than leaving unreadable type over a moving image. */
+@supports not (backdrop-filter: blur(1px)) {
+  .barLifted { background: var(--bg-0); }
+}
+
+.inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  padding-inline: var(--gutter);
+}
+
+/* ── Brand ──────────────────────────────────────────────────────────────── */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  text-decoration: none;
+  color: var(--fg-1);
+  flex-shrink: 0;
+  margin-right: auto;
+}
+
+.brandMark {
+  height: 26px;
+  width: 26px;
+  object-fit: contain;
+}
+
+.brandName {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-1);
+  transition: color var(--t-fast);
+  white-space: nowrap;
+}
+
+.brand:hover .brandName { color: var(--accent); }
+
+/* ── Links ──────────────────────────────────────────────────────────────── */
+.links {
+  display: none;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.link {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-3);
+  text-decoration: none;
+  padding-block: var(--sp-2);
+  transition: color var(--t-fast);
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-base);
+}
+
+.link:hover { color: var(--fg-1); }
+.link:hover::after { transform: scaleX(1); }
+
+.linkActive { color: var(--fg-1); }
+.linkActive::after { transform: scaleX(1); }
+
+/* ── Tools ──────────────────────────────────────────────────────────────── */
+.tools {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: 6px 8px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid var(--border-1);
-  border-radius: var(--r-full);
-  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  pointer-events: all;
-  position: relative;
-  overflow: hidden;
-  --glow-x: 50%;
-  --glow-y: 50%;
-}
-
-.capsule::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    120px circle at var(--glow-x) var(--glow-y),
-    rgba(var(--accent-1-rgb), 0.08),
-    transparent
-  );
-  pointer-events: none;
-  border-radius: inherit;
-}
-
-/* ── Logo ────────────────────────────────────────────────────── */
-.logo {
-  font-family: var(--font-serif);
-  font-size: var(--text-md);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: var(--fg-1);
-  padding: 6px 12px;
-  border-radius: var(--r-full);
-  transition: color var(--t-fast);
-  white-space: nowrap;
   flex-shrink: 0;
-  position: relative;
-  z-index: 1;
 }
 
-.logo:hover { color: var(--accent-1); }
-
-.logoImg {
-  height: 30px;
-  width: auto;
-  display: block;
+.iconBtn {
+  appearance: none;
+  background: none;
+  border: 1px solid transparent;
   border-radius: var(--r-xs);
+  color: var(--fg-3);
+  /* 40px square: below this a tap target fails the 24px minimum once the
+     icon's own padding is accounted for. */
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color var(--t-fast), border-color var(--t-fast);
 }
 
-.logoDot {
-  color: var(--accent-1);
-  margin: 0 1px;
+.iconBtn:hover {
+  color: var(--accent);
+  border-color: var(--rule);
 }
 
-/* ── Nav links area ──────────────────────────────────────────── */
-.navLinks {
-  display: none;
-  position: relative;
-  align-items: center;
-}
-
-@media (min-width: 640px) {
-  .navLinks { display: flex; }
-}
-
-/* ── Liquid pill indicator ───────────────────────────────────── */
-.pill {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  border-radius: var(--r-full);
-  background: linear-gradient(
-    135deg,
-    rgba(var(--accent-1-rgb), 0.20),
-    rgba(var(--accent-1-rgb), 0.08)
-  );
-  border: 1px solid rgba(var(--accent-1-rgb), 0.30);
-  box-shadow: 0 2px 10px rgba(var(--accent-1-rgb), 0.12),
-              inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  transition:
-    left  0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
-    width 0.50s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
-}
-
-/* ── Individual nav links ────────────────────────────────────── */
-.link {
-  position: relative;
-  z-index: 1;
-  padding: 7px 16px;
+.menuBtn {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: var(--sp-3) 0 var(--sp-3) var(--sp-4);
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  font-size: var(--text-2xs);
   text-transform: uppercase;
-  color: var(--fg-3);
-  border-radius: var(--r-full);
-  transition: color var(--t-base);
-  white-space: nowrap;
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-1);
+  cursor: pointer;
 }
 
-.link:hover  { color: var(--fg-1); }
+.menuBtn:hover { color: var(--accent); }
 
-.linkActive {
-  color: var(--accent-1) !important;
-  font-weight: 500;
-}
-
-/* ── Theme toggle ────────────────────────────────────────────── */
-.themeBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--r-full);
-  color: var(--fg-3);
-  transition: color var(--t-fast), background var(--t-fast);
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.themeBtn:hover {
-  color: var(--accent-1);
-  background: var(--accent-sub);
-}
-
-/* ── Hamburger (mobile) ──────────────────────────────────────── */
-.hamburger {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--r-full);
-  transition: background var(--t-fast);
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.hamburger:hover { background: var(--accent-sub); }
-
-.hamburger span {
-  display: block;
-  width: 16px;
-  height: 1.5px;
-  background: var(--fg-2);
-  border-radius: 1px;
-  transition: transform var(--t-spring), opacity var(--t-base);
-}
-
-.hamburgerOpen span:first-child { transform: translateY(3.25px) rotate(45deg); }
-.hamburgerOpen span:last-child  { transform: translateY(-3.25px) rotate(-45deg); }
-
-@media (min-width: 640px) {
-  .hamburger { display: none; }
-}
-
-/* ── Mobile overlay ──────────────────────────────────────────── */
+/* ── Overlay ────────────────────────────────────────────────────────────── */
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: calc(var(--z-sticky) - 1);
-  background: var(--bg-glass-strong);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  z-index: var(--z-overlay);
+  background: var(--bg-0);
   display: flex;
   flex-direction: column;
-  padding: var(--sp-6) clamp(20px, 6vw, 48px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--t-base);
+  /* Slides down from above rather than fading: a fade over full-bleed
+     photography reads as a rendering glitch mid-transition. */
+  transform: translateY(-100%);
+  transition: transform var(--t-slow);
+  visibility: hidden;
 }
 
 .overlayOpen {
-  opacity: 1;
-  pointer-events: all;
+  transform: translateY(0);
+  visibility: visible;
 }
 
-.overlayTop {
+.overlayHead {
+  height: var(--nav-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: var(--sp-2);
-  margin-bottom: var(--sp-16);
+  padding-inline: var(--gutter);
+  border-bottom: 1px solid var(--rule);
+  flex-shrink: 0;
 }
 
-.overlayLogo {
-  font-family: var(--font-serif);
-  font-size: var(--text-xl);
-  font-weight: 500;
+.closeBtn {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: var(--sp-3) 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
   color: var(--fg-1);
-  letter-spacing: 0.04em;
+  cursor: pointer;
 }
 
-.overlayLogoImg {
-  height: 40px;
-  width: auto;
-  display: block;
-  border-radius: var(--r-xs);
-}
-
-.overlayClose {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--r-full);
-  color: var(--fg-3);
-  border: 1px solid var(--border-1);
-  background: var(--bg-glass);
-  transition: color var(--t-fast), background var(--t-fast);
-}
-
-.overlayClose:hover {
-  color: var(--error);
-  background: var(--error-sub);
-}
+.closeBtn:hover { color: var(--accent); }
 
 .overlayNav {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
-  flex: 1;
+  justify-content: center;
+  padding-inline: var(--gutter);
 }
 
 .overlayLink {
   display: flex;
-  align-items: center;
-  gap: var(--sp-4);
+  align-items: baseline;
+  gap: var(--sp-5);
   font-family: var(--font-serif);
-  font-size: clamp(2.2rem, 8vw, 3.5rem);
-  font-weight: 400;
-  color: var(--fg-3);
-  padding: var(--sp-3) 0;
-  border-bottom: 1px solid var(--border-2);
-  transition: color var(--t-base), padding-left var(--t-spring);
-  animation: fadeUp 0.4s calc(var(--i) * 0.07s) both;
+  font-size: clamp(2.5rem, 11vw, 4.5rem);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+  text-decoration: none;
+  padding-block: var(--sp-4);
+  border-bottom: 1px solid var(--rule);
+  transition: color var(--t-base);
 }
 
-.overlayLink:hover { color: var(--fg-1); padding-left: var(--sp-3); }
-.overlayLinkActive { color: var(--accent-1) !important; }
+.overlayLink:last-child { border-bottom: 0; }
+.overlayLink:hover { color: var(--accent); }
 
 .overlayNum {
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--accent-sec);
-  letter-spacing: 0.1em;
-  font-variant-numeric: tabular-nums;
-  margin-top: 8px;
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-4);
   flex-shrink: 0;
 }
 
-.overlayFoot {
-  padding-bottom: var(--sp-6);
-}
-
-.overlayTheme {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  font-size: var(--text-sm);
-  color: var(--fg-3);
-  padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--border-1);
-  border-radius: var(--r-full);
-  background: var(--bg-glass);
-  transition: color var(--t-fast), background var(--t-fast);
-}
-
-.overlayTheme:hover {
-  color: var(--accent-1);
-  background: var(--accent-sub);
+/* ── Above the fold for the inline nav ──────────────────────────────────── */
+@media (min-width: 901px) {
+  .links { display: flex; }
+  .menuBtn { display: none; }
+  /* The brand no longer needs to push the links away once they are visible;
+     `auto` margins on both sides centre the link group in the remaining
+     space without centring the bar's contents as a whole. */
+  .brand { margin-right: 0; }
+  .links { margin-inline: auto; }
 }

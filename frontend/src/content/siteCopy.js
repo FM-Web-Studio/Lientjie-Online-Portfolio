@@ -15,6 +15,17 @@ export const BRAND_FIELDS = [
 ]
 
 export const HOME_FIELDS = [
+  /*
+   * Optional. Leave blank and the hero renders as composed type on a ruled
+   * drafting ground, which is always legible.
+   *
+   * This is deliberately NOT taken from the first featured project's cover.
+   * The covers are presentation-sheet exports on a white background, and the
+   * hero sets bone-white display type over its lower left - over one of those
+   * sheets the name disappears and the sheet's own captions collide with it.
+   * Pointing this at a real photograph is an explicit choice, not a default.
+   */
+  { key: 'heroImage',     label: 'Hero background image URL (optional - leave blank for type-only hero)', type: 'text', default: '' },
   { key: 'heroEyebrow',   label: 'Hero - eyebrow',       type: 'text',     default: 'Architecture Portfolio' },
   { key: 'heroNameFirst', label: 'Hero - first name',    type: 'text',     default: 'Lientjie' },
   { key: 'heroNameLast',  label: 'Hero - last name',     type: 'text',     default: 'Meiring' },

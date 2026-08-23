@@ -31,7 +31,10 @@ function PublicLayout() {
     <>
       <ScrollToTop />
       <NavigationBar />
-      <main>
+      {/* tabIndex -1 so the skip link can actually move focus here. Without
+          it the browser scrolls to the element but leaves focus on the link,
+          and the next Tab returns the reader to the nav they just skipped. */}
+      <main id="main" tabIndex={-1}>
         <Suspense fallback={<PageFallback />}>
           <Outlet />
         </Suspense>

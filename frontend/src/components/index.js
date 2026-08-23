@@ -1,17 +1,16 @@
-export { default as NavigationBar }    from './NavigationBar'
-export { default as Footer }           from './Footer'
-export { default as Reveal }           from './Reveal'
-export { default as Skeleton }         from './Skeleton'
-export { ProjectCardSkeleton, TimelineSkeleton, SkillSkeleton } from './Skeleton'
-export { default as ProjectCard }      from './ProjectCard'
-export { default as ProjectLightbox }  from './ProjectLightbox'
-export { default as SectionHead }      from './SectionHead'
-export { default as Ornament }         from './Ornament'
-export { ORNAMENT_VARIANTS }           from './Ornament'
-export { default as SectionDots }      from './SectionDots'
-export { default as ProjectRow }       from './ProjectRow'
-export { ProjectRowSkeleton }          from './ProjectRow'
-export { default as PageHero }         from './PageHero'
-export { default as CountUp }          from './CountUp'
-export { default as ToastContainer }   from './Toast'
-export { default as ScrollToTop }      from './ScrollToTop'
+/* Public-site component barrel.
+ *
+ * Admin-only components (Modal, SearchableDropdown) are deliberately NOT
+ * exported here. They are imported directly by the admin sections, which keeps
+ * them out of any public page's dependency graph — and therefore out of the
+ * chunks a visitor downloads. */
+
+export { default as NavigationBar } from './NavigationBar'
+export { default as Footer }        from './Footer'
+export { default as Reveal }        from './Reveal'
+export { default as Figure }        from './Figure'
+export { default as ProjectBleed }  from './ProjectBleed'
+export { ProjectBleedSkeleton }     from './ProjectBleed'
+export { default as ProjectLightbox } from './ProjectLightbox'
+export { default as ToastContainer } from './Toast'
+export { default as ScrollToTop }    from './ScrollToTop'

@@ -1,27 +1,44 @@
-import { useEffect, useState } from 'react'
 import { useInView } from '../../hooks'
-import styles from './Reveal.module.css'
 
-export default function Reveal({ children, delay = 0, threshold = 0.08 }) {
-  const [ref, inView] = useInView(threshold)
-  const [settled, setSettled] = useState(false)
-
-  // `will-change` promotes this subtree to its own compositor layer. That is
-  // worth it while the reveal runs, but a page with two dozen Reveals keeps
-  // two dozen layers alive forever and scrolling stalls. Release once done.
-  useEffect(() => {
-    if (!inView || settled) return undefined
-    const t = setTimeout(() => setSettled(true), delay + 650)
-    return () => clearTimeout(t)
-  }, [inView, settled, delay])
+/**
+ * Reveals its children once, when they first scroll into view.
+ *
+ * Renders as whatever element you pass via `as` (default `div`) so it can drop
+ * into a grid without adding a wrapper that breaks `grid-column` placement —
+ * the extra div was the reason the previous version could not be used inside
+ * the twelve-column grid without a second child element.
+ *
+ * `data-reveal` starts at "false" and flips to "true"; motion.css keys the
+ * transition off that attribute. The resting state is the visible one, so a
+ * reader whose JS never ran sees content rather than a blank page.
+ *
+ * @param {string}  as       Element to render.
+ * @param {string}  variant  Motion class from motion.css: rise | rise-sm |
+ *                           slide-in | slide-in-r | zoom | draw-x | draw-y.
+ * @param {number}  index    Stagger position; drives the transition delay.
+ * @param {number}  amount   Fraction of the element that must be visible.
+ */
+export default function Reveal({
+  as: Tag = 'div',
+  variant = 'rise',
+  index = 0,
+  amount = 0.15,
+  className = '',
+  style,
+  children,
+  ...rest
+}) {
+  const [ref, inView] = useInView(amount)
 
   return (
-    <div
+    <Tag
       ref={ref}
-      className={`${styles.reveal} ${inView ? styles.visible : ''} ${settled ? styles.settled : ''}`}
-      style={settled ? undefined : { transitionDelay: `${delay}ms` }}
+      data-reveal={inView ? 'true' : 'false'}
+      className={`${variant} ${className}`.trim()}
+      style={{ '--i': index, ...style }}
+      {...rest}
     >
       {children}
-    </div>
+    </Tag>
   )
 }

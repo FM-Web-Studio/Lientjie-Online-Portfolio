@@ -1,201 +1,265 @@
+/* =============================================================================
+   PROJECT LIGHTBOX
+   -----------------------------------------------------------------------------
+   Chrome lives on the top and bottom edges; the photograph owns the middle.
+   The whole surface is fixed dark in BOTH themes — a light lightbox around an
+   architectural photograph washes it out, and the reader has explicitly asked
+   to look at the image rather than at the page.
+   ========================================================================== */
+
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
-  background: var(--overlay-deep);
-  backdrop-filter: blur(6px);
+  background: rgba(8, 8, 8, 0.96);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--sp-4);
-  animation: fadeIn 0.2s ease both;
+  /* Fades in only; no scale. A scaling modal over a full-bleed photograph
+     reads as the image itself moving. */
+  animation: lbIn 240ms var(--ease-out);
 }
 
-@keyframes fadeIn {
+@keyframes lbIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .backdrop { animation: none; }
+}
+
 .panel {
-  background: var(--bg-1);
-  border-radius: var(--r-xl);
-  width: 100%;
-  max-width: 860px;
-  max-height: 90vh;
-  overflow: auto;
+  position: relative;
   display: flex;
   flex-direction: column;
-  outline: none;
-  box-shadow: var(--shadow-xl);
-  animation: slideUp 0.3s ease both;
+  width: 100%;
+  height: 100%;
+  /* Fixed light values, not --on-image: this surface is dark regardless of
+     theme, so a theme-flipping token would put charcoal on near-black. */
+  color: #F4F4F4;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(24px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0)    scale(1);    }
-}
-
-/* Header */
-.header {
+/* ── Top bar ────────────────────────────────────────────────────────────── */
+.top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--sp-4);
-  padding: var(--sp-5) var(--sp-6) var(--sp-4);
-  border-bottom: 1px solid var(--border-2);
+  gap: var(--sp-6);
+  padding: var(--sp-5) var(--gutter);
+  flex-shrink: 0;
 }
 
-.headerInfo { flex: 1; min-width: 0; }
+.spec {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: rgba(244, 244, 244, 0.6);
+  margin: 0;
+}
+
+.close {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: var(--sp-2) 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: #F4F4F4;
+  cursor: pointer;
+  transition: color var(--t-fast);
+}
+
+.close:hover { color: var(--accent); }
+
+/* ── Stage ──────────────────────────────────────────────────────────────── */
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--gutter);
+}
+
+/* `contain`, not `cover`: this is the one place in the site where the whole
+   frame matters more than filling the box — the reader has opened the image
+   deliberately, so it must not be cropped. */
+.img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  animation: imgIn 320ms var(--ease-out);
+}
+
+@keyframes imgIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img { animation: none; }
+}
+
+.fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.fallbackMark {
+  font-family: var(--font-serif);
+  font-size: clamp(4rem, 14vw, 9rem);
+  line-height: 1;
+  color: rgba(244, 244, 244, 0.22);
+}
+
+.fallbackText {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: rgba(244, 244, 244, 0.45);
+}
+
+/* Navigation. The hit area is deliberately tall — the full height of the
+   stage — so the arrows are easy to hit without drawing large controls over
+   the photograph. */
+.nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(56px, 8vw, 104px);
+  appearance: none;
+  background: none;
+  border: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(244, 244, 244, 0.55);
+  cursor: pointer;
+  transition: color var(--t-base), background-color var(--t-base);
+}
+
+.nav:hover {
+  color: #F4F4F4;
+  /* A whisper of a gradient rather than a solid panel, so the photograph is
+     never obscured by the control that sits over it. */
+  background: linear-gradient(
+    var(--nav-dir, to right),
+    rgba(8, 8, 8, 0.5),
+    transparent
+  );
+}
+
+.navPrev { left: 0;  --nav-dir: to right; }
+.navNext { right: 0; --nav-dir: to left;  }
+
+/* ── Bottom bar ─────────────────────────────────────────────────────────── */
+.bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(24px, 5vw, 72px);
+  padding: var(--sp-6) var(--gutter) var(--sp-8);
+  flex-shrink: 0;
+  border-top: 1px solid rgba(244, 244, 244, 0.12);
+}
+
+.info {
+  min-width: 0;
+  /* Caps the block so a long description cannot push the thumbnail strip off
+     the screen; it scrolls inside itself instead. */
+  max-height: 34vh;
+  overflow-y: auto;
+}
 
 .title {
   font-family: var(--font-serif);
-  font-size: var(--text-xl);
-  font-weight: 500;
-  color: var(--fg-1);
+  font-size: var(--text-2xl);
   line-height: var(--leading-snug);
-}
-
-.sub {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  margin-top: var(--sp-1);
-  font-size: var(--text-sm);
-  color: var(--fg-3);
-}
-
-.cat {
-  font-weight: 500;
-  color: var(--accent-1);
-  text-transform: capitalize;
-}
-
-.dot { color: var(--fg-4); }
-
-.closeBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r-sm);
-  color: var(--fg-3);
-  flex-shrink: 0;
-  transition: color var(--t-fast), background var(--t-fast);
-}
-
-.closeBtn:hover {
-  color: var(--fg-1);
-  background: var(--bg-2);
-}
-
-/* Image stage */
-.stage {
-  position: relative;
-  background: var(--bg-0);
-  min-height: 260px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.mainImg {
-  width: 100%;
-  max-height: 480px;
-  object-fit: contain;
-  display: block;
-}
-
-.imgFallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 280px;
-  background: var(--accent-sub);
-}
-
-.imgFallback span {
-  font-family: var(--font-serif);
-  font-size: var(--text-hero);
-  color: var(--accent-1);
-  opacity: 0.3;
-}
-
-/* Navigation buttons */
-.navBtn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border-radius: var(--r-full);
-  background: var(--bg-glass);
-  backdrop-filter: blur(8px);
-  color: var(--fg-1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--t-fast), transform var(--t-fast);
-  z-index: 1;
-}
-
-.navBtn:hover {
-  background: var(--bg-1);
-  transform: translateY(-50%) scale(1.06);
-}
-
-.navPrev { left: var(--sp-3); }
-.navNext { right: var(--sp-3); }
-
-.counter {
-  position: absolute;
-  bottom: var(--sp-3);
-  right: var(--sp-4);
-  font-size: var(--text-xs);
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(0, 0, 0, 0.4);
-  padding: 3px 8px;
-  border-radius: var(--r-full);
-  backdrop-filter: blur(4px);
-}
-
-/* Bottom */
-.bottom {
-  padding: var(--sp-4) var(--sp-6) var(--sp-5);
-  border-top: 1px solid var(--border-2);
+  font-weight: 400;
+  color: #F4F4F4;
+  margin: 0 0 var(--sp-3);
 }
 
 .desc {
   font-size: var(--text-sm);
-  color: var(--fg-2);
   line-height: var(--leading-relaxed);
-  margin-bottom: var(--sp-4);
+  color: rgba(244, 244, 244, 0.72);
+  margin: 0;
+  max-width: 64ch;
+  white-space: pre-line;
 }
 
-.bottomRow {
+.tags {
+  list-style: none;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--sp-4);
   flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-4) 0 0;
+  padding: 0;
 }
 
-/* Thumbnails */
+.tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  color: rgba(244, 244, 244, 0.66);
+  padding: 3px 9px;
+  border: 1px solid rgba(244, 244, 244, 0.2);
+  border-radius: var(--r-xs);
+}
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-4);
+  flex-shrink: 0;
+}
+
+.counter {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: #F4F4F4;
+  margin: 0;
+}
+
+.counterSep { color: rgba(244, 244, 244, 0.4); }
+
 .thumbs {
   display: flex;
   gap: var(--sp-2);
-  flex-wrap: wrap;
+  max-width: min(46vw, 520px);
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
 }
 
+.thumbs::-webkit-scrollbar { display: none; }
+
 .thumb {
-  width: 52px;
-  height: 40px;
-  border-radius: var(--r-sm);
+  appearance: none;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--r-xs);
+  background: rgba(244, 244, 244, 0.08);
+  width: 56px;
+  height: 42px;
+  flex-shrink: 0;
+  cursor: pointer;
   overflow: hidden;
-  border: 2px solid var(--border-1);
-  transition: border-color var(--t-fast);
+  opacity: 0.5;
+  transition: opacity var(--t-base), border-color var(--t-base);
 }
 
 .thumb img {
@@ -204,29 +268,49 @@
   object-fit: cover;
 }
 
-.thumbActive {
-  border-color: var(--accent-1);
+.thumb:hover { opacity: 0.85; }
+
+.thumbOn {
+  opacity: 1;
+  border-color: var(--accent);
 }
 
-.thumbFallback {
+.thumbDead {
+  display: block;
   width: 100%;
   height: 100%;
-  background: var(--bg-2);
+  background: rgba(244, 244, 244, 0.12);
 }
 
-/* Tags */
-.tags {
-  display: flex;
-  gap: var(--sp-2);
-  flex-wrap: wrap;
-}
+/* ── Narrow ─────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-5);
+  }
 
-.tag {
-  font-size: var(--text-xs);
-  font-weight: 500;
-  color: var(--accent-1);
-  background: var(--accent-sub);
-  padding: 3px var(--sp-3);
-  border-radius: var(--r-full);
-  text-transform: capitalize;
+  .gallery {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .thumbs { max-width: 100%; }
+
+  .info { max-height: 26vh; }
+
+  /* The tall side hit-areas overlap the image badly on a phone. Swipe is not
+     implemented, so the arrows stay — but as small controls pinned to the
+     vertical centre rather than full-height panels. */
+  .nav {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background: rgba(8, 8, 8, 0.55);
+    border-radius: var(--r-full);
+  }
+
+  .nav:hover { background: rgba(8, 8, 8, 0.75); }
 }

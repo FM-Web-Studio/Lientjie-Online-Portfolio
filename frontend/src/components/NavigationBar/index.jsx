@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { NavLink, Link, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useTheme } from '../../hooks'
+import { useContent } from '../../context/ContentContext'
 import styles from './NavigationBar.module.css'
 
 const LINKS = [
@@ -11,109 +12,92 @@ const LINKS = [
 
 function SunIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="5" />
-      <line x1="12" y1="1"  x2="12" y2="3"  />
-      <line x1="12" y1="21" x2="12" y2="23" />
-      <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"  />
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-      <line x1="1"  y1="12" x2="3"  y2="12" />
-      <line x1="21" y1="12" x2="23" y2="12" />
-      <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36" />
-      <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"  />
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.2" />
+      <path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7" />
     </svg>
   )
 }
 
 function MoonIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z" />
     </svg>
   )
 }
 
 export default function NavigationBar() {
   const { theme, toggle } = useTheme()
+  const { copy } = useContent()
+  const brand = copy('brand')
   const location = useLocation()
   const [open, setOpen] = useState(false)
-  const [pill, setPill] = useState({ left: 0, width: 0, visible: false })
-  const navRef = useRef(null)
-  const capsuleRef = useRef(null)
+  const [lifted, setLifted] = useState(false)
 
-  const updatePill = useCallback(() => {
-    if (!navRef.current) return
-    const activeEl = navRef.current.querySelector('[data-active="true"]')
-    if (!activeEl) {
-      setPill(p => ({ ...p, visible: false }))
-      return
-    }
-    const navRect = navRef.current.getBoundingClientRect()
-    const elRect  = activeEl.getBoundingClientRect()
-    setPill({ left: elRect.left - navRect.left, width: elRect.width, visible: true })
+  /*
+   * The bar is transparent over the hero and gains a background once the page
+   * has scrolled past it. The threshold is a fixed 80px rather than the hero's
+   * measured height: reading the hero would couple the nav to one page's
+   * markup, and the visual goal is only "no longer sitting on top of the first
+   * screenful of image".
+   *
+   * `passive: true` because this listener never calls preventDefault, and
+   * without the flag the browser must wait for it before it can scroll.
+   */
+  useEffect(() => {
+    const onScroll = () => setLifted(window.scrollY > 80)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    updatePill()
-  }, [location.pathname, updatePill])
+  // Close the overlay on navigation. Without this, following a link inside the
+  // overlay leaves it open on top of the page that just loaded.
+  useEffect(() => { setOpen(false) }, [location.pathname])
 
   useEffect(() => {
-    const fn = () => updatePill()
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [updatePill])
-
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    if (!open) return undefined
+    const onKey = e => { if (e.key === 'Escape') setOpen(false) }
+    window.addEventListener('keydown', onKey)
+    /* The overlay covers the viewport, so the page behind it must not scroll.
+       Lenis drives scrolling from the root element, so hiding overflow on
+       <body> alone would not stop it - the class goes on <html>. */
+    document.documentElement.classList.add('nav-locked')
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.documentElement.classList.remove('nav-locked')
+    }
   }, [open])
-
-  function handleMouseMove(e) {
-    if (!capsuleRef.current) return
-    const rect = capsuleRef.current.getBoundingClientRect()
-    capsuleRef.current.style.setProperty('--glow-x', `${e.clientX - rect.left}px`)
-    capsuleRef.current.style.setProperty('--glow-y', `${e.clientY - rect.top}px`)
-  }
-
-  const close = () => setOpen(false)
 
   return (
     <>
-      <div className={styles.navWrap}>
-        <div
-          className={styles.capsule}
-          ref={capsuleRef}
-          onMouseMove={handleMouseMove}
-        >
-          <Link to="/" className={styles.logo} onClick={close}>
-            {/* logo-96, not the full-size logo.png: this renders at 30px, so
-                the original is a 53KB download and a quarter-megapixel decode
-                for a thumbnail, on every page. logo-96/192 are generated from
-                logo.png - trimmed to the mark and padded square - so the 30x30
-                below stays the true aspect ratio and reserves the right slot
-                before the image arrives. */}
+      <a className="skip-link" href="#main">Skip to content</a>
+
+      <header className={`${styles.bar} ${lifted ? styles.barLifted : ''}`}>
+        <div className={styles.inner}>
+          <Link to="/" className={styles.brand} aria-label={brand.siteName}>
+            {/* logo-96, not the full-size logo.png: this renders at 26px, so
+                the original would be a 53KB download and a quarter-megapixel
+                decode for a thumbnail, on every page. Explicit width/height
+                reserves the slot before the image arrives. */}
             <img
               src="/logo-96.png"
-              alt="Lientjie Meiring"
-              className={styles.logoImg}
-              width="30"
-              height="30"
+              alt=""
+              className={styles.brandMark}
+              width="26"
+              height="26"
             />
+            <span className={styles.brandName}>{brand.siteName}</span>
           </Link>
 
-          <nav className={styles.navLinks} ref={navRef} aria-label="Main navigation">
-            {pill.visible && (
-              <span
-                className={styles.pill}
-                aria-hidden="true"
-                style={{ left: pill.left, width: pill.width }}
-              />
-            )}
+          <nav className={styles.links} aria-label="Main">
             {LINKS.map(({ label, to }) => (
               <NavLink
                 key={to}
                 to={to}
-                data-active={location.pathname.startsWith(to) ? 'true' : 'false'}
                 className={({ isActive }) =>
                   `${styles.link} ${isActive ? styles.linkActive : ''}`
                 }
@@ -123,57 +107,59 @@ export default function NavigationBar() {
             ))}
           </nav>
 
-          <button className={styles.themeBtn} onClick={toggle} aria-label="Toggle theme">
-            {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-          </button>
-
-          <button
-            className={`${styles.hamburger} ${open ? styles.hamburgerOpen : ''}`}
-            onClick={() => setOpen(v => !v)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
-          >
-            <span /><span />
-          </button>
-        </div>
-      </div>
-
-      <div className={`${styles.overlay} ${open ? styles.overlayOpen : ''}`} aria-hidden={!open}>
-        <div className={styles.overlayTop}>
-          <img
-            src="/logo-96.png"
-            alt="Lientjie Meiring"
-            className={styles.overlayLogoImg}
-            width="40"
-            height="40"
-          />
-          <button className={styles.overlayClose} onClick={close} aria-label="Close menu">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-        <nav className={styles.overlayNav} aria-label="Mobile navigation">
-          {LINKS.map(({ label, to }, i) => (
-            <NavLink
-              key={to}
-              to={to}
-              style={{ '--i': i }}
-              className={({ isActive }) =>
-                `${styles.overlayLink} ${isActive ? styles.overlayLinkActive : ''}`
-              }
-              onClick={close}
+          <div className={styles.tools}>
+            <button
+              type="button"
+              className={styles.iconBtn}
+              onClick={toggle}
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
-              <span className={styles.overlayNum}>0{i + 1}</span>
+              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+            </button>
+
+            <button
+              type="button"
+              className={styles.menuBtn}
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+              aria-expanded={open}
+            >
+              Menu
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile overlay. Rendered always and hidden with a transform rather
+          than unmounted, so it can transition both ways. `inert` keeps its
+          links out of the tab order while closed; `visibility: hidden` alone
+          does that in most engines but not reliably in Safari. */}
+      <div
+        className={`${styles.overlay} ${open ? styles.overlayOpen : ''}`}
+        inert={open ? undefined : ''}
+      >
+        <div className={styles.overlayHead}>
+          <span className="mono">Menu</span>
+          <button
+            type="button"
+            className={styles.closeBtn}
+            onClick={() => setOpen(false)}
+            aria-label="Close menu"
+          >
+            Close
+          </button>
+        </div>
+
+        <nav className={styles.overlayNav} aria-label="Main">
+          {[{ label: 'Index', to: '/' }, ...LINKS].map(({ label, to }, i) => (
+            <NavLink key={to} to={to} className={styles.overlayLink}>
+              <span className={styles.overlayNum}>
+                {String(i).padStart(2, '0')}
+              </span>
               {label}
             </NavLink>
           ))}
         </nav>
-        <div className={styles.overlayFoot}>
-          <button className={styles.overlayTheme} onClick={() => { toggle(); close() }}>
-            {theme === 'light' ? <><MoonIcon /> Dark mode</> : <><SunIcon /> Light mode</>}
-          </button>
-        </div>
       </div>
     </>
   )

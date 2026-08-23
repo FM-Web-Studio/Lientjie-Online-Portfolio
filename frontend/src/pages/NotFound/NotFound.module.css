@@ -1,53 +1,90 @@
-.wrap {
-  min-height: calc(100vh - var(--nav-h));
+.page {
+  /* Fills the viewport minus the nav so the footer still sits below the fold
+     rather than riding up under a short page. */
+  min-height: 100svh;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: var(--sp-12) var(--sp-6);
+  padding-top: var(--nav-h);
+  padding-bottom: clamp(48px, 8vh, 96px);
+}
+
+.body {
+  grid-column: 1 / 8;
+  min-width: 0;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
   gap: var(--sp-4);
-  padding-top: calc(var(--nav-h) + var(--sp-12));
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-3);
+  margin: 0 0 var(--sp-6);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+  flex-shrink: 0;
 }
 
 .code {
   font-family: var(--font-serif);
-  font-size: clamp(5rem, 15vw, 8rem);
-  font-weight: 300;
+  font-size: var(--text-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  font-weight: 400;
   font-style: italic;
-  color: var(--border-1);
-  line-height: 1;
-}
-
-.heading {
-  font-family: var(--font-serif);
-  font-size: var(--text-2xl);
-  font-weight: 500;
   color: var(--fg-1);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  /* Optical alignment against the gutter — see .display in global.css. */
+  margin-left: -0.045em;
 }
 
-.sub {
-  font-size: var(--text-sm);
-  color: var(--fg-3);
-  max-width: 360px;
+.codeLast {
+  font-style: normal;
+  margin-left: 0.14em;
+}
+
+.text {
+  max-width: 42ch;
+  margin: clamp(24px, 4vh, 40px) 0 0;
+  font-size: var(--text-md);
   line-height: var(--leading-relaxed);
+  color: var(--fg-2);
 }
 
-.btn {
-  margin-top: var(--sp-2);
-  display: inline-flex;
-  align-items: center;
-  padding: var(--sp-3) var(--sp-8);
-  background: var(--accent-1);
-  color: var(--accent-text);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  border-radius: var(--r-full);
-  transition: background var(--t-fast), transform var(--t-fast);
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: clamp(28px, 4vh, 44px);
 }
 
-.btn:hover {
-  background: var(--accent-h);
-  transform: translateY(-1px);
+/* Two repeating gradients rather than an asset — no request, and it scales
+   with the column for free. */
+.plate {
+  grid-column: 9 / 13;
+  align-self: stretch;
+  min-height: 320px;
+  background-image:
+    repeating-linear-gradient(to right,  var(--rule) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px 48px);
+  border: 1px solid var(--rule);
+  /* Rasterised once instead of on scroll frames. */
+  transform: translateZ(0);
+}
+
+@media (max-width: 900px) {
+  .codeLast { margin-left: 0.08em; }
+  /* The plate is second-column decoration; stacked it just makes the page
+     taller for no gain. */
+  .plate { display: none; }
 }

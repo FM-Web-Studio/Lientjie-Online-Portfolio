@@ -1,6 +1,4 @@
 export { ThemeProvider, useTheme } from './useTheme.jsx'
 export { AuthProvider,  useAuth  } from './useAuth.jsx'
 export { useInView } from './useInView'
-export { default as useSpotlight } from './useSpotlight'
 export { default as useMomentumScroll, getLenis } from './useMomentumScroll'
-export { default as useSectionTracker } from './useSectionTracker'

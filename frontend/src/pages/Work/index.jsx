@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { subscribeProjects } from '../../firebase'
 import {
-  ProjectCard, ProjectLightbox, PageHero, ProjectCardSkeleton, Ornament,
+  Reveal, ProjectBleed, ProjectBleedSkeleton, ProjectLightbox,
 } from '../../components'
 import { useContent } from '../../context/ContentContext'
 import styles from './Work.module.css'
@@ -9,14 +9,15 @@ import styles from './Work.module.css'
 export default function Work() {
   const { copy } = useContent()
   const t = copy('work')
-  const CATS = ['All', ...t.categories.split(',').map(c => c.trim()).filter(Boolean)]
+
   const [projects, setProjects] = useState([])
   const [loading,  setLoading]  = useState(true)
   const [filter,   setFilter]   = useState('All')
   const [active,   setActive]   = useState(null)
 
-  // Live, so reordering or editing a project in the admin panel is reflected
-  // here immediately rather than on the visitor's next reload.
+  // Live, so reordering, hiding or editing a project in the admin panel is
+  // reflected here immediately rather than on the visitor's next reload.
+  // Hidden projects are filtered out inside subscribeProjects.
   useEffect(() => {
     const unsubscribe = subscribeProjects(
       items => { setProjects(items); setLoading(false) },
@@ -25,30 +26,79 @@ export default function Work() {
     return unsubscribe
   }, [])
 
-  const visible = filter === 'All'
-    ? projects
-    : projects.filter(p => p.category?.toLowerCase() === filter.toLowerCase())
+  const CATS = useMemo(
+    () => ['All', ...t.categories.split(',').map(c => c.trim()).filter(Boolean)],
+    [t.categories],
+  )
+
+  const visible = useMemo(() => (
+    filter === 'All'
+      ? projects
+      : projects.filter(p => p.category?.toLowerCase() === filter.toLowerCase())
+  ), [projects, filter])
+
+  /* The year range across everything published, not across the current
+     filter — it is a fact about the body of work, so it should not change as
+     the reader filters. Guarded because `Math.min()` of an empty list is
+     Infinity, which would render as "Infinity—-Infinity" on a fresh install. */
+  const span = useMemo(() => {
+    const years = projects.map(p => Number(p.year)).filter(Number.isFinite)
+    if (years.length === 0) return null
+    const lo = Math.min(...years)
+    const hi = Math.max(...years)
+    return lo === hi ? String(lo) : `${lo}—${hi}`
+  }, [projects])
 
   const count = String(visible.length).padStart(2, '0')
 
   return (
     <>
-      <PageHero
-        eyebrow={t.eyebrow}
-        heading={<><em>{t.heading1}</em><br />{t.heading2}<span className="dot">.</span></>}
-        sub={t.sub}
-        ornament="plan"
-      />
+      {/* ════ HEADER ════════════════════════════════════════════════════════
+          No centred hero. The title sits on the gutter and the metadata sits
+          against the opposite edge, with a rule closing the block. */}
+      <header className={`tone-accent-soft ${styles.head}`}>
+        <div className="grid12">
+          <Reveal className={styles.headMain} variant="rise">
+            <p className={styles.eyebrow}>{t.eyebrow}</p>
+            <h1 className={styles.title}>
+              <em>{t.heading1}</em>
+              <span className={styles.titleLast}>
+                {t.heading2}<span className="dot">.</span>
+              </span>
+            </h1>
+          </Reveal>
 
-      {/* ── Filters ────────────────────────────────────────────── */}
+          <Reveal className={styles.headMeta} variant="rise-sm" index={1}>
+            <p className={styles.sub}>{t.sub}</p>
+            {span && (
+              <dl className={styles.headStats}>
+                <div className={styles.headStat}>
+                  <dt className={styles.statKey}>Projects</dt>
+                  <dd className={styles.statVal}>
+                    {String(projects.length).padStart(2, '0')}
+                  </dd>
+                </div>
+                <div className={styles.headStat}>
+                  <dt className={styles.statKey}>Span</dt>
+                  <dd className={styles.statVal}>{span}</dd>
+                </div>
+              </dl>
+            )}
+          </Reveal>
+        </div>
+      </header>
+
+      {/* ════ FILTER ════════════════════════════════════════════════════════
+          Sticky under the nav. A ruled strip of inline filters on the left and
+          the live count on the right — no pills, no cards. */}
       <div className={styles.filterBar}>
-        <div className={`container ${styles.filterInner}`}>
-          <div className={styles.filters} role="group" aria-label="Filter projects">
+        <div className={`grid12 ${styles.filterInner}`}>
+          <div className={styles.filters} role="group" aria-label="Filter by category">
             {CATS.map(cat => (
               <button
                 key={cat}
                 type="button"
-                className={`${styles.filterBtn} ${filter === cat ? styles.filterActive : ''}`}
+                className={`${styles.filterBtn} ${filter === cat ? styles.filterOn : ''}`}
                 onClick={() => setFilter(cat)}
                 aria-pressed={filter === cat}
               >
@@ -57,42 +107,42 @@ export default function Work() {
             ))}
           </div>
 
-          {/* Live count doubles as the editorial index for the grid below. */}
           <p className={styles.count} aria-live="polite">
             {loading ? '—' : count}
-            <span className={styles.countLabel}>
-              {visible.length === 1 ? 'Project' : 'Projects'}
+            <span className={styles.countUnit}>
+              {visible.length === 1 ? 'project' : 'projects'}
             </span>
           </p>
         </div>
       </div>
 
-      {/* ── Grid ───────────────────────────────────────────────── */}
-      <section className={styles.gridSection}>
-        <span className={`deco-orn ${styles.ornGrid}`} aria-hidden="true">
-          <Ornament variant="elevation" />
-        </span>
-
-        <div className="container">
-          {loading ? (
-            <div className={styles.grid}>
-              {Array.from({ length: 4 }).map((_, i) => <ProjectCardSkeleton key={i} />)}
-            </div>
-          ) : visible.length === 0 ? (
+      {/* ════ ROWS ══════════════════════════════════════════════════════════ */}
+      <section className={`tone-base ${styles.list}`}>
+        {loading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <ProjectBleedSkeleton key={i} index={i} />
+          ))
+        ) : visible.length === 0 ? (
+          <div className="grid12">
             <p className={styles.empty}>{t.emptyText}</p>
-          ) : (
-            /* Keyed on the filter so the stagger replays when it changes.
-               `--i` cycles over 2, matching the two-column grid - at the old
-               modulo 3 the reveal delays no longer lined up with the rows. */
-            <div className={`${styles.grid} k-stagger`} key={filter}>
-              {visible.map((p, i) => (
-                <div key={p.id} style={{ '--i': i % 2 }}>
-                  <ProjectCard project={p} index={i} onClick={() => setActive(p)} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          /* Keyed on the filter so the reveal animation replays when the list
+             changes. Without the key React reuses the same DOM nodes, which
+             are already marked revealed, and the new set appears instantly
+             while the old set fades — reading as a glitch rather than a
+             transition. */
+          <div key={filter}>
+            {visible.map((p, i) => (
+              <ProjectBleed
+                key={p.id}
+                project={p}
+                index={i}
+                onOpen={setActive}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {active && <ProjectLightbox project={active} onClose={() => setActive(null)} />}

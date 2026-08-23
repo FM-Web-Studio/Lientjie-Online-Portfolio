@@ -1,102 +1,139 @@
+/* =============================================================================
+   TOAST
+   -----------------------------------------------------------------------------
+   Square, ruled, mono-labelled — the same vocabulary as the rest of the site
+   rather than a rounded pill. Used by both the public contact form and the
+   admin panel, so it stays on the neutral surface tokens.
+   ========================================================================== */
+
 .container {
   position: fixed;
-  top: calc(var(--nav-h) + 16px);
-  right: 20px;
+  /* Bottom-right, not top-right: the top-right corner is where the nav's
+     theme toggle and menu button live, and a toast landing there covers the
+     control the reader may have just used. */
+  bottom: var(--sp-6);
+  right: var(--sp-6);
   z-index: var(--z-toast);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sp-3);
+  /* Never wider than the viewport minus both gutters, so a long message does
+     not force a horizontal scrollbar on a phone. */
+  width: min(380px, calc(100vw - var(--sp-8)));
   pointer-events: none;
 }
 
 .toast {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  width: 340px;
-  max-width: calc(100vw - 40px);
-  padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-3);
-  background: var(--bg-glass-strong);
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
-  border: 1px solid var(--border-1);
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  pointer-events: all;
   position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-5);
+  background: var(--bg-1);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
   overflow: hidden;
-  animation: slideInRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: toastIn 320ms var(--ease-out-expo);
 }
 
-.toast.leaving {
-  animation: slideOutRight 0.28s ease forwards;
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
+.leaving {
+  animation: toastOut 200ms var(--ease-out) forwards;
+}
+
+@keyframes toastOut {
+  to { opacity: 0; transform: translateX(16px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast, .leaving { animation: none; }
+  .leaving { opacity: 0; }
+}
+
+/* A 2px bar on the leading edge carries the status colour, so the toast body
+   itself stays neutral and legible. */
 .stripe {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
-  border-radius: var(--r-lg) 0 0 var(--r-lg);
+  width: 2px;
+  background: var(--fg-3);
 }
-
-.success .stripe { background: var(--success); }
-.error   .stripe { background: var(--error); }
-.warning .stripe { background: var(--warning); }
-.info    .stripe { background: var(--info); }
 
 .iconWrap {
-  flex-shrink: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-md);
-  margin-top: 1px;
+  color: var(--fg-3);
+  /* Aligns the icon with the cap-height of the title rather than the top of
+     its line box. */
+  padding-top: 1px;
 }
 
-.success .iconWrap { color: var(--success); background: var(--success-sub); }
-.error   .iconWrap { color: var(--error);   background: var(--error-sub); }
-.warning .iconWrap { color: var(--warning); background: var(--warning-sub); }
-.info    .iconWrap { color: var(--info);    background: var(--info-sub); }
-
-.body {
-  flex: 1;
-  min-width: 0;
-}
+.body { min-width: 0; }
 
 .title {
-  font-size: var(--text-sm);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
   color: var(--fg-1);
-  margin-bottom: 2px;
-  line-height: 1.4;
+  margin: 0;
 }
 
 .message {
-  font-size: var(--text-xs);
-  color: var(--fg-3);
-  line-height: 1.5;
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--fg-2);
+  margin: var(--sp-2) 0 0;
+  overflow-wrap: anywhere;
 }
 
 .close {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: var(--r-sm);
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: var(--sp-1);
   color: var(--fg-4);
-  opacity: 0.6;
-  transition: opacity var(--t-fast), background var(--t-fast), color var(--t-fast);
-  margin-top: 2px;
+  cursor: pointer;
+  display: flex;
+  transition: color var(--t-fast);
 }
 
-.close:hover {
-  opacity: 1;
-  background: rgba(var(--accent-1-rgb), 0.10);
-  color: var(--fg-2);
+.close:hover { color: var(--fg-1); }
+
+/* ── Status variants ────────────────────────────────────────────────────────
+   Only the stripe and the icon carry colour. Tinting the whole panel would
+   introduce a second accent into a deliberately monochrome palette. */
+.success .stripe,
+.success .iconWrap { color: var(--state-ok); background-color: currentColor; }
+.success .iconWrap { background-color: transparent; }
+
+.error .stripe,
+.error .iconWrap { color: var(--state-err); }
+.error .stripe { background: var(--state-err); }
+
+.warning .stripe,
+.warning .iconWrap { color: var(--state-warn); }
+.warning .stripe { background: var(--state-warn); }
+
+.info .stripe,
+.info .iconWrap { color: var(--accent); }
+.info .stripe { background: var(--accent); }
+
+.success .stripe { background: var(--state-ok); }
+
+@media (max-width: 560px) {
+  .container {
+    left: var(--sp-4);
+    right: var(--sp-4);
+    bottom: var(--sp-4);
+    width: auto;
+  }
 }

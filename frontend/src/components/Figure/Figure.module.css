@@ -1,0 +1,70 @@
+.figure {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  background: var(--bg-2);
+  /* The box is sized by aspect-ratio from the component, so it holds its
+     space before the image loads and the reveal below it never jumps. */
+  width: 100%;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* `object-position: center` is the default but stated explicitly: these
+     are architectural photographs cropped hard by the aspect ratio, and the
+     centre is the safest assumption when the subject is unknown. */
+  object-position: center;
+}
+
+/* ── Fallback plate ─────────────────────────────────────────────────────────
+   Stands in for a missing image. Reads as a drafting sheet rather than as an
+   error: a ruled grid, the project index, and the title. */
+.plate {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  padding: clamp(20px, 4vw, 48px);
+  background: var(--bg-2);
+}
+
+/* Two repeating-linear-gradients rather than an SVG or a background image:
+   no extra request, and it scales with the box for free. 48px is small
+   enough to read as drafting paper and large enough not to alias into a
+   flat grey when the plate is scaled down on mobile. */
+.plateGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(to right,  var(--rule) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px 48px);
+  /* Promoted so a grid that fills the viewport is rasterised once instead of
+     being re-drawn on scroll frames. `will-change` is deliberately not set:
+     this never animates, and a permanent compositor hint on a full-bleed
+     element wastes GPU memory. */
+  transform: translateZ(0);
+  opacity: 0.9;
+}
+
+.plateIndex {
+  position: relative;
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 9vw, 7rem);
+  line-height: 0.85;
+  color: var(--fg-4);
+  letter-spacing: var(--tracking-display);
+}
+
+.plateLabel {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-3);
+  max-width: var(--measure-tight);
+}

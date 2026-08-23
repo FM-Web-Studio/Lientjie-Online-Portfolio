@@ -1,41 +1,100 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './ProjectLightbox.module.css'
 
+function Chevron({ dir }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points={dir === 'prev' ? '15 18 9 12 15 6' : '9 18 15 12 9 6'} />
+    </svg>
+  )
+}
+
+/**
+ * Full-screen project viewer.
+ *
+ * Chrome is kept to the edges so the photograph occupies the centre of the
+ * screen uninterrupted, which is the same principle as the page layout.
+ */
 export default function ProjectLightbox({ project, onClose }) {
-  const [idx, setIdx]         = useState(0)
-  const [imgError, setImgError] = useState({})
-  const panelRef              = useRef(null)
+  const [idx, setIdx] = useState(0)
+  const [failed, setFailed] = useState({})
+  const panelRef = useRef(null)
+  const closeRef = useRef(null)
 
   const images = project.images?.length
     ? project.images
     : [project.coverImage].filter(Boolean)
 
-  const prev = useCallback(() => setIdx(i => (i - 1 + images.length) % images.length), [images.length])
-  const next = useCallback(() => setIdx(i => (i + 1)                 % images.length), [images.length])
+  const count = images.length
 
+  /* Guarded against an empty gallery: `% 0` is NaN, which would set the index
+     to NaN and blank the stage permanently. */
+  const prev = useCallback(
+    () => setIdx(i => (count ? (i - 1 + count) % count : 0)),
+    [count],
+  )
+  const next = useCallback(
+    () => setIdx(i => (count ? (i + 1) % count : 0)),
+    [count],
+  )
+
+  /*
+   * Lock the page behind the overlay.
+   *
+   * The class goes on <html>, not <body>: Lenis drives scrolling from the root
+   * element, so `body { overflow: hidden }` alone leaves the page gliding
+   * underneath the lightbox. The previous version also compensated for the
+   * scrollbar by hand; that is unnecessary now, because the scrollbar is an
+   * overlay scrollbar in every browser this targets and the compensation
+   * itself caused a visible 10px jolt as the panel opened.
+   */
   useEffect(() => {
-    const scrollW = window.innerWidth - document.documentElement.clientWidth
-    document.body.style.overflow     = 'hidden'
-    document.body.style.paddingRight = `${scrollW}px`
-    panelRef.current?.focus()
+    document.documentElement.classList.add('nav-locked')
+    return () => document.documentElement.classList.remove('nav-locked')
+  }, [])
 
+  // Move focus into the panel on open, and restore it on close. Without the
+  // restore, dismissing the lightbox drops focus to the top of the document
+  // and a keyboard reader loses their place in the project list.
+  useEffect(() => {
+    const previous = document.activeElement
+    closeRef.current?.focus()
     return () => {
-      document.body.style.overflow     = ''
-      document.body.style.paddingRight = ''
+      if (previous instanceof HTMLElement) previous.focus()
     }
   }, [])
 
   useEffect(() => {
-    const handler = e => {
-      if (e.key === 'Escape')     onClose()
+    const onKey = e => {
+      if (e.key === 'Escape') { onClose(); return }
       if (e.key === 'ArrowLeft')  prev()
       if (e.key === 'ArrowRight') next()
+
+      /* Focus trap. A modal that lets Tab escape into the page behind it is
+         a genuine trap for a screen-reader user, who then has no way back. */
+      if (e.key === 'Tab') {
+        const focusables = panelRef.current?.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        )
+        if (!focusables?.length) return
+        const first = focusables[0]
+        const last = focusables[focusables.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
     }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
   }, [onClose, prev, next])
 
-  const handleImgError = i => setImgError(p => ({ ...p, [i]: true }))
+  const markFailed = i => setFailed(p => ({ ...p, [i]: true }))
+  const spec = [project.category, project.year].filter(Boolean).join(' · ')
 
   return (
     <div
@@ -45,97 +104,116 @@ export default function ProjectLightbox({ project, onClose }) {
       aria-modal="true"
       aria-label={project.title}
     >
+      {/* data-lenis-prevent so the description can scroll on its own without
+          the page gliding behind the overlay. */}
       <div
         ref={panelRef}
         className={styles.panel}
         onClick={e => e.stopPropagation()}
-        tabIndex={-1}
+        data-lenis-prevent
       >
-        {/* Header */}
-        <div className={styles.header}>
-          <div className={styles.headerInfo}>
-            <h2 className={styles.title}>{project.title}</h2>
-            <p className={styles.sub}>
-              {project.category && <span className={styles.cat}>{project.category}</span>}
-              {project.category && project.year && <span className={styles.dot}>·</span>}
-              {project.year && <span>{project.year}</span>}
-            </p>
-          </div>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        {/* ── Top bar ─────────────────────────────────────────────────── */}
+        <div className={styles.top}>
+          <p className={styles.spec}>{spec}</p>
+          <button
+            ref={closeRef}
+            type="button"
+            className={styles.close}
+            onClick={onClose}
+            aria-label="Close"
+          >
+            Close
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6"  y1="6" x2="18" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
 
-        {/* Image stage */}
+        {/* ── Stage ───────────────────────────────────────────────────── */}
         <div className={styles.stage}>
-          {!imgError[idx] && images[idx] ? (
+          {images[idx] && !failed[idx] ? (
             <img
               key={idx}
               src={images[idx]}
-              alt={`${project.title} - ${idx + 1} of ${images.length}`}
-              className={styles.mainImg}
+              alt={`${project.title} — image ${idx + 1} of ${count}`}
+              className={styles.img}
               decoding="async"
-              onError={() => handleImgError(idx)}
+              onError={() => markFailed(idx)}
             />
           ) : (
-            <div className={styles.imgFallback}>
-              <span>{project.title.charAt(0)}</span>
+            <div className={styles.fallback}>
+              <span className={styles.fallbackMark}>{project.title.charAt(0)}</span>
+              <span className={styles.fallbackText}>Image unavailable</span>
             </div>
           )}
 
-          {images.length > 1 && (
+          {count > 1 && (
             <>
-              <button className={`${styles.navBtn} ${styles.navPrev}`} onClick={prev} aria-label="Previous image">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
+              <button
+                type="button"
+                className={`${styles.nav} ${styles.navPrev}`}
+                onClick={prev}
+                aria-label="Previous image"
+              >
+                <Chevron dir="prev" />
               </button>
-              <button className={`${styles.navBtn} ${styles.navNext}`} onClick={next} aria-label="Next image">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
+              <button
+                type="button"
+                className={`${styles.nav} ${styles.navNext}`}
+                onClick={next}
+                aria-label="Next image"
+              >
+                <Chevron dir="next" />
               </button>
-              <span className={styles.counter}>{idx + 1} / {images.length}</span>
             </>
           )}
         </div>
 
-        {/* Bottom */}
+        {/* ── Bottom bar ──────────────────────────────────────────────── */}
         <div className={styles.bottom}>
-          {(project.longDescription || project.description) && (
-            <p className={styles.desc}>{project.longDescription || project.description}</p>
-          )}
-
-          <div className={styles.bottomRow}>
-            {images.length > 1 && (
-              <div className={styles.thumbs} role="list" aria-label="Image thumbnails">
-                {images.map((src, i) => (
-                  <button
-                    key={i}
-                    className={`${styles.thumb} ${i === idx ? styles.thumbActive : ''}`}
-                    onClick={() => setIdx(i)}
-                    aria-label={`View image ${i + 1}`}
-                    role="listitem"
-                  >
-                    {!imgError[i] ? (
-                      <img src={src} alt="" onError={() => handleImgError(i)} />
-                    ) : (
-                      <div className={styles.thumbFallback} />
-                    )}
-                  </button>
-                ))}
-              </div>
+          <div className={styles.info}>
+            <h2 className={styles.title}>{project.title}</h2>
+            {(project.longDescription || project.description) && (
+              <p className={styles.desc}>
+                {project.longDescription || project.description}
+              </p>
             )}
-
             {project.tags?.length > 0 && (
-              <div className={styles.tags}>
-                {project.tags.map(t => (
-                  <span key={t} className={styles.tag}>{t}</span>
+              <ul className={styles.tags}>
+                {project.tags.map(tag => (
+                  <li key={tag} className={styles.tag}>{tag}</li>
                 ))}
-              </div>
+              </ul>
+            )}
+          </div>
+
+          <div className={styles.gallery}>
+            {count > 1 && (
+              <>
+                <p className={styles.counter} aria-live="polite">
+                  {String(idx + 1).padStart(2, '0')}
+                  <span className={styles.counterSep}>/</span>
+                  {String(count).padStart(2, '0')}
+                </p>
+                <div className={styles.thumbs}>
+                  {images.map((src, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className={`${styles.thumb} ${i === idx ? styles.thumbOn : ''}`}
+                      onClick={() => setIdx(i)}
+                      aria-label={`View image ${i + 1}`}
+                      aria-current={i === idx ? 'true' : undefined}
+                    >
+                      {failed[i]
+                        ? <span className={styles.thumbDead} />
+                        : <img src={src} alt="" loading="lazy" onError={() => markFailed(i)} />}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>
