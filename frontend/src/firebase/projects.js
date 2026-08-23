@@ -8,6 +8,20 @@ const COL = 'portfolio_projects'
 
 const mapDoc = d => ({ id: d.id, ...d.data() })
 
+/**
+ * A project is visible unless it is explicitly hidden.
+ *
+ * The flag is stored as `hidden: true` rather than `visible: false` so every
+ * document written before this field existed - which has no flag at all -
+ * still reads as visible. Inverting it would have hidden the whole portfolio
+ * until each project was re-saved.
+ */
+export const isProjectVisible = p => p?.hidden !== true
+
+/**
+ * Every project, hidden ones included. This is the admin view - the public
+ * pages go through the `subscribe*` helpers, which drop hidden projects.
+ */
 export async function getProjects() {
   const q = query(collection(db, COL), orderBy('order', 'asc'))
   const snap = await getDocs(q)
@@ -17,7 +31,7 @@ export async function getProjects() {
 export async function getFeaturedProjects() {
   // Filter client-side to avoid composite index requirement
   const all = await getProjects()
-  return all.filter(p => p.featured === true)
+  return all.filter(p => p.featured === true && isProjectVisible(p))
 }
 
 /**
@@ -28,11 +42,21 @@ export async function getFeaturedProjects() {
  * Returns the Firestore unsubscribe function - callers MUST return it from
  * their effect cleanup, or the listener outlives the component and keeps an
  * open channel for the rest of the session.
+ *
+ * Hidden projects are dropped here, so no public page has to remember to
+ * filter them. Pass `{ includeHidden: true }` for an admin-side listener.
+ * The filter is in memory rather than a `where('hidden', '!=', true)` clause
+ * for two reasons: combining it with orderBy('order') would need a composite
+ * index, and a `!=` filter skips documents that lack the field entirely -
+ * i.e. every project written before this flag existed.
  */
-export function subscribeProjects(onData, onError) {
+export function subscribeProjects(onData, onError, { includeHidden = false } = {}) {
   return onSnapshot(
     query(collection(db, COL), orderBy('order', 'asc')),
-    snap => onData(snap.docs.map(mapDoc)),
+    snap => {
+      const all = snap.docs.map(mapDoc)
+      onData(includeHidden ? all : all.filter(isProjectVisible))
+    },
     onError,
   )
 }

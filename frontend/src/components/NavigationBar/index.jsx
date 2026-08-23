@@ -86,10 +86,12 @@ export default function NavigationBar() {
           onMouseMove={handleMouseMove}
         >
           <Link to="/" className={styles.logo} onClick={close}>
-            {/* logo-96, not the 1024x1024 logo.png: this renders at 30px, so
-                the original was a 182KB download and a 1-megapixel decode for
-                a thumbnail, on every page. Explicit width/height so the slot
-                is reserved before the image arrives. */}
+            {/* logo-96, not the full-size logo.png: this renders at 30px, so
+                the original is a 53KB download and a quarter-megapixel decode
+                for a thumbnail, on every page. logo-96/192 are generated from
+                logo.png - trimmed to the mark and padded square - so the 30x30
+                below stays the true aspect ratio and reserves the right slot
+                before the image arrives. */}
             <img
               src="/logo-96.png"
               alt="Lientjie Meiring"

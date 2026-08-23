@@ -11,6 +11,7 @@ const opt = (v) => ({ value: v, label: v })
 const BLANK = {
   title: '', description: '', longDescription: '', year: new Date().getFullYear(),
   category: 'academic', tags: '', coverImage: '', images: '', featured: false, order: 99,
+  hidden: false,
 }
 
 const slug = (s) => (s || 'untitled').toLowerCase().replace(/[^\w]+/g, '-').replace(/^-+|-+$/g, '') || 'untitled'
@@ -100,10 +101,35 @@ export default function ProjectsSection() {
     setProjects(prev => prev.map(x => x.id === p.id ? { ...x, featured: !x.featured } : x))
   }
 
+  /*
+   * Hiding a project takes it off the Work page and the home page without
+   * deleting it - the images stay in Storage and the copy stays written, so
+   * an unfinished or retired project can be parked and brought back later.
+   *
+   * `hidden` is undefined on every project saved before this field existed,
+   * so the toggle reads the absence as visible and writes an explicit `true`.
+   */
+  async function toggleHidden(p) {
+    const next = p.hidden !== true
+    try {
+      await updateProject(p.id, { hidden: next })
+      setProjects(prev => prev.map(x => x.id === p.id ? { ...x, hidden: next } : x))
+      addToast({
+        type: 'success',
+        title: next ? 'Project hidden' : 'Project visible',
+        message: next
+          ? `"${p.title}" no longer appears on the site.`
+          : `"${p.title}" is live on the site again.`,
+      })
+    } catch (err) {
+      addToast({ type: 'error', title: 'Could not change visibility', message: err?.message })
+    }
+  }
+
   return (
     <div>
       <div className={styles.sectionHeader}>
-        <p className={styles.intro} style={{ margin: 0 }}>Projects shown on the Work page and (when featured) the home page.</p>
+        <p className={styles.intro} style={{ margin: 0 }}>Projects shown on the Work page and (when featured) the home page. Hidden projects are kept here but never shown on the site.</p>
         <button className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`} onClick={openNew}>+ Add Project</button>
       </div>
 
@@ -112,22 +138,38 @@ export default function ProjectsSection() {
         : (
           <div className={styles.tableWrap}>
             <table className={styles.table}>
-              <thead><tr><th>Order</th><th>Image</th><th>Title</th><th>Category</th><th>Year</th><th>Featured</th><th>Actions</th></tr></thead>
+              <thead><tr><th>Order</th><th>Image</th><th>Title</th><th>Category</th><th>Year</th><th>Featured</th><th>Visible</th><th>Actions</th></tr></thead>
               <tbody>
-                {projects.map(p => (
-                  <tr key={p.id}>
+                {projects.map(p => {
+                  const isHidden = p.hidden === true
+                  return (
+                  <tr key={p.id} className={isHidden ? styles.rowHidden : undefined}>
                     <td><input type="number" defaultValue={p.order} className={styles.orderInput} onBlur={e => saveOrder(p, e.target.value)} /></td>
                     <td>{p.coverImage && <img src={p.coverImage} alt="" className={styles.thumb} />}</td>
-                    <td><strong>{p.title}</strong></td>
+                    <td>
+                      <strong>{p.title}</strong>
+                      {isHidden && <span className={styles.hiddenTag}>Hidden</span>}
+                    </td>
                     <td><span className={styles.catTag}>{p.category}</span></td>
                     <td>{p.year}</td>
                     <td><button className={`${styles.btn} ${styles.btnSm} ${p.featured ? styles.btnPrimary : styles.btnOutline}`} onClick={() => toggleFeatured(p)}>{p.featured ? 'Yes' : 'No'}</button></td>
+                    <td>
+                      <button
+                        className={`${styles.btn} ${styles.btnSm} ${isHidden ? styles.btnOutline : styles.btnPrimary}`}
+                        onClick={() => toggleHidden(p)}
+                        aria-pressed={!isHidden}
+                        title={isHidden ? 'Show this project on the site' : 'Hide this project from the site'}
+                      >
+                        {isHidden ? 'Hidden' : 'Shown'}
+                      </button>
+                    </td>
                     <td className={styles.actions}>
                       <button className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`} onClick={() => openEdit(p)}>Edit</button>
                       <button className={`${styles.btn} ${styles.btnDanger} ${styles.btnSm}`} onClick={() => remove(p)}>Delete</button>
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -146,6 +188,10 @@ export default function ProjectsSection() {
             </div>
             <div className={styles.field}><label>Order</label><input type="number" value={form.order} onChange={set('order')} min="0" /></div>
             <div className={`${styles.field} ${styles.checkField}`}><input type="checkbox" checked={form.featured} onChange={set('featured')} id="pf-featured" /><label htmlFor="pf-featured">Show on home page (featured)</label></div>
+            {/* Phrased positively and stored inverted: the checkbox reads as
+                "on = live", while the field stays `hidden` so untouched legacy
+                documents keep defaulting to visible. */}
+            <div className={`${styles.field} ${styles.checkField}`}><input type="checkbox" checked={!form.hidden} onChange={e => setForm(f => ({ ...f, hidden: !e.target.checked }))} id="pf-visible" /><label htmlFor="pf-visible">Show on the site</label></div>
             <div className={`${styles.field} ${styles.span2}`}><label>Tags (comma-separated)</label><input value={form.tags} onChange={set('tags')} placeholder="structural, campus, 2025" /></div>
 
             <div className={`${styles.field} ${styles.span2}`}>
