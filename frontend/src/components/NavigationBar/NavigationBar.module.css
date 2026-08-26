@@ -18,17 +18,64 @@
   border-bottom: 1px solid transparent;
 }
 
+/* Once lifted the bar carries an accent-tinted ground rather than a neutral
+   one. The tint is only 6% of the accent: enough that the bar reads as part of
+   the brand, low enough that it does not compete with the page it sits over. */
 .barLifted {
-  background: color-mix(in srgb, var(--bg-0) 82%, transparent);
-  border-bottom-color: var(--rule);
+  background: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--accent) 6%, var(--bg-0)) 84%,
+    transparent
+  );
+  border-bottom-color: transparent;
   backdrop-filter: blur(14px) saturate(1.1);
 }
+
+/* The accent hairline under the bar. A pseudo-element rather than the
+   border-bottom it replaces, because it needs to fade in with the ground — a
+   border cannot transition from "no border" without shifting layout, whereas
+   opacity on an absolutely-positioned line costs nothing. */
+.bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity var(--t-base);
+  pointer-events: none;
+}
+
+.barLifted::after { opacity: 1; }
 
 /* No backdrop-filter support (older Firefox): fall back to an opaque ground
    rather than leaving unreadable type over a moving image. */
 @supports not (backdrop-filter: blur(1px)) {
+  .barLifted {
+    background: color-mix(in srgb, var(--accent) 6%, var(--bg-0));
+  }
+}
+
+/* color-mix is unsupported in Safari < 16.2, where the nested mix above would
+   drop the declaration and leave the bar transparent over scrolled content.
+   Opaque surface fallback. */
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
   .barLifted { background: var(--bg-0); }
 }
+
+/* Floating over a dark image scrim. These are the fixed light values, not
+   --fg-*: the scrim is dark in BOTH themes, so a theme-flipping token would
+   put charcoal type on it in light mode. Mirrors the same decision made for
+   the hero's own type in Home.module.css. */
+.barOnScrim .brandName { color: var(--on-image); }
+.barOnScrim .link      { color: var(--on-image-dim); }
+.barOnScrim .link:hover,
+.barOnScrim .linkActive { color: var(--on-image); }
+.barOnScrim .iconBtn   { color: var(--on-image-dim); }
+.barOnScrim .iconBtn:hover { color: var(--on-image); }
+.barOnScrim .menuBtn   { color: var(--on-image); }
 
 .inner {
   width: 100%;
@@ -63,6 +110,16 @@
   color: var(--fg-1);
   transition: color var(--t-fast);
   white-space: nowrap;
+}
+
+/* The same accent full stop that closes the footer wordmark and the display
+   headings. Decorative, so it is generated content rather than markup. */
+.brandName::after {
+  content: '.';
+  color: var(--accent);
+  /* The mono face tracks every character, including this one, which pushed the
+     stop a full letterspace away from the name. */
+  margin-left: calc(var(--tracking-mono) * -1);
 }
 
 .brand:hover .brandName { color: var(--accent); }
@@ -154,7 +211,7 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: var(--bg-0);
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg-0));
   display: flex;
   flex-direction: column;
   /* Slides down from above rather than fading: a fade over full-bleed

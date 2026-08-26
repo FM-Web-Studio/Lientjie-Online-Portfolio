@@ -25,7 +25,7 @@ export default function Footer() {
   ].filter(Boolean)
 
   return (
-    <footer className={styles.footer}>
+    <footer className={`tone-accent-soft ${styles.footer}`}>
       <div className={styles.top}>
         {/* Identity. The wordmark is set at display scale so the footer reads
             as the closing plate of the document rather than as fine print. */}

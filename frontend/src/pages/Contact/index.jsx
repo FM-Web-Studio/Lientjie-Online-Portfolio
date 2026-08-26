@@ -106,7 +106,7 @@ export default function Contact() {
   return (
     <>
       {/* ════ HEADER ════════════════════════════════════════════════════════ */}
-      <header className={`tone-accent-soft ${styles.head}`}>
+      <header className={`tone-accent ${styles.head}`}>
         <div className="grid12">
           <Reveal className={styles.headType} variant="rise">
             <p className={styles.eyebrow}>{t.eyebrow}</p>
@@ -223,7 +223,7 @@ export default function Contact() {
           </div>
 
           {/* ── Details rail ─────────────────────────────────────────────── */}
-          <Reveal className={styles.detailsCol} variant="rise-sm" index={1}>
+          <Reveal className={`tone-accent-deep ${styles.detailsCol}`} variant="rise-sm" index={1}>
             <p className={styles.detailsHead}>{t.detailsTitle}</p>
             <dl className={styles.details}>
               {details.map(d => (

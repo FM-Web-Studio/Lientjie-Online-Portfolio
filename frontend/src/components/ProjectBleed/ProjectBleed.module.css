@@ -88,7 +88,12 @@
   transition: color var(--t-base);
 }
 
-.titleBtn:hover { color: var(--accent); }
+/* The whole row is one target, so hovering the image lights the caption too.
+   Costs nothing: a colour change on a small text node, nowhere near the
+   image's raster. It is also what makes the image feel clickable now that the
+   image itself no longer scales on hover. */
+.titleBtn:hover,
+.row:hover .titleBtn { color: var(--accent); }
 
 .titleArrow {
   display: inline-flex;
@@ -103,7 +108,8 @@
 }
 
 .titleBtn:hover .titleArrow,
-.titleBtn:focus-visible .titleArrow {
+.titleBtn:focus-visible .titleArrow,
+.row:hover .titleArrow {
   transform: translateX(0);
   opacity: 1;
 }

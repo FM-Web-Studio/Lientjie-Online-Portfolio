@@ -74,6 +74,8 @@
   min-width: 0;
 }
 
+/* The submit row sits on the page ground, so its rule is the page's. */
+
 /* Two columns for the short fields, one for the message. A single stacked
    column made the form a tall ribbon, which is the shape being avoided. */
 .fields {
@@ -213,9 +215,14 @@
 }
 
 /* ── Details rail ───────────────────────────────────────────────────────── */
+/* A coral panel rather than a bare rail. `align-self: start` keeps it the
+   height of its content — stretched to the form's full height it became a
+   several-hundred-pixel slab of coral, which overwhelmed the form beside it. */
 .detailsCol {
-  grid-column: 10 / 13;
+  grid-column: 9 / 13;
+  align-self: start;
   min-width: 0;
+  padding: clamp(24px, 3vw, 40px);
 }
 
 .detailsHead {
@@ -226,6 +233,9 @@
   color: var(--fg-1);
   margin: 0 0 var(--sp-6);
   padding-bottom: var(--sp-3);
+  /* --rule inside .tone-accent-deep is a dark alpha over coral, so this line
+     reads as an ink hairline rather than the near-invisible neutral divider
+     it would have been on the page ground. */
   border-bottom: 1px solid var(--rule);
 }
 

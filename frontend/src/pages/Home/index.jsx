@@ -99,7 +99,14 @@ export default function Home() {
           Full-viewport, full-bleed photograph with the name set over its
           lower-left. Nothing is centred: the type sits on the page gutter and
           the metadata rail sits against the opposite edge. */}
-      <section className={`${styles.hero} ${heroImage ? '' : styles.heroBare}`}>
+      <section
+        className={`${styles.hero} ${heroImage ? '' : styles.heroBare}`}
+        /* Lets the nav float over this section transparently, and tells it
+           what is underneath: with an image the hero lays a dark scrim in BOTH
+           themes, so the bar needs fixed light type; without one the ground is
+           the theme's own surface and theme colours are already correct. */
+        data-nav-overlay={heroImage ? 'scrim' : 'ground'}
+      >
         <div className={styles.heroMedia} aria-hidden="true">
           {heroImage ? (
             <>

@@ -120,8 +120,12 @@ export default function Admin() {
         </div>
         <div className={styles.topbarRight}>
           <span className={styles.userEmail}>{user.email}</span>
-          <button type="button" className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`} onClick={() => navigate('/')}>View site</button>
-          <button type="button" className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`} onClick={handleSignOut}>Sign Out</button>
+          {/* Neither of these is the constructive action on this screen, so
+              neither takes the filled-accent tier: a solid Sign Out button
+              puts the heaviest weight in the panel on the one thing you
+              almost never want to press. Ghost, then outline. */}
+          <button type="button" className={`${styles.btn} ${styles.btnGhost} ${styles.btnSm}`} onClick={() => navigate('/')}>View site</button>
+          <button type="button" className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`} onClick={handleSignOut}>Sign Out</button>
         </div>
       </div>
 

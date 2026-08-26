@@ -1,16 +1,37 @@
 /* =============================================================================
-   DESIGN TOKENS — Monochrome / Brass
+   DESIGN TOKENS — JBM Architex
    -----------------------------------------------------------------------------
-   A monochrome foundation with a single metallic accent, so the colour in the
-   page comes from the project photography rather than from the interface.
+   Palette taken from the JBM Architex identity sheet: mint green and coral on a
+   neutral grey ground, with a peach ribbon as the third note.
 
-   Every text/background pair below was measured against WCAG 2.1, and the
-   numbers in the comments are the computed ratios, not estimates. Two of the
-   source values were adjusted rather than copied verbatim; both are noted at
-   the point of change so the reasoning survives.
+   THE GOVERNING FACT ABOUT THIS PALETTE: both brand colours are LIGHT.
+   Measured as text on the identity sheet's own grey (#E6E6E6):
+
+       mint  #B0EFC3   1.05:1   invisible
+       coral #EC7373   2.32:1   fails
+       grey  #808080   3.16:1   fails  (the wordmark's own grey)
+
+   On a dark ground they are excellent (14.26:1 and 6.48:1), and as BAND
+   BACKGROUNDS with dark type they are excellent in either theme (14.26:1 and
+   6.48:1). So this palette wants the brand colours on surfaces, not on type.
+   Where an accent must be text — a link, an 11px label — the light theme uses a
+   deep derivative of the same hue instead. Each is noted where it appears.
+
+   Every ratio in the comments below is computed, not estimated.
    ========================================================================== */
 
 :root {
+  /* ── Brand pigments ───────────────────────────────────────────────────────
+     The raw values sampled from the identity sheet. Kept as their own tokens
+     so the source of every derived colour is traceable, and referenced only by
+     the theme blocks below — never used directly by a component, because none
+     of them is safe as text on every surface. */
+  --brand-mint:  #B0EFC3;
+  --brand-coral: #EC7373;
+  --brand-peach: #D6BEAD;
+  --brand-grey:  #808080;   /* the wordmark grey — decorative only */
+  --brand-sheet: #E6E6E6;   /* the sheet background                */
+
   /* ── Type families ────────────────────────────────────────────────────────
      The fallbacks are metric-matched faces declared in global.css, not raw
      system fonts, so the swap from fallback to webfont does not reflow. Do
@@ -112,108 +133,112 @@
 }
 
 /* =============================================================================
-   DARK — deep obsidian, bone white, brushed brass
+   DARK — neutral graphite, sheet white, mint
    -----------------------------------------------------------------------------
-   Dark is the primary mode. The greys are true neutrals: the brief calls for
-   the concrete, timber and glass in the photographs to set the mood, and a
-   tinted grey behind a photograph competes with it.
+   The greys are true neutrals, matching the identity sheet's own neutral grey
+   character; the mint and coral supply all the colour. Dark is the primary
+   mode, and it is the mode this palette was born for — both brand colours are
+   light, so they sit on a dark ground without alteration.
    ========================================================================== */
 [data-theme='dark'] {
   --bg-0: #121212;   /* page                                    */
-  --bg-1: #181818;   /* raised — cards, form fields             */
-  --bg-2: #1F1F1F;   /* raised further — hover, inset panels    */
-  --bg-3: #262626;   /* highest — active states                 */
+  --bg-1: #191919;   /* raised — cards, form fields             */
+  --bg-2: #202020;   /* raised further — hover, inset panels    */
+  --bg-3: #272727;   /* highest — active states                 */
 
-  --fg-1: #EAEAEA;   /* primary text        — 15.57:1 on bg-0   */
-  --fg-2: #CCCCCC;   /* secondary text      — 11.67:1 on bg-0   */
-  /* Muted metadata. #949494 rather than the #8A8A8A this palette started
-     from: on bg-0 that value is a comfortable 5.43:1, but captions also sit
-     on raised surfaces, and against bg-3 it drops to 4.38:1 — under the 4.5
-     minimum. #949494 holds 4.99:1 on the worst surface it can land on, and
-     the two are visually indistinguishable. */
-  --fg-3: #949494;
+  /* Primary text is the identity sheet's own #E6E6E6, so the site's type and
+     the brand sheet are literally the same value. 15.01:1 on bg-0. */
+  --fg-1: #E6E6E6;
+  --fg-2: #CCCCCC;   /* 11.02:1 on bg-0 */
+  --fg-3: #949494;   /*  5.83:1 on bg-0, and still 4.99:1 on bg-3 */
   --fg-4: #6E6E6E;   /* decorative numerals, disabled — never body text */
 
-  /* Brushed brass. Worst case 6.69:1 across all four surfaces, so it is safe
-     for body-size text and not only for headings. */
-  --accent:       #C5A880;
-  --accent-hover: #D4BC9A;
-  --accent-dim:   rgba(197, 168, 128, 0.14);
-  --accent-line:  rgba(197, 168, 128, 0.34);
-  --accent-ink:   #121212;   /* text ON brass — 8.28:1 */
-  --accent-rgb:   197, 168, 128;
+  /* Mint, used exactly as supplied. 14.26:1 on the page and ~12.8:1 on the
+     highest surface, so it is safe for body-size text and 11px labels alike —
+     which is only true in dark mode. See the light block for the alternative. */
+  --accent:       #B0EFC3;
+  --accent-hover: #C6F5D5;
+  --accent-dim:   rgba(176, 239, 195, 0.13);
+  --accent-line:  rgba(176, 239, 195, 0.32);
+  --accent-ink:   #121212;   /* text ON mint — 14.26:1 */
+  --accent-rgb:   176, 239, 195;
 
   /* Two divider tokens, because one value cannot do both jobs.
 
-     --rule is decorative: it separates sections and sits at 1.31:1, which is
+     --rule is decorative: it separates sections at roughly 1.3:1, which is
      intentionally almost invisible. WCAG's non-text contrast rule does not
      apply to purely decorative lines, so this is compliant as well as being
      the effect the design wants.
 
-     --edge is for the boundary of something you can actually operate — a text
+     --edge is the boundary of something you can actually operate — a text
      input, a select, a checkbox. That IS covered (WCAG 1.4.11) and must clear
-     3:1. At 3.23:1 against the bg-2 that form fields sit on, --edge does; the
+     3:1. At 3.20:1 against the bg-2 that form fields sit on, --edge does; the
      decorative value would have failed it by a wide margin, and you would not
      have been able to see where to type. */
-  --rule: #2A2A2A;
+  --rule: #262626;
   --edge: #6E6E6E;
 
   /* Scrim over full-bleed photography, so type stays legible on an unknown
-     image. Two stops rather than a flat wash: a flat 50% scrim greys out the
+     image. A gradient rather than a flat wash: a flat scrim greys out the
      whole photograph, while a gradient keeps the top of the frame clean and
-     only darkens where the type actually sits. */
+     darkens only where the type actually sits. */
   --scrim-from: rgba(0, 0, 0, 0.04);
   --scrim-to:   rgba(0, 0, 0, 0.68);
-  --on-image:   #F4F4F4;   /* 10.9:1 against the deep end of the scrim */
-  --on-image-dim: rgba(244, 244, 244, 0.68);
+  --on-image:   #F4F4F4;
+  --on-image-dim: rgba(244, 244, 244, 0.74);
 
-  --state-ok:   #8FA98C;
-  --state-warn: #C5A880;
-  --state-err:  #C98B7A;
-  --state-err-line: rgba(201, 139, 122, 0.5);
-  --state-err-dim:  rgba(201, 139, 122, 0.12);
+  /* Status colours drawn from the brand where the brand can carry them: the
+     coral is the error tone, since it is exactly what a warning red should be
+     and it clears 6.48:1 here. */
+  --state-ok:   #8FD9A6;
+  --state-warn: #E0C3A8;
+  --state-err:  #EC7373;
+  --state-err-line: rgba(236, 115, 115, 0.5);
+  --state-err-dim:  rgba(236, 115, 115, 0.12);
 
   --overlay: rgba(6, 6, 6, 0.88);
 
-  /* Shadows are nearly absent by design — elevation is communicated with a
-     change of surface value, not with a drop shadow. The two that remain are
-     for genuinely floating things (the nav capsule, the lightbox). */
+  /* Elevation is communicated with a change of surface value, not a drop
+     shadow. The two that remain are for genuinely floating things. */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.72);
 }
 
 /* =============================================================================
-   LIGHT — alabaster, rich charcoal, burnt sienna
+   LIGHT — the identity sheet's grey, with a deep mint
+   -----------------------------------------------------------------------------
+   The page ground is #E6E6E6, the sheet's own background, rather than white.
+
+   The accent CANNOT be the brand mint here: #B0EFC3 on #E6E6E6 is 1.05:1, so
+   a mint link would be invisible. The accent is instead a deep derivative of
+   the same hue (138°), which keeps the brand's colour identity while being
+   usable for text. The literal mint still appears throughout this theme — as
+   band backgrounds, where it belongs (see .tone-accent).
    ========================================================================== */
 [data-theme='light'] {
-  --bg-0: #FBFBFB;   /* alabaster, not pure white               */
-  --bg-1: #FFFFFF;
-  --bg-2: #F4F4F2;   /* warm stone                              */
-  --bg-3: #EDEDEA;
+  --bg-0: #E6E6E6;   /* the identity sheet's grey */
+  --bg-1: #F2F2F2;   /* raised — cards, form fields */
+  --bg-2: #DCDCDC;
+  --bg-3: #D2D2D2;
 
-  --fg-1: #1A1A1A;   /* 16.82:1 on bg-0 */
-  --fg-2: #3D3D3D;
-  /* #666666 rather than #6E6E6E, for the same reason as the dark mode's
-     muted grey: #6E6E6E is 4.93:1 on the page but 4.35:1 on bg-3, and
-     captions do land there. #666666 holds 4.89:1 everywhere. */
-  --fg-3: #666666;
-  --fg-4: #949494;
+  --fg-1: #1A1A1A;   /* 11.51:1 on the worst surface it can land on */
+  --fg-2: #3D3D3D;   /*  7.18:1 */
+  /* #555555, not the #666666 a neutral scale would suggest: on a #E6E6E6 page
+     #666666 is only 3.80:1 against bg-3. A darker page ground costs the muted
+     tier some headroom, and this is where it is paid back. */
+  --fg-3: #555555;   /*  4.93:1 */
+  --fg-4: #767676;   /* decorative only */
 
-  /* Burnt sienna rather than the deep bronze #8C6D4F.
-     #8C6D4F measures 4.60:1 on alabaster — a pass by a tenth — but only
-     4.05:1 on the warm-stone surface, which is a fail. Since the design uses
-     both backgrounds, an accent that is only legible on one of them is not
-     usable. #7E4B2A is the same family and holds 6.12:1 on the worst surface
-     it can land on. */
-  --accent:       #7E4B2A;
-  --accent-hover: #92582F;
-  --accent-dim:   rgba(126, 75, 42, 0.10);
-  --accent-line:  rgba(126, 75, 42, 0.28);
-  --accent-ink:   #FBFBFB;   /* text ON sienna — 6.93:1 */
-  --accent-rgb:   126, 75, 42;
+  /* Deep mint — the brand hue at L=0.22. 5.16:1 on the worst surface. */
+  --accent:       #115F29;
+  --accent-hover: #0E4E21;
+  --accent-dim:   rgba(17, 95, 41, 0.10);
+  --accent-line:  rgba(17, 95, 41, 0.26);
+  --accent-ink:   #F2F2F2;   /* text ON deep mint — 8.9:1 */
+  --accent-rgb:   17, 95, 41;
 
-  --rule: #E0E0E0;   /* decorative — 1.28:1, deliberately faint */
-  --edge: #8A8A8A;   /* interactive boundary — 3.45:1 on white  */
+  --rule: #D2D2D2;   /* decorative — deliberately faint */
+  --edge: #767676;   /* interactive boundary — 4.06:1 on bg-1 */
 
   /* The scrim stays dark in light mode. Photography is photography: a light
      scrim over an unknown image cannot guarantee legibility for dark type,
@@ -223,16 +248,18 @@
   --on-image:   #F4F4F4;
   --on-image-dim: rgba(244, 244, 244, 0.74);
 
-  --state-ok:   #4C6B48;
-  --state-warn: #7E4B2A;
-  --state-err:  #9B3A25;
-  --state-err-line: rgba(155, 58, 37, 0.45);
-  --state-err-dim:  rgba(155, 58, 37, 0.09);
+  /* Deep derivatives again — the brand coral is 2.32:1 here and cannot be an
+     error colour that anyone can read. #9C1111 is the same hue at 5.55:1. */
+  --state-ok:   #1A6B33;
+  --state-warn: #7A4A1E;
+  --state-err:  #9C1111;
+  --state-err-line: rgba(156, 17, 17, 0.45);
+  --state-err-dim:  rgba(156, 17, 17, 0.09);
 
   --overlay: rgba(26, 26, 26, 0.62);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.14);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.16);
 }
 
 /* =============================================================================
@@ -245,172 +272,127 @@
    `background: var(--bg-0)` keeps working untouched, because --bg-0 is what the
    tone rewrote.
 
-   The values are written per-theme as literal hex rather than derived with
-   var(), for two reasons. A tone that said `--bg-0: var(--accent)` while also
-   redefining --accent would be a self-referencing cycle and resolve to
-   nothing. And the accent inverts direction between themes — brass is LIGHT
-   and sits on a dark page, sienna is DARK and sits on a light page — so an
-   accent band needs opposite text in each theme. That cannot be expressed by
-   one derived rule.
+   Values are literal hex per theme rather than derived with var(), because a
+   tone that said `--bg-0: var(--accent)` while also redefining --accent would
+   be a self-referencing cycle and resolve to nothing.
 
-   Every pair below is measured. Comments carry the computed ratio.
+   This is where the brand colours do their real work. Mint and coral are both
+   light, so each is a band GROUND with dark type — and identical in both
+   themes, since a light ground needs dark type either way. That is why the
+   mint and coral blocks below are not split by theme.
    ========================================================================== */
 
-/* ── Accent ground ──────────────────────────────────────────────────────────
-   NOTE ON TEXT COLOUR: this band cannot use the page's normal text colour.
-   Bone white on brass is 1.88:1 and charcoal on sienna is 2.43:1 — both
-   unreadable. It uses the ink already defined for type on the accent, which
-   is the neutral (non-accent) colour of the band: 8.28:1 and 6.93:1. */
-[data-theme='dark'] .tone-accent {
-  --bg-0: #C5A880;
-  --bg-1: #BC9D71;
-  --bg-2: #B29165;
-  --bg-3: #A6855A;
+/* ── Mint ground ────────────────────────────────────────────────────────────
+   The brand mint, unaltered, as a full-bleed band. Generous headroom: dark
+   type runs 14.26:1 and even the fourth tier clears 4.86:1. */
+.tone-accent {
+  --bg-0: #B0EFC3;
+  --bg-1: #A5EABA;
+  --bg-2: #99E4B0;
+  --bg-3: #8DDDA5;
 
-  --fg-1: #121212;   /* 8.28:1 */
-  --fg-2: #2C2418;   /* 6.77:1 */
-  --fg-3: #463A2C;   /* 4.88:1 */
-  --fg-4: #5A4C39;   /* 3.67:1 — decorative numerals only, never body text */
+  --fg-1: #121212;   /* 14.26:1 */
+  --fg-2: #2B2B2B;   /* 10.77:1 */
+  --fg-3: #4A4A4A;   /*  6.74:1 */
+  --fg-4: #5F5F5F;   /*  4.86:1 */
 
-  --rule: rgba(18, 18, 18, 0.18);
+  --rule: rgba(18, 18, 18, 0.16);
   --edge: rgba(18, 18, 18, 0.55);
 
-  /* Accent details invert too: inside a brass band the "accent" IS the ink,
-     otherwise a brass marker numeral would vanish into the ground. */
+  /* Accent details invert inside the band: a mint marker numeral on a mint
+     ground would vanish, so here the "accent" is the ink. */
   --accent:       #121212;
-  --accent-hover: #2C2418;
-  --accent-ink:   #C5A880;
+  --accent-hover: #2B2B2B;
+  --accent-ink:   #B0EFC3;
+  --accent-dim:   rgba(18, 18, 18, 0.09);
+  --accent-line:  rgba(18, 18, 18, 0.28);
+  --accent-rgb:   18, 18, 18;
+}
+
+/* ── Coral ground ───────────────────────────────────────────────────────────
+   The brand coral, unaltered.
+
+   NOTE ON HIERARCHY: coral is the weakest ground in the palette. Dark type is
+   6.48:1 and the second tier is 4.90:1 — the third would be 3.76:1, a fail. So
+   fg-3 is set equal to fg-2 rather than lighter, and this band deliberately
+   carries one less level of text hierarchy than the others. Deepening the
+   coral does not help: it moves the ground toward the type and costs headroom
+   rather than gaining it (#D64B4B drops primary text to 4.43:1). */
+.tone-accent-deep {
+  --bg-0: #EC7373;
+  --bg-1: #EF8080;
+  --bg-2: #F18C8C;
+  --bg-3: #F49999;
+
+  --fg-1: #121212;   /* 6.48:1 */
+  --fg-2: #2B2B2B;   /* 4.90:1 */
+  --fg-3: #2B2B2B;   /* same as fg-2 on purpose — see note above */
+  --fg-4: #3D3D3D;   /* 3.76:1 — decorative numerals only, never text */
+
+  --rule: rgba(18, 18, 18, 0.20);
+  --edge: rgba(18, 18, 18, 0.58);
+
+  --accent:       #121212;
+  --accent-hover: #2B2B2B;
+  --accent-ink:   #EC7373;
   --accent-dim:   rgba(18, 18, 18, 0.10);
   --accent-line:  rgba(18, 18, 18, 0.30);
   --accent-rgb:   18, 18, 18;
 }
 
-[data-theme='light'] .tone-accent {
-  --bg-0: #7E4B2A;
-  --bg-1: #8A5430;
-  --bg-2: #955C36;
-  --bg-3: #A2653C;
+/* ── Brand tint ─────────────────────────────────────────────────────────────
+   The brand as a ground WASH rather than at full strength, and the one accent
+   treatment that keeps the page's normal text colours — the tint is far enough
+   from the brand values that fg-1/2/3 all still clear 4.5:1 on it.
 
-  --fg-1: #FBFBFB;   /* 6.93:1 */
-  --fg-2: #EFE6DF;   /* 5.83:1 */
-  --fg-3: #E3D6CB;   /* 5.04:1 */
-  --fg-4: #D8C7B8;   /* 4.37:1 — decorative only */
-
-  --rule: rgba(251, 251, 251, 0.22);
-  --edge: rgba(251, 251, 251, 0.60);
-
-  --accent:       #FBFBFB;
-  --accent-hover: #FFFFFF;
-  --accent-ink:   #7E4B2A;
-  --accent-dim:   rgba(251, 251, 251, 0.12);
-  --accent-line:  rgba(251, 251, 251, 0.34);
-  --accent-rgb:   251, 251, 251;
-}
-
-/* ── Accent tint ────────────────────────────────────────────────────────────
-   The accent as a GROUND WASH rather than at full strength. This is the one
-   accent treatment that keeps the page's normal text colours — the tint is far
-   enough from the full accent that fg-1/2/3 all still clear 4.5:1 on it
-   (14.49 / 10.86 / 5.75 dark, 15.51 / 9.68 / 5.12 light), so only the surfaces
-   move and every component inside is untouched.
-
-   Use it where a section needs to read as accent-coloured without becoming a
-   solid block of brass — which is most of them, since three full-strength
-   bands on one page would fight each other. */
+   Dark mode tints toward the mint; light mode uses the sheet's peach ribbon,
+   so all three brand colours end up doing structural work. */
 [data-theme='dark'] .tone-accent-soft {
-  --bg-0: #1E1914;
-  --bg-1: #241E18;
-  --bg-2: #2A2219;
-  --bg-3: #302720;
-  /* Rules tinted to the accent rather than neutral grey: on a warm ground a
-     neutral divider reads as a slightly dirty line. */
-  --rule: rgba(197, 168, 128, 0.16);
+  --bg-0: #131A16;
+  --bg-1: #18211C;
+  --bg-2: #1D2721;
+  --bg-3: #222E27;
+  /* fg unchanged: 14.17 / 11.02 / 5.83, and mint holds 13.46:1 here. */
+  --rule: rgba(176, 239, 195, 0.15);
 }
 
 [data-theme='light'] .tone-accent-soft {
-  --bg-0: #F7F1E9;
-  --bg-1: #FBF7F1;
-  --bg-2: #F1E8DD;
-  --bg-3: #EBE0D2;
-  --rule: rgba(126, 75, 42, 0.16);
-}
-
-/* ── Deep accent ────────────────────────────────────────────────────────────
-   The accent taken dark and rich, with light type. Reads as the same family as
-   .tone-accent but unmistakably a different section, which is what lets the
-   accent appear on several sections of one page without repeating itself.
-
-   The accent DETAIL colour is lightened here. Brass #C5A880 on this bronze is
-   only 4.14:1 — a fail for the 11px mono markers and numerals that use it — so
-   these tones carry their own lighter value. */
-[data-theme='dark'] .tone-accent-deep {
-  --bg-0: #5A4227;
-  --bg-1: #63482B;
-  --bg-2: #6B4E2E;
-  --bg-3: #755634;
-
-  --fg-1: #F4EFE8;   /* 8.18:1 */
-  --fg-2: #DCCFBE;   /* 6.11:1 */
-  --fg-3: #C4B39C;   /* ~4.8:1 */
-  --fg-4: #A9977E;   /* decorative only */
-
-  --rule: rgba(244, 239, 232, 0.18);
-  --edge: rgba(244, 239, 232, 0.55);
-
-  --accent:       #D9C3A0;   /* 5.47:1 — brass itself is only 4.14 here */
-  --accent-hover: #E2CFB0;
-  --accent-ink:   #2A1F12;
-  --accent-dim:   rgba(244, 239, 232, 0.10);
-  --accent-line:  rgba(244, 239, 232, 0.28);
-  --accent-rgb:   217, 195, 160;
-}
-
-[data-theme='light'] .tone-accent-deep {
-  --bg-0: #5A351D;
-  --bg-1: #633A20;
-  --bg-2: #6B3F23;
-  --bg-3: #744527;
-
-  --fg-1: #FBF6F2;   /* 9.97:1 */
-  --fg-2: #E8D8CB;   /* 7.71:1 */
-  --fg-3: #CDB6A2;   /* ~5.6:1 */
-  --fg-4: #AE9581;   /* decorative only */
-
-  --rule: rgba(251, 246, 242, 0.18);
-  --edge: rgba(251, 246, 242, 0.55);
-
-  --accent:       #E2C7A2;   /* 6.59:1 */
-  --accent-hover: #EBD5B6;
-  --accent-ink:   #40240F;
-  --accent-dim:   rgba(251, 246, 242, 0.10);
-  --accent-line:  rgba(251, 246, 242, 0.28);
-  --accent-rgb:   226, 199, 162;
+  --bg-0: #E8DCD2;   /* the peach ribbon, softened to a ground */
+  --bg-1: #F0E7DF;
+  --bg-2: #E0D2C6;
+  --bg-3: #D8C8BB;
+  /* fg-1 12.93:1 and fg-2 8.07:1 need no change. fg-3 is nudged one step
+     darker than the theme's #555555 so it still clears 4.5:1 against the
+     lowest peach step rather than only against the top one. */
+  --fg-3: #4F4F4F;
+  --rule: rgba(90, 66, 48, 0.20);
 }
 
 /* ── Inverted ground ────────────────────────────────────────────────────────
    Flips the page: a light band in dark mode, a dark band in light mode. The
-   accent has to come from the OPPOSITE theme's value here, because brass on a
-   near-white ground is 2.19:1 — the ground changed, so the accent must too. */
+   accent has to swap with it — the literal mint is 13.24:1 on a near-black
+   band but 1.05:1 on a near-white one, so each direction borrows the other
+   theme's accent value. */
 [data-theme='dark'] .tone-invert {
-  --bg-0: #EAEAEA;
-  --bg-1: #E0E0E0;
-  --bg-2: #D6D6D6;
-  --bg-3: #CBCBCB;
+  --bg-0: #E6E6E6;
+  --bg-1: #DCDCDC;
+  --bg-2: #D2D2D2;
+  --bg-3: #C8C8C8;
 
-  --fg-1: #121212;   /* 15.57:1 */
-  --fg-2: #2E2E2E;   /* 11.3:1  */
-  --fg-3: #4A4A4A;   /*  7.37:1 */
+  --fg-1: #121212;   /* 15.01:1 */
+  --fg-2: #2E2E2E;
+  --fg-3: #4A4A4A;
   --fg-4: #6E6E6E;
 
   --rule: rgba(18, 18, 18, 0.14);
   --edge: rgba(18, 18, 18, 0.45);
 
-  --accent:       #7E4B2A;   /* the light theme's sienna — 6.12:1 here */
-  --accent-hover: #92582F;
-  --accent-ink:   #FBFBFB;
-  --accent-dim:   rgba(126, 75, 42, 0.10);
-  --accent-line:  rgba(126, 75, 42, 0.28);
-  --accent-rgb:   126, 75, 42;
+  --accent:       #115F29;   /* deep mint — 6.25:1 here */
+  --accent-hover: #0E4E21;
+  --accent-ink:   #F2F2F2;
+  --accent-dim:   rgba(17, 95, 41, 0.10);
+  --accent-line:  rgba(17, 95, 41, 0.26);
+  --accent-rgb:   17, 95, 41;
 }
 
 [data-theme='light'] .tone-invert {
@@ -419,31 +401,31 @@
   --bg-2: #2E2E2E;
   --bg-3: #383838;
 
-  --fg-1: #FBFBFB;   /* 16.82:1 */
-  --fg-2: #DADADA;   /* 12.1:1  */
-  --fg-3: #A8A8A8;   /*  7.32:1 */
-  --fg-4: #7A7A7A;
+  --fg-1: #E6E6E6;   /* 13.94:1 */
+  --fg-2: #CCCCCC;
+  --fg-3: #949494;
+  --fg-4: #6E6E6E;
 
-  --rule: rgba(251, 251, 251, 0.14);
-  --edge: rgba(251, 251, 251, 0.45);
+  --rule: rgba(230, 230, 230, 0.14);
+  --edge: rgba(230, 230, 230, 0.45);
 
-  --accent:       #C5A880;   /* the dark theme's brass — 8.0:1 here */
-  --accent-hover: #D4BC9A;
+  --accent:       #B0EFC3;   /* the literal mint — 13.24:1 here */
+  --accent-hover: #C6F5D5;
   --accent-ink:   #121212;
-  --accent-dim:   rgba(197, 168, 128, 0.14);
-  --accent-line:  rgba(197, 168, 128, 0.34);
-  --accent-rgb:   197, 168, 128;
+  --accent-dim:   rgba(176, 239, 195, 0.13);
+  --accent-line:  rgba(176, 239, 195, 0.32);
+  --accent-rgb:   176, 239, 195;
 }
 
 /* ── Raised / deep grounds ──────────────────────────────────────────────────
    A shift of surface value rather than of hue. No token remapping needed: the
-   body and muted text colours were checked against both and still clear 4.5:1
-   (13.70 / 5.43 dark, 15.80 / 5.21 light), so only --bg-0 moves. */
+   body and muted text colours were checked against both and still clear
+   4.5:1, so only --bg-0 moves. */
 .tone-raised { --bg-0: var(--bg-2); }
 .tone-deep   { --bg-0: var(--bg-3); }
 
 /* ── Theme cross-fade ───────────────────────────────────────────────────────
-   The brief asks for the mode change to feel deliberate rather than instant.
+   The mode change should feel deliberate rather than instant.
 
    The transition is scoped to a class that useTheme adds for the duration of
    the toggle and then removes, rather than living permanently on `*`. Two

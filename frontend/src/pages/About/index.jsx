@@ -158,7 +158,7 @@ export default function About() {
             <p className={styles.role}>{title}</p>
           </Reveal>
 
-          <Reveal className={styles.headMedia} variant="zoom" amount={0.1}>
+          <Reveal className={styles.headMedia} variant="fade" amount={0.1}>
             <Figure
               src={profile?.profileImage}
               alt={name}

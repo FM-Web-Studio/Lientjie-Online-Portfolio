@@ -1,6 +1,9 @@
+/* The ground comes from the tone class on the element. The top edge is a
+   2px accent rule rather than a neutral hairline: the footer follows a
+   full-strength brand band on most routes, and a faint grey line between two
+   coloured grounds reads as a seam rather than as a division. */
 .footer {
-  border-top: 1px solid var(--rule);
-  background: var(--bg-0);
+  border-top: 2px solid var(--accent);
   padding-inline: var(--gutter);
   padding-top: clamp(56px, 8vh, 104px);
   padding-bottom: var(--sp-8);
@@ -36,6 +39,12 @@
   letter-spacing: var(--tracking-mono);
   color: var(--fg-3);
   margin: 0;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--accent-line);
+  display: inline-block;
+  /* Sized to the text so the rule underlines the tagline rather than spanning
+     the column like a section divider. */
+  width: fit-content;
 }
 
 .col {
@@ -46,12 +55,15 @@
   min-width: 0;
 }
 
+/* Accent, not the muted grey these were. They are the only repeated element
+   in the footer, so colouring them is what makes the block read as branded
+   rather than as fine print. */
 .colHead {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   text-transform: uppercase;
   letter-spacing: var(--tracking-mono);
-  color: var(--fg-4);
+  color: var(--accent);
   margin: 0 0 var(--sp-2);
 }
 

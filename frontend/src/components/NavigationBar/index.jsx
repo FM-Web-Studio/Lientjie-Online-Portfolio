@@ -36,13 +36,40 @@ export default function NavigationBar() {
   const location = useLocation()
   const [open, setOpen] = useState(false)
   const [lifted, setLifted] = useState(false)
+  /* Whether this route has a section that the bar is allowed to float over
+     transparently. Starts true so the very first paint on Home does not flash
+     an opaque bar over the hero before the effect below runs. */
+  /* '' = not allowed to overlay; 'ground' = the section beneath uses the
+     theme's own surface, so theme text colours are correct; 'scrim' = the
+     section beneath is a dark scrim over imagery in BOTH themes, so the bar
+     must use fixed light type regardless of theme. */
+  const [overlay, setOverlay] = useState('ground')
 
   /*
-   * The bar is transparent over the hero and gains a background once the page
-   * has scrolled past it. The threshold is a fixed 80px rather than the hero's
-   * measured height: reading the hero would couple the nav to one page's
-   * markup, and the visual goal is only "no longer sitting on top of the first
-   * screenful of image".
+   * Whether the bar may be transparent at all on this route.
+   *
+   * A transparent bar draws its type in the THEME's text colour, which is only
+   * legible over the theme's own ground. Most pages now open with a
+   * full-strength brand band — the Contact header is mint, which is a light
+   * surface in both themes — and bone-white nav type over mint is unreadable.
+   *
+   * Rather than teach the nav about individual routes, the section that wants
+   * to be floated over declares it with `data-nav-overlay` (currently only the
+   * home hero, which sets its own dark scrim and so controls its own
+   * contrast). Anywhere that attribute is absent, the bar is opaque from the
+   * first pixel.
+   */
+  useEffect(() => {
+    const el = document.querySelector('[data-nav-overlay]')
+    setOverlay(el ? (el.getAttribute('data-nav-overlay') || 'ground') : '')
+  }, [location.pathname])
+
+  /*
+   * The bar gains a background once the page has scrolled past the overlay
+   * section. The threshold is a fixed 80px rather than the hero's measured
+   * height: reading the hero would couple the nav to one page's markup, and
+   * the visual goal is only "no longer sitting on top of the first screenful
+   * of image".
    *
    * `passive: true` because this listener never calls preventDefault, and
    * without the flag the browser must wait for it before it can scroll.
@@ -76,7 +103,15 @@ export default function NavigationBar() {
     <>
       <a className="skip-link" href="#main">Skip to content</a>
 
-      <header className={`${styles.bar} ${lifted ? styles.barLifted : ''}`}>
+      <header
+        className={[
+          styles.bar,
+          (lifted || !overlay) ? styles.barLifted : '',
+          /* Only while actually floating over a scrim - once lifted the bar has
+             its own ground and must go back to theme colours. */
+          (!lifted && overlay === 'scrim') ? styles.barOnScrim : '',
+        ].filter(Boolean).join(' ')}
+      >
         <div className={styles.inner}>
           <Link to="/" className={styles.brand} aria-label={brand.siteName}>
             {/* logo-96, not the full-size logo.png: this renders at 26px, so

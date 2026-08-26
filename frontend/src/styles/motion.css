@@ -44,10 +44,14 @@
   [data-reveal='false'].slide-in  { transform: translateX(-32px); }
   [data-reveal='false'].slide-in-r{ transform: translateX(32px); }
 
-  /* Imagery settles in from slightly over-scale. The overflow is clipped by
-     the figure, so this reads as the frame settling rather than the image
-     moving. */
-  [data-reveal='false'].zoom      { transform: scale(1.04); }
+  /* Imagery fades only - it is deliberately NOT scaled.
+     `transform: scale()` on an <img>, or on any element containing one, makes
+     Chromium re-rasterise the image from its full-resolution source for the
+     new scale, on every frame of the transition. Measured on a 7016x9933
+     source that is ~200ms per frame: p95 frame time 182ms and 9s of
+     main-thread raster during five seconds of hovering. Opacity is composited,
+     so its cost is the same whatever the image's resolution. */
+  [data-reveal='false'].fade      { opacity: 0; }
 
   /* A rule that draws itself. transform-origin is set per-use because a
      vertical spine and a horizontal divider want different origins. */
@@ -57,17 +61,52 @@
   .draw-y { transform-origin: center top; }
 }
 
-/* ── Hover lift on a figure ─────────────────────────────────────────────────
-   Gated behind a fine pointer. On a touch screen `:hover` sticks after a tap,
-   so the image would stay scaled up until the user tapped elsewhere. */
+/* ── Hover affordance on a figure ───────────────────────────────────────────
+   An inset rule that fades in, NOT a scale on the image.
+
+   The scale this replaces was the single worst performance problem on the
+   site: hovering a project row produced 200ms frames and made every
+   subsequent hover — on a button, a link, anything — lag behind the pointer,
+   because the compositor was still re-rasterising a 70-megapixel bitmap. See
+   the note on `.fade` above.
+
+   Opacity on a 1px border is composited and costs the same regardless of what
+   is behind it, so this cannot regress no matter what gets uploaded. It also
+   suits the drafting register of the rest of the page better than a zoom.
+
+   Gated behind a fine pointer: on a touch screen `:hover` sticks after a tap,
+   so the rule would stay visible until the user tapped elsewhere. */
+.lift { position: relative; }
+
 @media (hover: hover) and (pointer: fine) {
-  .lift img {
-    transition: transform var(--t-slow) var(--ease-out-expo),
-                filter var(--t-slow) var(--ease-out);
+  .lift::after {
+    content: '';
+    position: absolute;
+    inset: clamp(8px, 1.2vw, 18px);
+    border: 1px solid var(--accent);
+    opacity: 0;
+    transition: opacity var(--t-base) var(--ease-out);
+    pointer-events: none;
+
+    /* A DELIBERATE exception to the rule stated in global.css that these
+       hints should not be left on permanently.
+
+       Without it this overlay shares a compositing layer with the image, so
+       animating its opacity invalidates that region — and repainting the
+       region means re-rasterising the image underneath it. On a 7016x9933
+       source that measured p95 187.8ms with 47 frames over 100ms, i.e. the
+       opacity fade was just as expensive as the scale it replaced.
+
+       Promoted, the fade runs on the GPU and never touches the image's raster:
+       p95 6.2ms, 3 long frames instead of 47, main-thread work 8.9s -> 1.0s.
+
+       The cost is one layer per row. It is the size of the figure but holds
+       only a 1px frame, so it is cheap to raster, and there are a handful of
+       rows rather than the dozens the global.css note was warning about. */
+    will-change: opacity;
   }
-  .lift:hover img {
-    transform: scale(1.03);
-  }
+
+  .lift:hover::after { opacity: 0.9; }
 }
 
 /* ── Marquee ────────────────────────────────────────────────────────────────

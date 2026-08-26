@@ -41,7 +41,7 @@ export default function ProjectBleed({ project, index, onOpen }) {
     <article className={`${styles.row} ${flipped ? styles.flipped : ''}`}>
       <Reveal
         className={`${styles.media} ${flipped ? 'bleed-right' : 'bleed-left'} lift`}
-        variant="zoom"
+        variant="fade"
         amount={0.1}
       >
         <div

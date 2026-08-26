@@ -67,38 +67,125 @@
 .topbarRight { display: flex; align-items: center; gap: var(--spacing-sm); }
 .userEmail   { font-size: var(--font-size-sm); color: var(--secondary-text-color); }
 
-/* ── Buttons (admin-scoped, brass) ─────────────────────────────────────────── */
+/* =============================================================================
+   BUTTONS — four tiers, told apart by WEIGHT not just colour
+   -----------------------------------------------------------------------------
+   The old set was hard to tell apart for two reasons, both fixed here.
+
+   1. The base class carried `background: var(--background-2)`, so a button with
+      no variant was already a filled grey slab — which looked almost identical
+      to an outline button on hover. The base is now completely neutral and
+      every tier declares its own fill and border, so the tiers cannot blur
+      into each other.
+
+   2. Outline and danger borders used --border-color, which maps to the
+      DECORATIVE divider value: measured 1.08:1 in dark and 1.10:1 in light
+      against the surfaces buttons actually sit on. A button's border is an
+      interactive boundary and must clear 3:1 (WCAG 1.4.11), so those buttons
+      effectively had no visible edge at all. They now use --edge (3.20:1 dark,
+      3.31:1 light).
+
+   The four tiers step down in visual weight, and each differs in FILL as well
+   as colour so the ramp survives greyscale and colour-blindness:
+
+       primary   solid accent fill        highest
+       outline   no fill, visible border  medium
+       danger    tinted fill + border     medium, unmistakably destructive
+       ghost     nothing until hover      lowest
+   ========================================================================== */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
+  gap: 0.45rem;
+  /* A fixed minimum height rather than vertical padding, so a row of mixed
+     sizes and a row of icon-only buttons still line up on the same baseline. */
+  min-height: 38px;
+  padding: 0 1.1rem;
   font-family: var(--font-sans);
   font-size: var(--font-size-sm);
   font-weight: 600;
+  letter-spacing: 0.01em;
   line-height: 1;
-  padding: 0.6rem 1.1rem;
+  border: 1.5px solid transparent;
   border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  background: var(--background-2);
+  background: transparent;
   color: var(--primary-text-color);
   cursor: pointer;
   white-space: nowrap;
-  transition: background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition);
+  transition: background var(--transition), border-color var(--transition),
+              color var(--transition);
 }
-.btn:hover:not(:disabled) { box-shadow: var(--shadow-sm); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn:focus-visible { outline: 2px solid var(--accent-1); outline-offset: 2px; }
-.btnSm { padding: 0.4rem 0.85rem; font-size: var(--font-size-xs); }
 
-.btnPrimary { background: var(--accent-1); border-color: var(--accent-1); color: var(--accent-text); }
-.btnPrimary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
+/* 30px still clears the 24x24 minimum target size once the border is counted. */
+.btnSm {
+  min-height: 30px;
+  padding: 0 0.7rem;
+  font-size: var(--font-size-xs);
+}
 
-.btnOutline { background: transparent; border-color: var(--border-color); color: var(--primary-text-color); }
-.btnOutline:hover:not(:disabled) { border-color: var(--accent-1); color: var(--accent-1); }
+/* ── 1. Primary — solid accent ─────────────────────────────────────────────
+   The only filled-accent control on screen, so there is never a question
+   which action is the main one. 14.26:1 dark / 6.97:1 light. */
+.btnPrimary {
+  background: var(--accent-1);
+  border-color: var(--accent-1);
+  color: var(--accent-text);
+}
+.btnPrimary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
 
-.btnDanger { background: transparent; border-color: var(--error-line); color: var(--error-color); }
-.btnDanger:hover:not(:disabled) { background: var(--error-sub); border-color: var(--error-color); }
+/* ── 2. Outline — bordered, unfilled ──────────────────────────────────────── */
+.btnOutline {
+  background: transparent;
+  border-color: var(--edge);
+  color: var(--primary-text-color);
+}
+.btnOutline:hover:not(:disabled) {
+  border-color: var(--accent-1);
+  color: var(--accent-1);
+  background: var(--accent-sub);
+}
+
+/* ── 3. Danger — tinted fill, so it is destructive at a glance ─────────────
+   Tinted from the start rather than only on hover: a transparent danger
+   button is indistinguishable from an outline button until you point at it,
+   which is exactly backwards for the one action that cannot be undone. */
+.btnDanger {
+  background: var(--error-sub);
+  border-color: var(--error-line);
+  color: var(--error-color);
+}
+.btnDanger:hover:not(:disabled) {
+  background: var(--error-color);
+  border-color: var(--error-color);
+  color: var(--background-1);
+}
+
+/* ── 4. Ghost — lowest weight ─────────────────────────────────────────────── */
+.btnGhost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--secondary-text-color);
+}
+.btnGhost:hover:not(:disabled) {
+  background: var(--accent-sub);
+  color: var(--accent-1);
+}
+
+/* Groups a set of related buttons so they read as one control cluster rather
+   than as loose items scattered along a row. */
+.btnRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
 
 /* ── Shell ─────────────────────────────────────────────────────────────────── */
 .shell {
@@ -132,9 +219,28 @@
   letter-spacing: 0.08em;
   color: var(--tertiary-text-color);
 }
-.navItem { display: flex; align-items: center; border-radius: var(--radius-sm); transition: background var(--transition-fast); }
+/* The active item gets an accent bar on its leading edge as well as a tint.
+   A tint alone is a few percent of lightness and is genuinely hard to spot at
+   a glance down a list of eight; a bar is unmissable. */
+.navItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
 .navItem:hover { background: rgba(var(--accent-1-rgb), 0.08); }
 .navItemActive, .navItemActive:hover { background: rgba(var(--accent-1-rgb), 0.14); }
+.navItemActive::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: var(--radius-full);
+  background: var(--accent-1);
+}
 .navItemBtn {
   all: unset;
   box-sizing: border-box;
@@ -167,10 +273,12 @@
   font-family: var(--font-serif);
   font-size: var(--font-size-2xl);
   font-weight: 600;
-  color: var(--accent-1);
+  color: var(--primary-text-color);
   margin: 0 0 var(--spacing-lg);
   padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--border-color);
+  /* 2px and accent-tinted: this is the top of the page's hierarchy, so its
+     rule should not be the same weight as a divider between two fields. */
+  border-bottom: 2px solid var(--accent-1);
 }
 .sectionBody { min-width: 0; }
 
@@ -207,7 +315,8 @@
 .subTab {
   padding: 7px 16px;
   background: transparent;
-  border: 1px solid var(--border-color);
+  /* --edge: a tab is a control, so its outline has to be visible. */
+  border: 1.5px solid var(--edge);
   border-radius: var(--radius-full);
   color: var(--secondary-text-color);
   font-size: var(--font-size-sm);
@@ -216,7 +325,7 @@
   cursor: pointer;
   transition: all var(--transition-fast);
 }
-.subTab:hover { border-color: var(--border-color-hover); color: var(--primary-text-color); }
+.subTab:hover { border-color: var(--accent-1); color: var(--accent-1); background: var(--accent-sub); }
 .subTabActive, .subTabActive:hover { background: var(--accent-1); border-color: var(--accent-1); color: var(--accent-text); }
 
 .resetBtn {
@@ -233,28 +342,50 @@
 .resetBtn:hover { text-decoration: underline; }
 
 /* ── Form card + fields ────────────────────────────────────────────────────── */
+/* Cards are defined by a border, not a shadow. Stacked shadows on a page of
+   eight forms read as clutter; a single hairline reads as structure. */
 .formCard {
   background: var(--background-1);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
 }
-.formCard h3 { font-family: var(--font-serif); font-size: var(--font-size-lg); margin: 0 0 var(--spacing-md); color: var(--primary-text-color); }
+
+/* The card's own heading, ruled off from its fields so a form with several
+   cards reads as several distinct groups rather than one long column. */
+.formCard h3 {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-lg);
+  margin: 0 0 var(--spacing-lg);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--primary-text-color);
+}
 
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); }
 .span2 { grid-column: span 2; }
 
 .field { display: flex; flex-direction: column; gap: var(--spacing-xs); min-width: 0; }
-.field label { font-weight: 600; font-size: var(--font-size-sm); color: var(--secondary-text-color); }
+/* Uppercase mono-ish labels: short, scannable, and clearly a label rather
+   than content. */
+.field label {
+  font-weight: 700;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tertiary-text-color);
+}
 .field input,
 .field select,
 .field textarea {
   width: 100%;
   box-sizing: border-box;
-  padding: 0.6rem 0.8rem;
-  border: 1px solid var(--border-color);
+  padding: 0.55rem 0.7rem;
+  /* --edge, not --border-color. A field's boundary is an interactive
+     boundary and must clear 3:1; --border-color is the decorative divider at
+     ~1.1:1, which is why the fields were hard to locate. */
+  border: 1.5px solid var(--edge);
   border-radius: var(--radius-sm);
   font-family: var(--font-sans);
   font-size: var(--font-size-base);
@@ -275,7 +406,17 @@
 .checkField input { width: 18px; height: 18px; accent-color: var(--accent-1); cursor: pointer; }
 .checkField label { cursor: pointer; }
 
-.formActions { display: flex; gap: var(--spacing-sm); justify-content: flex-end; flex-wrap: wrap; margin-top: var(--spacing-md); }
+/* Ruled off and pushed right, so the commit action is always in the same
+   place on every form in the panel. */
+.formActions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
 
 /* ── List rows (education / experience / entries) ──────────────────────────── */
 .listRow {
@@ -296,9 +437,14 @@
 .meta { font-size: var(--font-size-xs); color: var(--tertiary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── Table (projects) ──────────────────────────────────────────────────────── */
-.tableWrap { background: var(--background-1); border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
+.tableWrap { background: var(--background-1); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; }
 .table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
-.table thead { background: rgba(var(--accent-1-rgb), 0.05); }
+/* A 2px bottom rule under the head, so the header band is unambiguous even
+   when the first row is hovered. */
+.table thead {
+  background: rgba(var(--accent-1-rgb), 0.07);
+  border-bottom: 2px solid var(--border-color);
+}
 .table th { padding: 0.75rem 1rem; text-align: left; font-weight: 700; font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--tertiary-text-color); }
 .table td { padding: 0.7rem 1rem; border-top: 1px solid var(--border-color); vertical-align: middle; color: var(--primary-text-color); }
 .table tr:hover td { background: rgba(var(--accent-1-rgb), 0.04); }
