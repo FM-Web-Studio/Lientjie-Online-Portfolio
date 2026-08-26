@@ -1,0 +1,16 @@
+{
+  "name": "Lientjie Meiring",
+  "client": "Lientjie Meiring",
+  "tagline": "Portfolio for an architecture student and designer",
+  "description": "A quiet, work-first portfolio for an architecture student at the University of Johannesburg. Projects, about and contact are all editable from a built-in admin area backed by Firestore, so new work goes up without a redeploy.",
+
+  "featured": true,
+  "order": 10,
+
+  "sites": [
+    { "label": "Live site", "url": "https://lientjie-portfolio.web.app" }
+  ],
+
+  "stack": ["React", "Vite", "Firebase", "Firestore", "Lenis"],
+  "tags": ["Portfolio", "Architecture"]
+}
