@@ -114,12 +114,12 @@ export default function NavigationBar() {
       >
         <div className={styles.inner}>
           <Link to="/" className={styles.brand} aria-label={brand.siteName}>
-            {/* logo-96, not the full-size logo.png: this renders at 26px, so
+            {/* logo-96, not the full-size logo.v2.png: this renders at 26px, so
                 the original would be a 53KB download and a quarter-megapixel
                 decode for a thumbnail, on every page. Explicit width/height
                 reserves the slot before the image arrives. */}
             <img
-              src="/logo-96.png"
+              src="/logo-96.v2.png"
               alt=""
               className={styles.brandMark}
               width="26"

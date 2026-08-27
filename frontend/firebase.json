@@ -6,8 +6,16 @@
     "rewrites": [{ "source": "**", "destination": "/index.html" }],
     "headers": [
       {
-        "source": "**/*.@(js|css|svg|png|jpg|jpeg|webp|gif)",
-        "headers": [{ "key": "Cache-Control", "value": "max-age=31536000" }]
+        "source": "/assets/**",
+        "headers": [{ "key": "Cache-Control", "value": "max-age=31536000, immutable" }]
+      },
+      {
+        "source": "/*.@(png|jpg|jpeg|webp|gif|svg|ico)",
+        "headers": [{ "key": "Cache-Control", "value": "max-age=86400, must-revalidate" }]
+      },
+      {
+        "source": "/manifest.json",
+        "headers": [{ "key": "Cache-Control", "value": "max-age=3600, must-revalidate" }]
       },
       {
         "source": "**",
